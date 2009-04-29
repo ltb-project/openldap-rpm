@@ -1,0 +1,22 @@
+#=================================================
+# Logrotate script for OpenLDAP
+#
+# Provided by LTB-project (http://www.ltb-project.org)
+#=================================================
+
+/var/log/openldap.log {
+    daily
+    rotate 10
+    missingok
+    notifempty
+    sharedscripts
+    postrotate
+	# reload syslog
+        /bin/kill -HUP `cat /var/run/syslogd.pid 2> /dev/null` 2> /dev/null || true
+        /bin/kill -HUP `cat /var/run/rsyslogd.pid 2> /dev/null` 2> /dev/null || true
+	# only restart if slapd is really running
+	if test -n "`ps acx|grep slapd`"; then
+		/sbin/service slapd restart
+	fi
+    endscript
+}
