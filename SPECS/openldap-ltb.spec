@@ -31,7 +31,7 @@
 %define ldapuser         ldap
 %define ldapgroup        ldap
 
-%define slapd_init_version          0.7
+%define slapd_init_version          0.8
 
 %define check_password_version      1.0.3
 %define check_password_conf         %{ldapserverdir}/etc/openldap/check_password.conf
@@ -44,7 +44,7 @@
 Summary: OpenLDAP server with addons from the LDAP Tool Box project
 Name: %{real_name}-ltb
 Version: %{real_version}
-Release: 1%{?dist}
+Release: 2%{?dist}
 License: GPL
 
 Group: Applications/System
@@ -53,13 +53,12 @@ URL: http://www.openldap.org/
 # Source available on http://www.openldap.org
 Source: %{real_name}-%{real_version}.tgz
 # Sources available on http://www.ltb-project.org
-Source1: slapd.init-%{slapd_init_version}
-Source2: slapd.default
+Source1: ltb-project-openldap-initscript-%{slapd_init_version}.tar.gz
+# Sources available on http://www.ltb-project.org
+Source2: check_password-%{check_password_version}.tar.gz
 Source3: openldap.sh
 Source4: DB_CONFIG
 Source5: openldap.logrotate
-# Sources available on http://www.ltb-project.org
-Source6: check_password-%{check_password_version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
@@ -92,7 +91,7 @@ Summary:        check_password module for password policy
 Version:        %{check_password_version}
 Release:        4%{?dist}
 Group:          Applications/System
-URL:		    http://www.ltb-project.org
+URL:		http://www.ltb-project.org
 
 Requires:	cracklib, cracklib-dicts, %{real_name}-ltb >= %{real_version}
 
@@ -111,7 +110,8 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 #=================================================
 %prep
 %setup -n %{real_name}-%{real_version}
-%setup -n %{real_name}-%{real_version} -T -D -a 6
+%setup -n %{real_name}-%{real_version} -T -D -a 1
+%setup -n %{real_name}-%{real_version} -T -D -a 2
 
 #=================================================
 # Building
@@ -144,8 +144,8 @@ mkdir -p %{buildroot}%{ldapbackupdir}
 # Init script
 mkdir -p %{buildroot}/etc/init.d
 mkdir -p %{buildroot}/etc/default
-install -m 755 %{SOURCE1} %{buildroot}/etc/init.d/slapd
-install -m 644 %{SOURCE2} %{buildroot}/etc/default/slapd
+install -m 755 slapd %{buildroot}/etc/init.d/slapd
+install -m 644 slapd.default %{buildroot}/etc/default/slapd
 sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}/etc/default/slapd
 sed -i 's:^BDB_PATH.*:BDB_PATH="'%{bdbdir}'":' %{buildroot}/etc/default/slapd
 sed -i 's:^BACKUP_PATH.*:BACKUP_PATH="'%{ldapbackupdir}'":' %{buildroot}/etc/default/slapd
@@ -261,6 +261,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Fri Jul 3 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.16-2 / 1.0.3-4
+- Upgrade to init script 0.8
 * Tue Apr 29 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.16-1 / 1.0.3-4
 - Upgrade to OpenLDAP 2.4.16
 * Mon Mar 2 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.15-1 / 1.0.3-3

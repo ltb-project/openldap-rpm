@@ -25,7 +25,7 @@
 Summary: Sleepycat Database Software - Berkeley Database
 Name: berkeleydb-ltb
 Version: 4.6.21.NC
-Release: 3%{?dist}.patch3
+Release: 4%{?dist}.patch4
 License: GPL
 
 Group: Applications/System
@@ -36,6 +36,7 @@ Source1: berkeleydb.sh
 Patch1: patch.4.6.21.1
 Patch2: patch.4.6.21.2
 Patch3: patch.4.6.21.3
+Patch4: patch.4.6.21.4
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildRequires: gcc, make
@@ -57,9 +58,10 @@ of a query processing layer.
 %prep
 %setup -n %{real_name}-%{version}
 
-%patch1 -p0
+%patch1 -p0 
 %patch2 -p0
 %patch3 -p0
+%patch4 -p0
 
 #=================================================
 # Building
@@ -123,6 +125,8 @@ fi
 # Changelog
 #=================================================
 %changelog
+* Thu Jul 2 2009 - Clement Oudot <clem@ltb-project.org> - 4.6.21-4
+- Add patch 4
 * Mon Mar 2 2009 - Clement Oudot <clem@ltb-project.org> - 4.6.21-3
 - This package is now maintained in LTB project
 * Fri Jan 15 2009 - Clement Oudot <clement.oudot@linagora.com> - 4.6.21-2
