@@ -18,7 +18,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.16
+%define real_version     2.4.19
 
 %define bdbdir           /usr/local/berkeleydb
 %define ldapdir          /usr/local/openldap
@@ -31,12 +31,17 @@
 %define ldapuser         ldap
 %define ldapgroup        ldap
 
-%define slapd_init_version          0.8
+%define slapd_init_version          0.9
 
-%define check_password_version      1.0.3
+%define check_password_name         ltb-project-openldap-ppolicy-check-password
+%define check_password_version      1.1
 %define check_password_conf         %{ldapserverdir}/etc/openldap/check_password.conf
 %define check_password_minPoints    3
 %define check_password_useCracklib  0
+%define check_password_minUpper     0
+%define check_password_minLower     0
+%define check_password_minDigit     0
+%define check_password_minPunct     0
 
 #=================================================
 # Header
@@ -44,7 +49,7 @@
 Summary: OpenLDAP server with addons from the LDAP Tool Box project
 Name: %{real_name}-ltb
 Version: %{real_version}
-Release: 2%{?dist}
+Release: 1%{?dist}
 License: GPL
 
 Group: Applications/System
@@ -55,7 +60,7 @@ Source: %{real_name}-%{real_version}.tgz
 # Sources available on http://www.ltb-project.org
 Source1: ltb-project-openldap-initscript-%{slapd_init_version}.tar.gz
 # Sources available on http://www.ltb-project.org
-Source2: check_password-%{check_password_version}.tar.gz
+Source2: %{check_password_name}-%{check_password_version}.tar.gz
 Source3: openldap.sh
 Source4: DB_CONFIG
 Source5: openldap.logrotate
@@ -89,7 +94,7 @@ o Logrotate script
 %package check-password
 Summary:        check_password module for password policy
 Version:        %{check_password_version}
-Release:        4%{?dist}
+Release:        1%{?dist}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
@@ -118,23 +123,23 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 #=================================================
 %build
 # OpenLDAP
-export CC=gcc
+export CC="gcc"
 export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g"
 export CPPFLAGS="-I%{bdbdir}/include -I/usr/kerberos/include"
 export LDFLAGS="-L%{bdbdir}/lib"
-./configure --enable-ldap --prefix=%{ldapserverdir} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules
-%{__make} depend
-%{__make} %{?_smp_mflags}
+./configure --enable-ldap --enable-debug --prefix=%{ldapserverdir} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules
+make depend
+make %{?_smp_mflags}
 # check_password
-cd check_password-%{check_password_version} 
-%{__make} %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd"
+cd %{check_password_name}-%{check_password_version} 
+make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd"
 
 #=================================================
 # Installation
 #=================================================
 %install
 rm -rf %{buildroot}
-make install DESTDIR=%{buildroot}
+make install DESTDIR=%{buildroot} STRIP=""
 
 # Directories
 mkdir -p %{buildroot}%{ldapdatadir}
@@ -147,6 +152,8 @@ mkdir -p %{buildroot}/etc/default
 install -m 755 slapd %{buildroot}/etc/init.d/slapd
 install -m 644 slapd.default %{buildroot}/etc/default/slapd
 sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}/etc/default/slapd
+sed -i 's:^SLAPD_USER.*:SLAPD_USER="'%{ldapuser}'":' %{buildroot}/etc/default/slapd
+sed -i 's:^SLAPD_GROUP.*:SLAPD_GROUP="'%{ldapgroup}'":' %{buildroot}/etc/default/slapd
 sed -i 's:^BDB_PATH.*:BDB_PATH="'%{bdbdir}'":' %{buildroot}/etc/default/slapd
 sed -i 's:^BACKUP_PATH.*:BACKUP_PATH="'%{ldapbackupdir}'":' %{buildroot}/etc/default/slapd
 
@@ -168,15 +175,31 @@ install -m 644 %{SOURCE5} %{buildroot}/etc/logrotate.d/openldap
 sed -i 's:^directory.*:directory\t'%{ldapdatadir}':' %{buildroot}%{ldapserverdir}/etc/openldap/slapd.conf
 
 # check_password
-install -m 644 check_password-%{check_password_version}/check_password.so %{buildroot}%{ldapserverdir}/lib
+install -m 644 %{check_password_name}-%{check_password_version}/check_password.so %{buildroot}%{ldapserverdir}/lib
 echo "minPoints %{check_password_minPoints}" > %{buildroot}%{check_password_conf}
 echo "useCracklib %{check_password_useCracklib}" >> %{buildroot}%{check_password_conf}
+echo "minUpper %{check_password_minUpper}" >> %{buildroot}%{check_password_conf}
+echo "minLower %{check_password_minLower}" >> %{buildroot}%{check_password_conf}
+echo "minDigit %{check_password_minDigit}" >> %{buildroot}%{check_password_conf}
+echo "minPunct %{check_password_minPunct}" >> %{buildroot}%{check_password_conf}
 
+%pre -n openldap-ltb
+#=================================================
+# Pre Installation
+#=================================================
+
+# If upgrade stop slapd
+if [ $1 -eq 2 ]
+then
+	/sbin/service slapd stop > /dev/null 2>&1
+fi
+
+%post -n openldap-ltb
 #=================================================
 # Post Installation
 #=================================================
-%post
 
+# Do this at first install
 if [ $1 -eq 1 ]
 then
 	# Set slapd as service
@@ -188,22 +211,29 @@ then
 
 	# Add syslog facility
 	echo "local4.*	-%{ldaplogfile}" >> /etc/syslog.conf
-	/sbin/service syslog restart
+	/sbin/service syslog restart > /dev/null 2>&1
 fi
 
-if [ $1 -eq 1 -o $1 -eq 2 ] 
-then
-	# Change owner
-	/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}
-	/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapdatadir}
-	/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldaplogsdir}
-	/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapbackupdir}
-fi
+# Always do this
+# Change owner
+/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}
+/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapdatadir}
+/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldaplogsdir}
+/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapbackupdir}
 
+%post check-password
+#=================================================
+# Post Installation
+#=================================================
+
+# Change owner
+/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/lib
+
+%preun -n openldap-ltb
 #=================================================
 # Pre uninstallation
 #=================================================
-%preun
+
 # Don't do this if newer version is installed
 if [ $1 -eq 0 ]
 then
@@ -218,10 +248,11 @@ then
 	/sbin/service syslog restart
 fi
 
+%postun -n openldap-ltb
 #=================================================
 # Post uninstallation
 #=================================================
-%postun
+
 # Don't do this if newer version is installed
 if [ $1 -eq 0 ]
 then
@@ -241,26 +272,33 @@ rm -rf %{buildroot}
 %files -n openldap-ltb
 %defattr(-, root, root, 0755)
 %{ldapdir}
-%config %{ldapserverdir}/etc/openldap/slapd.conf
-%config %{ldapserverdir}/etc/openldap/ldap.conf
+%config(noreplace) %{ldapserverdir}/etc/openldap/slapd.conf
+%config(noreplace) %{ldapserverdir}/etc/openldap/ldap.conf
 /etc/init.d/slapd
-%config /etc/default/slapd
+%config(noreplace) /etc/default/slapd
 /etc/profile.d/openldap.sh
 %{ldaplogsdir}
-%config /etc/logrotate.d/openldap
+%config(noreplace) /etc/logrotate.d/openldap
 %{ldapbackupdir}
 %exclude %{check_password_conf}
 %exclude %{ldapserverdir}/lib/check_password.so
 
 
 %files check-password
-%config %{check_password_conf}
+%config(noreplace) %{check_password_conf}
 %{ldapserverdir}/lib/check_password.so
 
 #=================================================
 # Changelog
 #=================================================
 %changelog
+* Sat Oct 31 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.19-1 / 1.1-1
+- Upgrade to OpenLDAP 2.4.19 (#135)
+- Upgrade to init script 0.9
+- Upgrade to check_password 1.1
+- Disable strip to provide debuginfo package (#117)
+- Use %config(noreplace)
+- Start slapd before upgrade, and start after upgrade
 * Fri Jul 3 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.16-2 / 1.0.3-4
 - Upgrade to init script 0.8
 * Tue Apr 29 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.16-1 / 1.0.3-4
