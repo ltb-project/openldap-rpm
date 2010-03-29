@@ -69,7 +69,7 @@ of a query processing layer.
 %build
 cd build_unix
 export CC=gcc 
-../dist/configure --prefix=%{bdbdir}
+../dist/configure --prefix=%{bdbdir} --libdir=%{bdbdir}/%{_lib}
 make %{?_smp_mflags}
 
 #=================================================
@@ -93,7 +93,7 @@ sed -i 's:^BDB_BIN.*:BDB_BIN='%{bdbdir}/bin':' %{buildroot}/etc/profile.d/berkel
 if [ $1 -eq 1 ]
 then
 	# Add BerkeleyDB libraries to the system
-	echo "%{bdbdir}/lib" >> /etc/ld.so.conf
+	echo "%{bdbdir}/%{_lib}" >> /etc/ld.so.conf
 	/sbin/ldconfig
 fi
 
@@ -105,7 +105,7 @@ fi
 if [ $1 -eq 0 ]
 then
 	# Remove BerkeleyDB libraries from the system
-	sed -i '\:'%{bdbdir}/lib':d' /etc/ld.so.conf
+	sed -i '\:'%{bdbdir}/%{_lib}':d' /etc/ld.so.conf
 	/sbin/ldconfig
 fi
 
@@ -118,7 +118,7 @@ fi
 %dir %{bdbdir}
 %{bdbdir}/bin
 %{bdbdir}/include
-%{bdbdir}/lib
+%{bdbdir}/%{_lib}
 /etc/profile.d/berkeleydb.sh
 
 #=================================================

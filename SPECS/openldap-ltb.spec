@@ -126,8 +126,8 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 export CC="gcc"
 export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g"
 export CPPFLAGS="-I%{bdbdir}/include -I/usr/kerberos/include"
-export LDFLAGS="-L%{bdbdir}/lib"
-./configure --enable-ldap --enable-debug --prefix=%{ldapserverdir} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules
+export LDFLAGS="-L%{bdbdir}/%{_lib}"
+./configure --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules
 make depend
 make %{?_smp_mflags}
 # check_password
@@ -175,7 +175,7 @@ install -m 644 %{SOURCE5} %{buildroot}/etc/logrotate.d/openldap
 sed -i 's:^directory.*:directory\t'%{ldapdatadir}':' %{buildroot}%{ldapserverdir}/etc/openldap/slapd.conf
 
 # check_password
-install -m 644 %{check_password_name}-%{check_password_version}/check_password.so %{buildroot}%{ldapserverdir}/lib
+install -m 644 %{check_password_name}-%{check_password_version}/check_password.so %{buildroot}%{ldapserverdir}/%{_lib}
 echo "minPoints %{check_password_minPoints}" > %{buildroot}%{check_password_conf}
 echo "useCracklib %{check_password_useCracklib}" >> %{buildroot}%{check_password_conf}
 echo "minUpper %{check_password_minUpper}" >> %{buildroot}%{check_password_conf}
@@ -227,7 +227,7 @@ fi
 #=================================================
 
 # Change owner
-/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/lib
+/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/%{_lib}
 
 %preun -n openldap-ltb
 #=================================================
@@ -281,12 +281,12 @@ rm -rf %{buildroot}
 %config(noreplace) /etc/logrotate.d/openldap
 %{ldapbackupdir}
 %exclude %{check_password_conf}
-%exclude %{ldapserverdir}/lib/check_password.so
+%exclude %{ldapserverdir}/%{_lib}/check_password.so
 
 
 %files check-password
 %config(noreplace) %{check_password_conf}
-%{ldapserverdir}/lib/check_password.so
+%{ldapserverdir}/%{_lib}/check_password.so
 
 #=================================================
 # Changelog
