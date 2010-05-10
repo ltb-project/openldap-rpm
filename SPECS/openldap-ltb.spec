@@ -18,7 +18,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.21
+%define real_version     2.4.22
 
 %define bdbdir           /usr/local/berkeleydb
 %define ldapdir          /usr/local/openldap
@@ -31,7 +31,8 @@
 %define ldapuser         ldap
 %define ldapgroup        ldap
 
-%define slapd_init_version          0.9
+%define slapd_init_name             ltb-project-openldap-initscript
+%define slapd_init_version          1.0
 
 %define check_password_name         ltb-project-openldap-ppolicy-check-password
 %define check_password_version      1.1
@@ -58,7 +59,7 @@ URL: http://www.openldap.org/
 # Source available on http://www.openldap.org
 Source: %{real_name}-%{real_version}.tgz
 # Sources available on http://www.ltb-project.org
-Source1: ltb-project-openldap-initscript-%{slapd_init_version}.tar.gz
+Source1: %{slapd_init_name}-%{slapd_init_version}.tar.gz
 # Sources available on http://www.ltb-project.org
 Source2: %{check_password_name}-%{check_password_version}.tar.gz
 Source3: openldap.sh
@@ -94,7 +95,7 @@ o Logrotate script
 %package check-password
 Summary:        check_password module for password policy
 Version:        %{check_password_version}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
@@ -149,8 +150,8 @@ mkdir -p %{buildroot}%{ldapbackupdir}
 # Init script
 mkdir -p %{buildroot}/etc/init.d
 mkdir -p %{buildroot}/etc/default
-install -m 755 slapd %{buildroot}/etc/init.d/slapd
-install -m 644 slapd.default %{buildroot}/etc/default/slapd
+install -m 755 %{slapd_init_name}-%{slapd_init_version}/slapd %{buildroot}/etc/init.d/slapd
+install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd.default %{buildroot}/etc/default/slapd
 sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}/etc/default/slapd
 sed -i 's:^SLAPD_USER.*:SLAPD_USER="'%{ldapuser}'":' %{buildroot}/etc/default/slapd
 sed -i 's:^SLAPD_GROUP.*:SLAPD_GROUP="'%{ldapgroup}'":' %{buildroot}/etc/default/slapd
@@ -292,6 +293,9 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Mon May 10 2010 - Clement Oudot <clem@ltb-project.org> - 2.4.22-1 / 1.1-3
+- Upgrade to OpenLDAP 2.4.22
+- Upgrade to init script 1.0
 * Fri Feb 19 2010 - Clement Oudot <clem@ltb-project.org> - 2.4.21-1 / 1.1-2
 - Upgrade to OpenLDAP 2.4.21
 * Sat Oct 31 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.19-1 / 1.1-1
