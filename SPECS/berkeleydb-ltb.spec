@@ -26,7 +26,8 @@ Summary: Sleepycat Database Software - Berkeley Database
 Name: berkeleydb-ltb
 Version: 4.6.21.NC
 Release: 4%{?dist}.patch4
-License: GPL
+# http://www.oracle.com/technology/software/products/berkeley-db/htdocs/oslicense.html
+License: Open Source License for Berkeley DB
 
 Group: Applications/System
 URL: http://www.oracle.com/technology/products/berkeley-db/db/index.html

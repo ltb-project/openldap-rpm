@@ -51,7 +51,8 @@ Summary: OpenLDAP server with addons from the LDAP Tool Box project
 Name: %{real_name}-ltb
 Version: %{real_version}
 Release: 1%{?dist}
-License: GPL
+# http://www.openldap.org/software/release/license.html
+License: OpenLDAP Public License
 
 Group: Applications/System
 URL: http://www.openldap.org/
