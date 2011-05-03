@@ -129,7 +129,7 @@ export CC="gcc"
 export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g"
 export CPPFLAGS="-I%{bdbdir}/include -I/usr/kerberos/include"
 export LDFLAGS="-L%{bdbdir}/%{_lib}"
-./configure --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules
+./configure --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-slapi
 make depend
 make %{?_smp_mflags}
 # check_password
