@@ -18,7 +18,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.24
+%define real_version     2.4.25
 
 %define bdbdir           /usr/local/berkeleydb
 %define ldapdir          /usr/local/openldap
@@ -96,7 +96,7 @@ o Logrotate script
 %package check-password
 Summary:        check_password module for password policy
 Version:        %{check_password_version}
-Release:        5%{?dist}
+Release:        6%{?dist}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
@@ -294,6 +294,9 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Tue May 03 2011 - Clement Oudot <clem@ltb-project.org> - 2.4.25-1 / 1.1-6
+- Upgrade to OpenLDAP 2.4.25
+- Enable SLAPI
 * Thu Mar 24 2011 - Clement Oudot <clem@ltb-project.org> - 2.4.24-1 / 1.1-5
 - Upgrade to OpenLDAP 2.4.24
 - Upgrade to init script 1.2
