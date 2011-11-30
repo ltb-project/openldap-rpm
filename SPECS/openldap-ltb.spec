@@ -18,7 +18,8 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.27
+%define real_version     2.4.28
+%define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
 %define ldapdir          /usr/local/openldap
@@ -50,7 +51,7 @@
 Summary: OpenLDAP server with addons from the LDAP Tool Box project
 Name: %{real_name}-ltb
 Version: %{real_version}
-Release: 1%{?dist}
+Release: %{release_version}
 # http://www.openldap.org/software/release/license.html
 License: OpenLDAP Public License
 
@@ -113,6 +114,25 @@ requirements are rejected.
 This is provided by LDAP Tool Box project: http://www.ltb-project.org 
 
 #=================================================
+# Subpackage contrib-overlays
+#=================================================
+%package contrib-overlays
+Summary:        Overlays contributed to OpenLDAP
+Version:        %{real_version}
+Release:        %{release_version}
+Group:          Applications/System
+URL:		http://www.ltb-project.org
+
+BuildRequires:  %{real_name}-ltb
+Requires:	%{real_name}-ltb >= %{real_version}
+
+%description contrib-overlays
+Some overlays are not included in the OpenLDAP main package but provided
+as contributions. This package provide some of them.
+
+This is provided by LDAP Tool Box project: http://www.ltb-project.org 
+
+#=================================================
 # Source preparation
 #=================================================
 %prep
@@ -135,6 +155,18 @@ make %{?_smp_mflags}
 # check_password
 cd %{check_password_name}-%{check_password_version} 
 make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd"
+cd ..
+# contrib-overlays
+cd contrib/slapd-modules
+## lastbind
+cd lastbind
+make %{?_smp_mflags}
+cd ..
+## smbk5pwd
+cd smbk5pwd
+make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L%{ldapserverdir}/%{_lib} -lldap_r -llber"
+cd ..
+cd ../..
 
 #=================================================
 # Installation
@@ -184,6 +216,16 @@ echo "minUpper %{check_password_minUpper}" >> %{buildroot}%{check_password_conf}
 echo "minLower %{check_password_minLower}" >> %{buildroot}%{check_password_conf}
 echo "minDigit %{check_password_minDigit}" >> %{buildroot}%{check_password_conf}
 echo "minPunct %{check_password_minPunct}" >> %{buildroot}%{check_password_conf}
+
+# contrib-overlays
+cd contrib/slapd-modules
+cd lastbind
+make install "prefix=%{buildroot}%{ldapserverdir}"
+cd ..
+cd smbk5pwd
+make install "prefix=%{buildroot}%{ldapserverdir}"
+cd ..
+cd ../..
 
 %pre -n openldap-ltb
 #=================================================
@@ -284,16 +326,22 @@ rm -rf %{buildroot}
 %{ldapbackupdir}
 %exclude %{check_password_conf}
 %exclude %{ldapserverdir}/%{_lib}/check_password.so
-
+%exclude %{ldapserverdir}/libexec/openldap
 
 %files check-password
 %config(noreplace) %{check_password_conf}
 %{ldapserverdir}/%{_lib}/check_password.so
 
+%files contrib-overlays
+%{ldapserverdir}/libexec/openldap
+
 #=================================================
 # Changelog
 #=================================================
 %changelog
+* Wed Nov 30 2011 - Clement Oudot <clem@ltb-project.org> - 2.4.28-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.28
+- Create package contrib-overlays
 * Fri Nov 25 2011 - Clement Oudot <clem@ltb-project.org> - 2.4.27-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.27
 - Upgrade to init script 1.3
