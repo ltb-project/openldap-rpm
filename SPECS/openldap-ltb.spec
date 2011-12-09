@@ -123,7 +123,6 @@ Release:        %{release_version}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
-BuildRequires:  %{real_name}-ltb
 Requires:	%{real_name}-ltb >= %{real_version}
 
 %description contrib-overlays
@@ -164,7 +163,7 @@ make %{?_smp_mflags}
 cd ..
 ## smbk5pwd
 cd smbk5pwd
-make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L%{ldapserverdir}/%{_lib} -lldap_r -llber"
+make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L%{_builddir}/%{real_name}-%{real_version}/libraries/liblber/.libs/ -L%{_builddir}/%{real_name}-%{real_version}/libraries/libldap_r/.libs/ -lldap_r -llber" "prefix=%{ldapserverdir}"
 cd ..
 cd ../..
 
