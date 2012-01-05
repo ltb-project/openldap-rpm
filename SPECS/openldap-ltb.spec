@@ -101,6 +101,7 @@ Release:        8%{?dist}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
+BuildRequires:	cracklib-devel
 Requires:	cracklib, cracklib-dicts, %{real_name}-ltb >= %{real_version}
 
 %description check-password
