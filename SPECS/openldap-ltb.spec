@@ -19,7 +19,7 @@
 #=================================================
 %define real_name        openldap
 %define real_version     2.4.28
-%define release_version  1%{?dist}
+%define release_version  2%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
 %define ldapdir          /usr/local/openldap
@@ -33,7 +33,7 @@
 %define ldapgroup        ldap
 
 %define slapd_init_name             ltb-project-openldap-initscript
-%define slapd_init_version          1.3
+%define slapd_init_version          1.4
 
 %define check_password_name         ltb-project-openldap-ppolicy-check-password
 %define check_password_version      1.1
@@ -338,6 +338,9 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Thu Jan 05 2012 - Clement Oudot <clem@ltb-project.org> - 2.4.28-2 / 1.1-8
+- Upgrade to init script 1.4
+- Remove circular build dependency
 * Wed Nov 30 2011 - Clement Oudot <clem@ltb-project.org> - 2.4.28-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.28
 - Create package contrib-overlays
