@@ -74,7 +74,7 @@ BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtoo
 BuildRequires: cracklib
 Requires: berkeleydb-ltb >= 4.6.21, gawk, libtool-ltdl
 
-Prereq: coreutils
+Requires(pre): coreutils
 Obsoletes: openldap-servers, openldap-clients
 
 %description
