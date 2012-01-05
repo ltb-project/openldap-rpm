@@ -69,7 +69,7 @@ Source4: DB_CONFIG
 Source5: openldap.logrotate
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: gcc, make
+BuildRequires: gcc, make, groff
 BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtool-ltdl-devel
 BuildRequires: cracklib
 Requires: berkeleydb-ltb >= 4.6.21, gawk, libtool-ltdl
