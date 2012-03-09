@@ -75,7 +75,6 @@ BuildRequires: cracklib
 Requires: berkeleydb-ltb >= 4.6.21, gawk, libtool-ltdl
 
 Requires(pre): coreutils
-Obsoletes: openldap-servers, openldap-clients
 
 %description
 OpenLDAP is an open source suite of LDAP (Lightweight Directory Access
@@ -293,18 +292,6 @@ then
         # Remove syslog facility
 	sed -i '/local4\..*/d' /etc/syslog.conf
 	/sbin/service syslog restart
-fi
-
-%postun -n openldap-ltb
-#=================================================
-# Post uninstallation
-#=================================================
-
-# Don't do this if newer version is installed
-if [ $1 -eq 0 ]
-then
-	# Delete user and group
-	/usr/sbin/userdel -r %{ldapuser}
 fi
 
 #=================================================
