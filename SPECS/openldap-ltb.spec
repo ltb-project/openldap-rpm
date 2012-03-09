@@ -101,7 +101,10 @@ Release:        8%{?dist}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
+%if "%{?dist}" == ".el6"
 BuildRequires:	cracklib-devel
+%endif
+
 Requires:	cracklib, cracklib-dicts, %{real_name}-ltb >= %{real_version}
 
 %description check-password
