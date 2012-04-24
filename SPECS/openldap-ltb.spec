@@ -74,7 +74,7 @@ BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtoo
 BuildRequires: cracklib
 Requires: berkeleydb-ltb >= 4.6.21, gawk, libtool-ltdl
 
-Requires(pre): coreutils
+Requires(pre): /sbin/ldconfig, coreutils
 
 %description
 OpenLDAP is an open source suite of LDAP (Lightweight Directory Access
@@ -258,6 +258,10 @@ then
 	# Add syslog facility
 	echo "local4.*	-%{ldaplogfile}" >> /etc/syslog.conf
 	/sbin/service syslog restart > /dev/null 2>&1
+
+        # Add OpenLDAP libraries to the system
+        echo "%{ldapserverdir}/%{_lib}" >> /etc/ld.so.conf
+        /sbin/ldconfig
 fi
 
 # Always do this
@@ -292,6 +296,10 @@ then
         # Remove syslog facility
 	sed -i '/local4\..*/d' /etc/syslog.conf
 	/sbin/service syslog restart
+
+        # Remove OpenLDAP libraries from the system
+        sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
+        /sbin/ldconfig
 fi
 
 #=================================================
