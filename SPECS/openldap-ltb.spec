@@ -18,7 +18,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.31
+%define real_version     2.4.32
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -33,7 +33,7 @@
 %define ldapgroup        ldap
 
 %define slapd_init_name             ltb-project-openldap-initscript
-%define slapd_init_version          1.6
+%define slapd_init_version          1.7
 
 %define check_password_name         ltb-project-openldap-ppolicy-check-password
 %define check_password_version      1.1
@@ -339,6 +339,11 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Thu Aug 23 2012 - Clement Oudot <clem@ltb-project.org> - 2.4.32-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.32
+- Upgrade to init script 1.7
+- Comment to enable config delete option (#476)
+- Use rsyslog on EL6 (#480)
 * Thu Apr 24 2012 - Clement Oudot <clem@ltb-project.org> - 2.4.31-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.31
 - Upgrade to init script 1.6
