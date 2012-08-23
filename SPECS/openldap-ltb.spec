@@ -149,6 +149,8 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 # OpenLDAP
 export CC="gcc"
 export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g"
+# Uncomment to enable config delete option
+#export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_CONFIG_DELETE"
 export CPPFLAGS="-I%{bdbdir}/include -I/usr/kerberos/include"
 export LDFLAGS="-L%{bdbdir}/%{_lib}"
 ./configure --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-slapi --enable-meta --enable-crypt
