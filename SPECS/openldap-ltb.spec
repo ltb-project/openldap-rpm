@@ -258,8 +258,13 @@ then
 	/usr/sbin/useradd %{ldapuser} -g %{ldapgroup}
 
 	# Add syslog facility
+%if "%{?dist}" == ".el6"
+	echo "local4.*	-%{ldaplogfile}" >> /etc/rsyslog.conf
+	/sbin/service rsyslog restart > /dev/null 2>&1
+%else
 	echo "local4.*	-%{ldaplogfile}" >> /etc/syslog.conf
 	/sbin/service syslog restart > /dev/null 2>&1
+%endif
 
         # Add OpenLDAP libraries to the system
         echo "%{ldapserverdir}/%{_lib}" >> /etc/ld.so.conf
@@ -296,8 +301,13 @@ then
 	/sbin/chkconfig --del slapd
 
         # Remove syslog facility
+%if "%{?dist}" == ".el6"
+	sed -i '/local4\..*/d' /etc/rsyslog.conf
+	/sbin/service rsyslog restart
+%else
 	sed -i '/local4\..*/d' /etc/syslog.conf
 	/sbin/service syslog restart
+%endif
 
         # Remove OpenLDAP libraries from the system
         sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
