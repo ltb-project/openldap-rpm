@@ -164,7 +164,7 @@ cd ..
 cd contrib/slapd-modules
 ## lastbind
 cd lastbind
-make %{?_smp_mflags}
+make %{?_smp_mflags} "prefix=%{ldapserverdir}"
 cd ..
 ## smbk5pwd
 cd smbk5pwd
