@@ -18,7 +18,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.33
+%define real_version     2.4.34
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -33,7 +33,7 @@
 %define ldapgroup        ldap
 
 %define slapd_init_name             ltb-project-openldap-initscript
-%define slapd_init_version          1.8
+%define slapd_init_version          1.9
 
 %define check_password_name         ltb-project-openldap-ppolicy-check-password
 %define check_password_version      1.1
@@ -349,6 +349,9 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Thu Mar 12 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.34-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.34
+- Upgrade to init script 1.9
 * Thu Oct 11 2012 - Clement Oudot <clem@ltb-project.org> - 2.4.33-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.33
 - Upgrade to init script 1.8
