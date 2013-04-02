@@ -18,7 +18,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.34
+%define real_version     2.4.35
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -350,6 +350,10 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Wed Apr 02 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.35-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.35
+- Remove dependency to Berkeley DB (#585)
+- Make DB_CONFIG a config file (#588)
 * Thu Mar 12 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.34-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.34
 - Upgrade to init script 1.9
