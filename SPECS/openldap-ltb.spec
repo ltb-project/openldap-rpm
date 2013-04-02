@@ -337,6 +337,7 @@ rm -rf %{buildroot}
 %exclude %{check_password_conf}
 %exclude %{ldapserverdir}/%{_lib}/check_password.so
 %exclude %{ldapserverdir}/libexec/openldap
+%config(noreplace) %{ldapdatadir}/DB_CONFIG
 
 %files check-password
 %config(noreplace) %{check_password_conf}
