@@ -72,7 +72,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc, make, groff
 BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtool-ltdl-devel
 BuildRequires: cracklib
-Requires: berkeleydb-ltb >= 4.6.21, gawk, libtool-ltdl
+Requires: gawk, libtool-ltdl
 
 Requires(pre): /sbin/ldconfig, coreutils
 
