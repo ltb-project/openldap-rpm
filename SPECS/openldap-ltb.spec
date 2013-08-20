@@ -18,7 +18,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.35
+%define real_version     2.4.36
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -72,7 +72,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc, make, groff
 BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtool-ltdl-devel
 BuildRequires: cracklib
-Requires: gawk, libtool-ltdl
+Requires: gawk, libtool-ltdl, berkeleydb-ltb >= 4.6.21
 
 Requires(pre): /sbin/ldconfig, coreutils
 
@@ -350,6 +350,9 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Tue Aug 20 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.36-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.36
+- Add dependency to BerkeleyDB (#610)
 * Wed Apr 02 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.35-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.35
 - Remove dependency to Berkeley DB (#585)
