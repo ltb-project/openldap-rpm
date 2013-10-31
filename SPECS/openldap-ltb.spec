@@ -266,9 +266,6 @@ then
 	/sbin/service syslog restart > /dev/null 2>&1
 %endif
 
-        # Add OpenLDAP libraries to the system
-        echo "%{ldapserverdir}/%{_lib}" >> /etc/ld.so.conf
-        /sbin/ldconfig
 fi
 
 # Always do this
@@ -309,10 +306,12 @@ then
 	/sbin/service syslog restart
 %endif
 
-        # Remove OpenLDAP libraries from the system
-        sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
-        /sbin/ldconfig
 fi
+
+# Always do this
+# Remove OpenLDAP libraries from the system
+sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
+/sbin/ldconfig
 
 #=================================================
 # Cleaning
