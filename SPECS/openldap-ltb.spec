@@ -18,7 +18,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.36
+%define real_version     2.4.37
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -153,7 +153,7 @@ export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g"
 #export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_CONFIG_DELETE"
 export CPPFLAGS="-I%{bdbdir}/include -I/usr/kerberos/include"
 export LDFLAGS="-L%{bdbdir}/%{_lib}"
-./configure --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-slapi --enable-meta --enable-crypt
+./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt
 make depend
 make %{?_smp_mflags}
 # check_password
@@ -350,6 +350,9 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Thu Oct 31 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.37-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.37
+- Disable dynamic library linking (#629)
 * Tue Aug 20 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.36-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.36
 - Add dependency to BerkeleyDB (#610)
