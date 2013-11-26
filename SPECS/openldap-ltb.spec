@@ -164,11 +164,13 @@ cd ..
 cd contrib/slapd-modules
 ## lastbind
 cd lastbind
-make %{?_smp_mflags} "prefix=%{ldapserverdir}"
+make clean
+make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ..
 ## smbk5pwd
 cd smbk5pwd
-make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L%{_builddir}/%{real_name}-%{real_version}/libraries/liblber/.libs/ -L%{_builddir}/%{real_name}-%{real_version}/libraries/libldap_r/.libs/ -lldap_r -llber" "prefix=%{ldapserverdir}"
+make clean
+make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=" "prefix=%{ldapserverdir}"
 cd ..
 cd ../..
 
