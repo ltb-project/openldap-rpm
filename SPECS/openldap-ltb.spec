@@ -18,7 +18,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.37
+%define real_version     2.4.38
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -351,6 +351,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Wed Nov 27 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.38-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.38
 * Thu Oct 31 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.37-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.37
 - Disable dynamic library linking (#629)
