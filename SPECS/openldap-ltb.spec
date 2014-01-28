@@ -135,6 +135,24 @@ as contributions. This package provide some of them.
 This is provided by LDAP Tool Box project: http://www.ltb-project.org 
 
 #=================================================
+# Subpackage mdb-utils
+#=================================================
+%package mdb-utils
+Summary:        MDB utilities
+Version:        %{real_version}
+Release:        %{release_version}
+Group:          Applications/System
+URL:		http://www.ltb-project.org
+
+Requires:	%{real_name}-ltb >= %{real_version}
+
+%description mdb-utils
+MDB utilities contain both mdb_stat and mdb_copy, and the associated 
+documentation.
+
+This is provided by LDAP Tool Box project: http://www.ltb-project.org 
+
+#=================================================
 # Source preparation
 #=================================================
 %prep
@@ -172,6 +190,10 @@ cd smbk5pwd
 make clean
 make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=" "prefix=%{ldapserverdir}"
 cd ..
+cd ../..
+# MDB utils
+cd libraries/liblmdb
+make %{?_smp_mflags}
 cd ../..
 
 #=================================================
@@ -231,6 +253,14 @@ cd ..
 cd smbk5pwd
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
+cd ../..
+
+# MDB utils
+cd libraries/liblmdb
+install -m 755 "mdb_copy"  %{buildroot}%{ldapserverdir}/sbin
+install -m 755 "mdb_stat"  %{buildroot}%{ldapserverdir}/sbin
+install -m 644 "mdb_copy.1"  %{buildroot}%{ldapserverdir}/share/man/man1
+install -m 644 "mdb_stat.1"  %{buildroot}%{ldapserverdir}/share/man/man1
 cd ../..
 
 %pre -n openldap-ltb
@@ -346,6 +376,12 @@ rm -rf %{buildroot}
 
 %files contrib-overlays
 %{ldapserverdir}/libexec/openldap
+
+%files mdb-utils
+%{ldapserverdir}/sbin/mdb_copy
+%{ldapserverdir}/sbin/mdb_stat
+%{ldapserverdir}/share/man/man1/mdb_copy.1
+%{ldapserverdir}/share/man/man1/mdb_stat.1
 
 #=================================================
 # Changelog
