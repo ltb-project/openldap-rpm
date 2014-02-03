@@ -224,6 +224,7 @@ mkdir -p %{buildroot}/etc/profile.d
 install -m 755 %{SOURCE3} %{buildroot}/etc/profile.d/openldap.sh
 sed -i 's:^OL_BIN.*:OL_BIN='%{ldapdir}/bin':' %{buildroot}/etc/profile.d/openldap.sh
 sed -i 's:^OL_SBIN.*:OL_SBIN='%{ldapdir}/sbin':' %{buildroot}/etc/profile.d/openldap.sh
+sed -i 's:^OL_MAN.*:OL_MAN='%{ldapdir}/share/man':' %{buildroot}/etc/profile.d/openldap.sh
 
 # BDB configuration
 install -m 644 %{SOURCE4} %{buildroot}%{ldapdatadir}
