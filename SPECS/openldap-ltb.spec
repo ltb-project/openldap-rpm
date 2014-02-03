@@ -18,7 +18,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.38
+%define real_version     2.4.39
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -389,6 +389,11 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Mon Feb 03 2014 - Clement Oudot <clem@ltb-project.org> - 2.4.39-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.39
+- Mark documentation as such in the RPM spec file (#636)
+- Include MDB utilities in RPM (#638)
+- Add man directory to $MANPATH (#644)
 * Wed Nov 27 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.38-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.38
 * Thu Oct 31 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.37-1 / 1.1-8
