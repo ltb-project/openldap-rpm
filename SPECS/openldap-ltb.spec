@@ -357,6 +357,7 @@ rm -rf %{buildroot}
 %files -n openldap-ltb
 %defattr(-, root, root, 0755)
 %{ldapdir}
+%docdir %{ldapserverdir}/share/man
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd.conf
 %config(noreplace) %{ldapserverdir}/etc/openldap/ldap.conf
 /etc/init.d/slapd
@@ -380,8 +381,8 @@ rm -rf %{buildroot}
 %files mdb-utils
 %{ldapserverdir}/sbin/mdb_copy
 %{ldapserverdir}/sbin/mdb_stat
-%{ldapserverdir}/share/man/man1/mdb_copy.1
-%{ldapserverdir}/share/man/man1/mdb_stat.1
+%doc %{ldapserverdir}/share/man/man1/mdb_copy.1
+%doc %{ldapserverdir}/share/man/man1/mdb_stat.1
 
 #=================================================
 # Changelog
