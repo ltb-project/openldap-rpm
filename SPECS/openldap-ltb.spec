@@ -18,7 +18,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.39
+%define real_version     2.4.40
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -389,6 +389,10 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Tue Sep 30 2014 - Clement Oudot <clem@ltb-project.org> - 2.4.40-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.40
+- Enable sock backend (#661)
+- Upgrade to init script 2.0 (#731)
 * Mon Feb 03 2014 - Clement Oudot <clem@ltb-project.org> - 2.4.39-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.39
 - Mark documentation as such in the RPM spec file (#636)
