@@ -171,7 +171,7 @@ export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g"
 #export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_CONFIG_DELETE"
 export CPPFLAGS="-I%{bdbdir}/include -I/usr/kerberos/include"
 export LDFLAGS="-L%{bdbdir}/%{_lib}"
-./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt
+./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt --enable-sock
 make depend
 make %{?_smp_mflags}
 # check_password
