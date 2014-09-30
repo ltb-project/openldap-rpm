@@ -103,6 +103,9 @@ URL:		http://www.ltb-project.org
 %if "%{?dist}" == ".el6"
 BuildRequires:	cracklib-devel
 %endif
+%if "%{?dist}" == ".el7"
+BuildRequires:	cracklib-devel
+%endif
 
 Requires:	cracklib, cracklib-dicts, %{real_name}-ltb >= %{real_version}
 
@@ -291,12 +294,12 @@ then
 	/usr/sbin/useradd %{ldapuser} -g %{ldapgroup}
 
 	# Add syslog facility
-%if "%{?dist}" == ".el6"
-	echo "local4.*	-%{ldaplogfile}" >> /etc/rsyslog.conf
-	/sbin/service rsyslog restart > /dev/null 2>&1
-%else
+%if "%{?dist}" == ".el5"
 	echo "local4.*	-%{ldaplogfile}" >> /etc/syslog.conf
 	/sbin/service syslog restart > /dev/null 2>&1
+%else
+	echo "local4.*	-%{ldaplogfile}" >> /etc/rsyslog.conf
+	/sbin/service rsyslog restart > /dev/null 2>&1
 %endif
 
 fi
@@ -331,12 +334,12 @@ then
 	/sbin/chkconfig --del slapd
 
         # Remove syslog facility
-%if "%{?dist}" == ".el6"
-	sed -i '/local4\..*/d' /etc/rsyslog.conf
-	/sbin/service rsyslog restart
-%else
+%if "%{?dist}" == ".el5"
 	sed -i '/local4\..*/d' /etc/syslog.conf
 	/sbin/service syslog restart
+%else
+	sed -i '/local4\..*/d' /etc/rsyslog.conf
+	/sbin/service rsyslog restart
 %endif
 
 fi
