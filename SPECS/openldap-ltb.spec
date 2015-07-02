@@ -34,7 +34,7 @@
 %define ldapgroup        ldap
 
 %define slapd_init_name             ltb-project-openldap-initscript
-%define slapd_init_version          2.0
+%define slapd_init_version          2.1
 
 %define check_password_name         ltb-project-openldap-ppolicy-check-password
 %define check_password_version      1.1
@@ -395,6 +395,7 @@ rm -rf %{buildroot}
 %changelog
 * Thu Jul 02 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.41-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.41
+- Upgrade to init script 2.1
 * Tue Sep 30 2014 - Clement Oudot <clem@ltb-project.org> - 2.4.40-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.40
 - Enable sock backend (#661)
