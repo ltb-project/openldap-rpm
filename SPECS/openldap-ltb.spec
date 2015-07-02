@@ -7,9 +7,10 @@
 # Configure syslog and logrotate
 # Install a pwdChecker module
 #
+# Copyright (C) 2015 David COUTADEUR
 # Copyright (C) 2008 Raphael OUAZANA
 # Copyright (C) 2015 Clement OUDOT
-# Copyright (C) 2008 LINAGORA
+# Copyright (C) 2015 LINAGORA
 # Copyright (C) 2015 Savoir-faire Linux
 #
 # Provided by LTB-project (http://www.ltb-project.org)
@@ -46,6 +47,10 @@
 %define check_password_minDigit     0
 %define check_password_minPunct     0
 
+%define ppm_name         ltb-project-openldap-ppm
+%define ppm_version      1.3
+%define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.conf
+
 #=================================================
 # Header
 #=================================================
@@ -68,6 +73,8 @@ Source2: %{check_password_name}-%{check_password_version}.tar.gz
 Source3: openldap.sh
 Source4: DB_CONFIG
 Source5: openldap.logrotate
+# Sources available on https://github.com/davidcoutadeur/ppm
+Source6: %{ppm_name}-%{ppm_version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make, groff
@@ -121,6 +128,24 @@ requirements are rejected.
 This is provided by LDAP Tool Box project: http://www.ltb-project.org 
 
 #=================================================
+# Subpackage ppm
+#=================================================
+%package ppm
+Summary:        OpenLDAP password policy module
+Version:        %{ppm_version}
+Release:        1%{?dist}
+Group:          Applications/System
+URL:            https://github.com/davidcoutadeur/ppm
+
+Requires:       %{real_name}-ltb >= %{real_version}
+
+%description ppm
+ppm.c is an OpenLDAP module for checking password quality when they are modified.
+Passwords are checked against the presence or absence of certain character classes.
+This module is used as an extension of the OpenLDAP password policy controls,
+see slapo-ppolicy(5) section pwdCheckModule.
+
+#=================================================
 # Subpackage contrib-overlays
 #=================================================
 %package contrib-overlays
@@ -163,6 +188,7 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 %setup -n %{real_name}-%{real_version}
 %setup -n %{real_name}-%{real_version} -T -D -a 1
 %setup -n %{real_name}-%{real_version} -T -D -a 2
+%setup -n %{real_name}-%{real_version} -T -D -a 6
 
 #=================================================
 # Building
@@ -181,6 +207,10 @@ make %{?_smp_mflags}
 # check_password
 cd %{check_password_name}-%{check_password_version} 
 make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd"
+cd ..
+# ppm
+cd %{ppm_name}-%{ppm_version}
+make "CONFIG=%{ppm_conf}" "LDAP_INC=-I../include -I../servers/slapd"
 cd ..
 # contrib-overlays
 cd contrib/slapd-modules
@@ -249,6 +279,10 @@ echo "minUpper %{check_password_minUpper}" >> %{buildroot}%{check_password_conf}
 echo "minLower %{check_password_minLower}" >> %{buildroot}%{check_password_conf}
 echo "minDigit %{check_password_minDigit}" >> %{buildroot}%{check_password_conf}
 echo "minPunct %{check_password_minPunct}" >> %{buildroot}%{check_password_conf}
+
+# ppm
+install -m 644 %{ppm_name}-%{ppm_version}/ppm.so %{buildroot}%{ldapserverdir}/%{_lib}
+install -m 644 %{ppm_name}-%{ppm_version}/ppm.conf %{buildroot}%{ppm_conf}
 
 # contrib-overlays
 cd contrib/slapd-modules
@@ -320,6 +354,14 @@ fi
 # Change owner
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/%{_lib}
 
+%post ppm
+#=================================================
+# Post Installation
+#=================================================
+
+# Change owner
+/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/%{_lib}
+
 %preun -n openldap-ltb
 #=================================================
 # Pre uninstallation
@@ -380,6 +422,10 @@ rm -rf %{buildroot}
 %config(noreplace) %{check_password_conf}
 %{ldapserverdir}/%{_lib}/check_password.so
 
+%files ppm
+%config(noreplace) %{ppm_conf}
+%{ldapserverdir}/%{_lib}/ppm.so
+
 %files contrib-overlays
 %{ldapserverdir}/libexec/openldap
 
@@ -394,8 +440,9 @@ rm -rf %{buildroot}
 #=================================================
 %changelog
 * Thu Jul 02 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.41-1 / 1.1-8
-- Upgrade to OpenLDAP 2.4.41
-- Upgrade to init script 2.1
+- Upgrade to OpenLDAP 2.4.41 (#778)
+- Upgrade to init script 2.1 (#778)
+- Add ppm module (#738)
 * Tue Sep 30 2014 - Clement Oudot <clem@ltb-project.org> - 2.4.40-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.40
 - Enable sock backend (#661)
