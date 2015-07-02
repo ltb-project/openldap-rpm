@@ -8,8 +8,9 @@
 # Install a pwdChecker module
 #
 # Copyright (C) 2008 Raphael OUAZANA
-# Copyright (C) 2008 Clement OUDOT
+# Copyright (C) 2015 Clement OUDOT
 # Copyright (C) 2008 LINAGORA
+# Copyright (C) 2015 Savoir-faire Linux
 #
 # Provided by LTB-project (http://www.ltb-project.org)
 #=================================================
@@ -18,7 +19,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.40
+%define real_version     2.4.41
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -392,6 +393,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Thu Jul 02 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.41-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.41
 * Tue Sep 30 2014 - Clement Oudot <clem@ltb-project.org> - 2.4.40-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.40
 - Enable sock backend (#661)
