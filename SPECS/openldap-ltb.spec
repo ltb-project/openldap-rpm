@@ -224,6 +224,11 @@ cd smbk5pwd
 make clean
 make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=" "prefix=%{ldapserverdir}"
 cd ..
+## autogroup
+cd autogroup
+make clean
+make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
+cd ..
 cd ../..
 # MDB utils
 cd libraries/liblmdb
@@ -290,6 +295,9 @@ cd lastbind
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
 cd smbk5pwd
+make install "prefix=%{buildroot}%{ldapserverdir}"
+cd ..
+cd autogroup
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
 cd ../..
@@ -443,6 +451,7 @@ rm -rf %{buildroot}
 - Upgrade to OpenLDAP 2.4.41 (#778)
 - Upgrade to init script 2.1 (#778)
 - Add ppm module (#738)
+- Add autogroup overlay (#771)
 * Tue Sep 30 2014 - Clement Oudot <clem@ltb-project.org> - 2.4.40-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.40
 - Enable sock backend (#661)
