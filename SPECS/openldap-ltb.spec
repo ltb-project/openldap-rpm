@@ -229,6 +229,11 @@ cd autogroup
 make clean
 make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ..
+## sha512
+cd passwd/sha2
+make clean
+make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
+cd ../..
 cd ../..
 # MDB utils
 cd libraries/liblmdb
@@ -300,6 +305,9 @@ cd ..
 cd autogroup
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
+cd passwd/sha2
+make install "prefix=%{buildroot}%{ldapserverdir}"
+cd ../..
 cd ../..
 
 # MDB utils
@@ -449,6 +457,7 @@ rm -rf %{buildroot}
 %changelog
 * Mon Aug 17 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.42-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.42
+- Add SHA 512 in contrib package (#752)
 * Thu Jul 02 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.41-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.41 (#778)
 - Upgrade to init script 2.1 (#778)
