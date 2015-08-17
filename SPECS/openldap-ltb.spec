@@ -20,7 +20,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.41
+%define real_version     2.4.42
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -447,6 +447,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Mon Aug 17 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.42-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.42
 * Thu Jul 02 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.41-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.41 (#778)
 - Upgrade to init script 2.1 (#778)
