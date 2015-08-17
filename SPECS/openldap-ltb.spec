@@ -80,6 +80,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc, make, groff
 BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtool-ltdl-devel
 BuildRequires: cracklib
+BuildRequires: tcp_wrappers-devel
 Requires: gawk, libtool-ltdl, berkeleydb-ltb >= 4.6.21
 
 Requires(pre): /sbin/ldconfig, coreutils
@@ -201,7 +202,7 @@ export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g"
 #export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_CONFIG_DELETE"
 export CPPFLAGS="-I%{bdbdir}/include -I/usr/kerberos/include"
 export LDFLAGS="-L%{bdbdir}/%{_lib}"
-./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt --enable-sock
+./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt --enable-sock --enable-wrappers
 make depend
 make %{?_smp_mflags}
 # check_password
@@ -458,6 +459,7 @@ rm -rf %{buildroot}
 * Mon Aug 17 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.42-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.42
 - Add SHA 512 in contrib package (#752)
+- Enable TCP wrappers (#784)
 * Thu Jul 02 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.41-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.41 (#778)
 - Upgrade to init script 2.1 (#778)
