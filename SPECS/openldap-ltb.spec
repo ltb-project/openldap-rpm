@@ -434,6 +434,11 @@ rm -rf %{buildroot}
 %exclude %{ldapserverdir}/%{_lib}/check_password.so
 %exclude %{ldapserverdir}/libexec/openldap
 %config(noreplace) %{ldapdatadir}/DB_CONFIG
+%exclude %{ldapserverdir}/%{_lib}/ppm.so
+%exclude %{ldapserverdir}/sbin/mdb_copy
+%exclude %{ldapserverdir}/sbin/mdb_stat
+%exclude %{ldapserverdir}/share/man/man1/mdb_copy.1
+%exclude %{ldapserverdir}/share/man/man1/mdb_stat.1
 
 %files check-password
 %config(noreplace) %{check_password_conf}
@@ -460,6 +465,7 @@ rm -rf %{buildroot}
 - Upgrade to OpenLDAP 2.4.43
 - Restart OpenLDAP after upgrade (#788)
 - Fix crash in smbk5pwd (#793)
+- Exclude files from ppm and mdb-utils package (#814)
 * Mon Aug 17 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.42-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.42
 - Add SHA 512 in contrib package (#752)
