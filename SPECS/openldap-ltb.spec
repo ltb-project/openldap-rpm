@@ -319,6 +319,17 @@ install -m 644 "mdb_copy.1"  %{buildroot}%{ldapserverdir}/share/man/man1
 install -m 644 "mdb_stat.1"  %{buildroot}%{ldapserverdir}/share/man/man1
 cd ../..
 
+%pretrans -n openldap-ltb
+#=================================================
+# Pre Transaction
+#=================================================
+
+slapd_running=`/sbin/service slapd status | grep "is running" | wc -l`
+if [ $slapd_running -eq 1 ]
+then
+	touch %{_localstatedir}/openldap-ltb-slapd-running
+fi
+
 %pre -n openldap-ltb
 #=================================================
 # Pre Installation
@@ -342,8 +353,8 @@ then
 	/sbin/chkconfig --add slapd
 
 	# Create user and group
-	/usr/sbin/groupadd %{ldapgroup}
-	/usr/sbin/useradd %{ldapuser} -g %{ldapgroup}
+	/usr/sbin/groupadd %{ldapgroup} > /dev/null 2>&1
+	/usr/sbin/useradd %{ldapuser} -g %{ldapgroup} > /dev/null 2>&1
 
 	# Add syslog facility
 %if "%{?dist}" == ".el5"
@@ -381,7 +392,7 @@ fi
 
 %preun -n openldap-ltb
 #=================================================
-# Pre uninstallation
+# Pre Uninstallation
 #=================================================
 
 # Don't do this if newer version is installed
@@ -408,6 +419,19 @@ fi
 # Remove OpenLDAP libraries from the system
 sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
 /sbin/ldconfig
+
+%posttrans -n openldap-ltb
+#=================================================
+# Post Transaction
+#=================================================
+# Do this after an upgrade
+if [ -e %{_localstatedir}/openldap-ltb-slapd-running ]
+then
+	# Start slapd
+	/sbin/service slapd start > /dev/null 2>&1
+
+	rm -f %{_localstatedir}/openldap-ltb-slapd-running
+fi
 
 #=================================================
 # Cleaning
