@@ -223,7 +223,7 @@ cd ..
 ## smbk5pwd
 cd smbk5pwd
 make clean
-make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=" "prefix=%{ldapserverdir}"
+make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap_r/.libs/ -lldap_r -llber" "prefix=%{ldapserverdir}"
 cd ..
 ## autogroup
 cd autogroup
@@ -422,7 +422,7 @@ sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
 
 %posttrans -n openldap-ltb
 #=================================================
-# Post Transaction
+# Post transaction
 #=================================================
 # Do this after an upgrade
 if [ -e %{_localstatedir}/openldap-ltb-slapd-running ]
