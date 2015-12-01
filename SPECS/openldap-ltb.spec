@@ -20,7 +20,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.42
+%define real_version     2.4.43
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -456,6 +456,10 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Tue Dec 01 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.43-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.43
+- Restart OpenLDAP after upgrade (#788)
+- Fix crash in smbk5pwd (#793)
 * Mon Aug 17 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.42-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.42
 - Add SHA 512 in contrib package (#752)
