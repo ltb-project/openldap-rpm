@@ -20,7 +20,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.43
+%define real_version     2.4.44
 %define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
@@ -353,8 +353,8 @@ then
 	/sbin/chkconfig --add slapd
 
 	# Create user and group
-	/usr/sbin/groupadd %{ldapgroup} > /dev/null 2>&1
-	/usr/sbin/useradd %{ldapuser} -g %{ldapgroup} > /dev/null 2>&1
+	/usr/sbin/addgroup --system %{ldapgroup} > /dev/null 2>&1
+	/usr/sbin/adduser --system --no-create-home --home /usr/local/openldap --ingroup %{ldapgroup}  %{ldapuser}  > /dev/null 2>&1
 
 	# Add syslog facility
 %if "%{?dist}" == ".el5"
@@ -485,6 +485,9 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Mon Feb 08 2016 - Clement Oudot <clem@ltb-project.org> - 2.4.44-1 / 1.1-8
+- Upgrade to OpenLDAP 2.4.44
+- ldap user should be a system user (#828)
 * Tue Dec 01 2015 - Clement Oudot <clem@ltb-project.org> - 2.4.43-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.43
 - Restart OpenLDAP after upgrade (#788)
