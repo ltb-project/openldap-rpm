@@ -225,6 +225,11 @@ cd smbk5pwd
 make clean
 make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap_r/.libs/ -lldap_r -llber" "prefix=%{ldapserverdir}"
 cd ..
+## nssov
+cd nssov
+make clean
+make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
+cd ..
 ## autogroup
 cd autogroup
 make clean
@@ -301,6 +306,9 @@ cd lastbind
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
 cd smbk5pwd
+make install "prefix=%{buildroot}%{ldapserverdir}"
+cd ..
+cd nssov
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
 cd autogroup
