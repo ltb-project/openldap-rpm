@@ -230,6 +230,11 @@ cd nssov
 make clean
 make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ..
+## noopsrch
+cd noopsrch
+make clean
+make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
+cd ..
 ## autogroup
 cd autogroup
 make clean
@@ -309,6 +314,9 @@ cd smbk5pwd
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
 cd nssov
+make install "prefix=%{buildroot}%{ldapserverdir}"
+cd ..
+cd noopsrch
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
 cd autogroup
