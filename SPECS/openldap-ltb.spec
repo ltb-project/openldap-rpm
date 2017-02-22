@@ -240,6 +240,11 @@ cd autogroup
 make clean
 make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ..
+## pbkdf2 
+cd passwd/pbkdf2 
+make clean
+make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
+cd ../..
 ## sha512
 cd passwd/sha2
 make clean
@@ -500,6 +505,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Wed Feb 22 2017 - Manoel Domingues Junior <mdjunior@ufrj.br> - 2.4.44-2 / 1.1-8
+- Add PBKDF2 module
 * Thu Feb 18 2016 - Clement Oudot <clem@ltb-project.org> - 2.4.44-2 / 1.1-8
 - Fix user/group creation (#830)
 * Mon Feb 08 2016 - Clement Oudot <clem@ltb-project.org> - 2.4.44-1 / 1.1-8
