@@ -327,6 +327,9 @@ cd ..
 cd autogroup
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
+cd passwd/pbkdf2 
+make install "prefix=%{buildroot}%{ldapserverdir}"
+cd ../..
 cd passwd/sha2
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ../..
