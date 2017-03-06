@@ -83,7 +83,7 @@ BuildRequires: cracklib
 BuildRequires: tcp_wrappers-devel
 Requires: gawk, libtool-ltdl, berkeleydb-ltb >= 4.6.21
 
-Requires(pre): /sbin/ldconfig, coreutils
+Requires(pre): /sbin/ldconfig, coreutils, shadow-utils
 
 %description
 OpenLDAP is an open source suite of LDAP (Lightweight Directory Access
