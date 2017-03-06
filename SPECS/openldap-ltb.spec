@@ -47,8 +47,8 @@
 %define check_password_minDigit     0
 %define check_password_minPunct     0
 
-%define ppm_name         ltb-project-openldap-ppm
-%define ppm_version      1.3
+%define ppm_name         ppm
+%define ppm_version      1.5
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.conf
 
 #=================================================
@@ -308,6 +308,7 @@ echo "minPunct %{check_password_minPunct}" >> %{buildroot}%{check_password_conf}
 
 # ppm
 install -m 644 %{ppm_name}-%{ppm_version}/ppm.so %{buildroot}%{ldapserverdir}/%{_lib}
+install -m 755 %{ppm_name}-%{ppm_version}/ppm_test %{buildroot}%{ldapserverdir}/%{_lib}
 install -m 644 %{ppm_name}-%{ppm_version}/ppm.conf %{buildroot}%{ppm_conf}
 
 # contrib-overlays
@@ -483,6 +484,7 @@ rm -rf %{buildroot}
 %config(noreplace) %{ldapdatadir}/DB_CONFIG
 %exclude %{ppm_conf}
 %exclude %{ldapserverdir}/%{_lib}/ppm.so
+%exclude %{ldapserverdir}/%{_lib}/ppm_test
 %exclude %{ldapserverdir}/sbin/mdb_copy
 %exclude %{ldapserverdir}/sbin/mdb_stat
 %exclude %{ldapserverdir}/share/man/man1/mdb_copy.1
@@ -495,6 +497,7 @@ rm -rf %{buildroot}
 %files ppm
 %config(noreplace) %{ppm_conf}
 %{ldapserverdir}/%{_lib}/ppm.so
+%{ldapserverdir}/%{_lib}/ppm_test
 
 %files contrib-overlays
 %{ldapserverdir}/libexec/openldap
