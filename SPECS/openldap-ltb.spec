@@ -35,7 +35,7 @@
 %define ldapgroup        ldap
 
 %define slapd_init_name             ltb-project-openldap-initscript
-%define slapd_init_version          2.1
+%define slapd_init_version          2.2
 
 %define check_password_name         ltb-project-openldap-ppolicy-check-password
 %define check_password_version      1.1
