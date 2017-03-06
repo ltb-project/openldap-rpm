@@ -481,6 +481,7 @@ rm -rf %{buildroot}
 %exclude %{ldapserverdir}/%{_lib}/check_password.so
 %exclude %{ldapserverdir}/libexec/openldap
 %config(noreplace) %{ldapdatadir}/DB_CONFIG
+%exclude %{ppm_conf}
 %exclude %{ldapserverdir}/%{_lib}/ppm.so
 %exclude %{ldapserverdir}/sbin/mdb_copy
 %exclude %{ldapserverdir}/sbin/mdb_stat
