@@ -21,7 +21,7 @@
 #=================================================
 %define real_name        openldap
 %define real_version     2.4.44
-%define release_version  2%{?dist}
+%define release_version  3%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
 %define ldapdir          /usr/local/openldap
@@ -512,6 +512,10 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Wed May 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.44-3
+- Rebuilt on RHEL 7 to fix kerberos dependency (#10)
+- Upgrade to ppm 1.5
+- Upgrade to initscript 2.2
 * Wed Feb 22 2017 - Manoel Domingues Junior <mdjunior@ufrj.br> - 2.4.44-2 / 1.1-8
 - Add PBKDF2 module
 * Thu Feb 18 2016 - Clement Oudot <clem@ltb-project.org> - 2.4.44-2 / 1.1-8
