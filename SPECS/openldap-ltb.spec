@@ -48,7 +48,7 @@
 %define check_password_minPunct     0
 
 %define ppm_name         ppm
-%define ppm_version      1.5
+%define ppm_version      1.6
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.conf
 
 #=================================================
@@ -514,6 +514,7 @@ rm -rf %{buildroot}
 %changelog
 * Mon Jun 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.45-1
 - Upgrade to OpenLDAP 2.4.45
+- Upgrade to ppm 1.6
 * Wed May 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.44-3
 - Rebuilt on RHEL 7 to fix kerberos dependency (#10)
 - Upgrade to ppm 1.5
