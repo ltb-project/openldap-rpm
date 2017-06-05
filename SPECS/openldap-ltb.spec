@@ -20,8 +20,8 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.44
-%define release_version  3%{?dist}
+%define real_version     2.4.45
+%define release_version  1%{?dist}
 
 %define bdbdir           /usr/local/berkeleydb
 %define ldapdir          /usr/local/openldap
@@ -512,6 +512,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Mon Jun 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.45-1
+- Upgrade to OpenLDAP 2.4.45
 * Wed May 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.44-3
 - Rebuilt on RHEL 7 to fix kerberos dependency (#10)
 - Upgrade to ppm 1.5
