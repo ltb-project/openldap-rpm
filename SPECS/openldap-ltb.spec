@@ -66,14 +66,14 @@ URL: http://www.openldap.org/
 
 # Source available on http://www.openldap.org
 Source: %{real_name}-%{real_version}.tgz
-# Sources available on http://www.ltb-project.org
+# Sources available on https://github.com/ltb-project/openldap-initscript
 Source1: %{slapd_init_name}-%{slapd_init_version}.tar.gz
-# Sources available on http://www.ltb-project.org
+# Sources available on https://github.com/ltb-project/openldap-ppolicy-check-password
 Source2: %{check_password_name}-%{check_password_version}.tar.gz
 Source3: openldap.sh
 Source4: DB_CONFIG
 Source5: openldap.logrotate
-# Sources available on https://github.com/davidcoutadeur/ppm
+# Sources available on https://github.com/ltb-project/ppm
 Source6: %{ppm_name}-%{ppm_version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
