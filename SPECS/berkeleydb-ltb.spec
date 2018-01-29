@@ -45,12 +45,12 @@ BuildRequires: gcc, make
 Prereq: /sbin/ldconfig, coreutils
 
 %description
-Berkeley DB, the most widely-used developer database in the world, is open 
-source and runs on all major operating systems, including embedded Linux, 
+Berkeley DB, the most widely-used developer database in the world, is open
+source and runs on all major operating systems, including embedded Linux,
 Linux, MacOS X, QNX, UNIX, VxWorks and Windows.
 
-Berkeley DB delivers the core data management functionality, power, scalability 
-and flexibility of enterprise relational databases but without the overhead 
+Berkeley DB delivers the core data management functionality, power, scalability
+and flexibility of enterprise relational databases but without the overhead
 of a query processing layer.
 
 #=================================================
@@ -59,7 +59,7 @@ of a query processing layer.
 %prep
 %setup -n %{real_name}-%{version}
 
-%patch1 -p0 
+%patch1 -p0
 %patch2 -p0
 %patch3 -p0
 %patch4 -p0
@@ -69,7 +69,7 @@ of a query processing layer.
 #=================================================
 %build
 cd build_unix
-export CC=gcc 
+export CC=gcc
 ../dist/configure --prefix=%{bdbdir} --libdir=%{bdbdir}/%{_lib}
 make %{?_smp_mflags}
 
