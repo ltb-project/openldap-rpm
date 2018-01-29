@@ -22,6 +22,10 @@
 %define real_name        openldap
 %define real_version     2.4.45
 %define release_version  2%{?dist}
+# Fix for CentOS7
+%if 0%{?rhel} == 7
+ %define dist .el7
+%endif
 
 %define bdbdir           /usr/local/berkeleydb
 %define ldapdir          /usr/local/openldap
@@ -91,7 +95,7 @@ Protocol) applications and development tools. LDAP is a set of
 protocols for accessing directory services (usually phone book style
 information, but other information is possible) over the Internet,
 similar to the way DNS (Domain Name System) information is propagated
-over the Internet. 
+over the Internet.
 
 This package contains all: server, clients, librairies and docs. It
 can be installed with openldap and openldap-devel. It provides tools
@@ -119,14 +123,14 @@ BuildRequires:	cracklib-devel
 Requires:	cracklib, cracklib-dicts, %{real_name}-ltb >= %{real_version}
 
 %description check-password
-check_password.c is an OpenLDAP pwdPolicyChecker module used to check the strength 
-and quality of user-provided passwords. This module is used as an extension of the 
-OpenLDAP password policy controls, see slapo-ppolicy(5) section pwdCheckModule. 
-check_password.c will run a number of checks on the passwords to ensure minimum 
-strength and quality requirements are met. Passwords that do not meet these 
+check_password.c is an OpenLDAP pwdPolicyChecker module used to check the strength
+and quality of user-provided passwords. This module is used as an extension of the
+OpenLDAP password policy controls, see slapo-ppolicy(5) section pwdCheckModule.
+check_password.c will run a number of checks on the passwords to ensure minimum
+strength and quality requirements are met. Passwords that do not meet these
 requirements are rejected.
 
-This is provided by LDAP Tool Box project: http://www.ltb-project.org 
+This is provided by LDAP Tool Box project: http://www.ltb-project.org
 
 #=================================================
 # Subpackage ppm
@@ -162,7 +166,7 @@ Requires:	%{real_name}-ltb >= %{real_version}
 Some overlays are not included in the OpenLDAP main package but provided
 as contributions. This package provide some of them.
 
-This is provided by LDAP Tool Box project: http://www.ltb-project.org 
+This is provided by LDAP Tool Box project: http://www.ltb-project.org
 
 #=================================================
 # Subpackage mdb-utils
@@ -177,10 +181,10 @@ URL:		http://www.ltb-project.org
 Requires:	%{real_name}-ltb >= %{real_version}
 
 %description mdb-utils
-MDB utilities contain both mdb_stat and mdb_copy, and the associated 
+MDB utilities contain both mdb_stat and mdb_copy, and the associated
 documentation.
 
-This is provided by LDAP Tool Box project: http://www.ltb-project.org 
+This is provided by LDAP Tool Box project: http://www.ltb-project.org
 
 #=================================================
 # Source preparation
@@ -206,7 +210,7 @@ export LDFLAGS="-L%{bdbdir}/%{_lib}"
 make depend
 make %{?_smp_mflags}
 # check_password
-cd %{check_password_name}-%{check_password_version} 
+cd %{check_password_name}-%{check_password_version}
 make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd"
 cd ..
 # ppm
@@ -240,8 +244,8 @@ cd autogroup
 make clean
 make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ..
-## pbkdf2 
-cd passwd/pbkdf2 
+## pbkdf2
+cd passwd/pbkdf2
 make clean
 make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ../..
@@ -328,7 +332,7 @@ cd ..
 cd autogroup
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
-cd passwd/pbkdf2 
+cd passwd/pbkdf2
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ../..
 cd passwd/sha2
@@ -517,7 +521,7 @@ rm -rf %{buildroot}
 * Mon Jun 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.45-1
 - Upgrade to OpenLDAP 2.4.45
 - Upgrade to ppm 1.6
-* Wed May 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.44-3
+* Fri May 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.44-3
 - Rebuilt on RHEL 7 to fix kerberos dependency (#10)
 - Upgrade to ppm 1.5
 - Upgrade to initscript 2.2
@@ -559,11 +563,11 @@ rm -rf %{buildroot}
 * Tue Aug 20 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.36-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.36
 - Add dependency to BerkeleyDB (#610)
-* Wed Apr 02 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.35-1 / 1.1-8
+* Tue Apr 02 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.35-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.35
 - Remove dependency to Berkeley DB (#585)
 - Make DB_CONFIG a config file (#588)
-* Thu Mar 12 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.34-1 / 1.1-8
+* Tue Mar 12 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.34-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.34
 - Upgrade to init script 1.9
 * Thu Oct 11 2012 - Clement Oudot <clem@ltb-project.org> - 2.4.33-1 / 1.1-8
@@ -574,7 +578,7 @@ rm -rf %{buildroot}
 - Upgrade to init script 1.7
 - Comment to enable config delete option (#476)
 - Use rsyslog on EL6 (#480)
-* Thu Apr 24 2012 - Clement Oudot <clem@ltb-project.org> - 2.4.31-1 / 1.1-8
+* Tue Apr 24 2012 - Clement Oudot <clem@ltb-project.org> - 2.4.31-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.31
 - Upgrade to init script 1.6
 - Add OpenLDAP libraries to the system (#411)
@@ -616,7 +620,7 @@ rm -rf %{buildroot}
 - Start slapd before upgrade, and start after upgrade
 * Fri Jul 3 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.16-2 / 1.0.3-4
 - Upgrade to init script 0.8
-* Tue Apr 29 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.16-1 / 1.0.3-4
+* Wed Apr 29 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.16-1 / 1.0.3-4
 - Upgrade to OpenLDAP 2.4.16
 * Mon Mar 2 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.15-1 / 1.0.3-3
 - This package is now maintened in LTB project
@@ -624,7 +628,7 @@ rm -rf %{buildroot}
 - Upgrade to init script 0.7
 * Fri Feb 6 2009 - Clement Oudot <clement.oudot@linagora.com> - 2.4.13-2
 - Upgrade check_password to 1.0.3 (useCracklib parameter support)
-* Fri Jan 15 2009 - Clement Oudot <clement.oudot@linagora.com> - 2.4.13-1
+* Thu Jan 15 2009 - Clement Oudot <clement.oudot@linagora.com> - 2.4.13-1
 - remove checkLdapPwdExpiration script with cron configuration (provided by linagora-ldap-tools)
 - add pwdModuleChecker check_password-1.0.2  from Calivia
 - enable modules to support external password checking module
@@ -654,5 +658,5 @@ rm -rf %{buildroot}
 - Update init script version from 0.2 to 0.3
 * Fri Sep 30 2005 - Raphael Ouazana <raphael.ouazana@linagora.com> - 2.2.28-2
 - add patch because getaddrinfo is thread-safe on Linux
-* Thu Aug 30 2005 - Clement Oudot <clement.oudot@linagora.com> - 2.2.28-1
+* Tue Aug 30 2005 - Clement Oudot <clement.oudot@linagora.com> - 2.2.28-1
 - package for RHEL3 ES UP5
