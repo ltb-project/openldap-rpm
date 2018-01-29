@@ -22,6 +22,10 @@
 %define real_name        openldap
 %define real_version     2.4.45
 %define release_version  2%{?dist}
+# Fix for CentOS7
+%if 0%{?rhel} == 7
+ %define dist .el7
+%endif
 
 %define bdbdir           /usr/local/berkeleydb
 %define ldapdir          /usr/local/openldap
