@@ -130,7 +130,7 @@ fi
 - Add patch 4
 * Mon Mar 2 2009 - Clement Oudot <clem@ltb-project.org> - 4.6.21-3
 - This package is now maintained in LTB project
-* Fri Jan 15 2009 - Clement Oudot <clement.oudot@linagora.com> - 4.6.21-2
+* Thu Jan 15 2009 - Clement Oudot <clement.oudot@linagora.com> - 4.6.21-2
 - use real_name variable
 - update URL to Oracle Website
 * Fri Oct 24 2008 - Clement Oudot <clement.oudot@linagora.com> - 4.6.21-2
@@ -138,7 +138,7 @@ fi
 - update PATH
 * Mon Oct 20 2008 - Clement Oudot <clement.oudot@linagora.com> - 4.6.21-1
 - new version 4.6.21 + patchs for RHEL/CentOS 5
-* Fri Sep 28 2006 - Raphael Ouazana <raphael.ouazana@linagora.com> - 4.2.52-2
+* Thu Sep 28 2006 - Raphael Ouazana <raphael.ouazana@linagora.com> - 4.2.52-2
 - new version
-* Mon Aug 26 2005 - Clement Oudot <clement.oudot@linagora.com> - 4.2.52-1
+* Fri Aug 26 2005 - Clement Oudot <clement.oudot@linagora.com> - 4.2.52-1
 - package for RHEL3 ES UP5

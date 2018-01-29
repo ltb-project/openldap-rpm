@@ -517,7 +517,7 @@ rm -rf %{buildroot}
 * Mon Jun 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.45-1
 - Upgrade to OpenLDAP 2.4.45
 - Upgrade to ppm 1.6
-* Wed May 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.44-3
+* Fri May 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.44-3
 - Rebuilt on RHEL 7 to fix kerberos dependency (#10)
 - Upgrade to ppm 1.5
 - Upgrade to initscript 2.2
@@ -559,11 +559,11 @@ rm -rf %{buildroot}
 * Tue Aug 20 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.36-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.36
 - Add dependency to BerkeleyDB (#610)
-* Wed Apr 02 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.35-1 / 1.1-8
+* Tue Apr 02 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.35-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.35
 - Remove dependency to Berkeley DB (#585)
 - Make DB_CONFIG a config file (#588)
-* Thu Mar 12 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.34-1 / 1.1-8
+* Tue Mar 12 2013 - Clement Oudot <clem@ltb-project.org> - 2.4.34-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.34
 - Upgrade to init script 1.9
 * Thu Oct 11 2012 - Clement Oudot <clem@ltb-project.org> - 2.4.33-1 / 1.1-8
@@ -574,7 +574,7 @@ rm -rf %{buildroot}
 - Upgrade to init script 1.7
 - Comment to enable config delete option (#476)
 - Use rsyslog on EL6 (#480)
-* Thu Apr 24 2012 - Clement Oudot <clem@ltb-project.org> - 2.4.31-1 / 1.1-8
+* Tue Apr 24 2012 - Clement Oudot <clem@ltb-project.org> - 2.4.31-1 / 1.1-8
 - Upgrade to OpenLDAP 2.4.31
 - Upgrade to init script 1.6
 - Add OpenLDAP libraries to the system (#411)
@@ -616,7 +616,7 @@ rm -rf %{buildroot}
 - Start slapd before upgrade, and start after upgrade
 * Fri Jul 3 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.16-2 / 1.0.3-4
 - Upgrade to init script 0.8
-* Tue Apr 29 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.16-1 / 1.0.3-4
+* Wed Apr 29 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.16-1 / 1.0.3-4
 - Upgrade to OpenLDAP 2.4.16
 * Mon Mar 2 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.15-1 / 1.0.3-3
 - This package is now maintened in LTB project
@@ -624,7 +624,7 @@ rm -rf %{buildroot}
 - Upgrade to init script 0.7
 * Fri Feb 6 2009 - Clement Oudot <clement.oudot@linagora.com> - 2.4.13-2
 - Upgrade check_password to 1.0.3 (useCracklib parameter support)
-* Fri Jan 15 2009 - Clement Oudot <clement.oudot@linagora.com> - 2.4.13-1
+* Thu Jan 15 2009 - Clement Oudot <clement.oudot@linagora.com> - 2.4.13-1
 - remove checkLdapPwdExpiration script with cron configuration (provided by linagora-ldap-tools)
 - add pwdModuleChecker check_password-1.0.2  from Calivia
 - enable modules to support external password checking module
@@ -654,5 +654,5 @@ rm -rf %{buildroot}
 - Update init script version from 0.2 to 0.3
 * Fri Sep 30 2005 - Raphael Ouazana <raphael.ouazana@linagora.com> - 2.2.28-2
 - add patch because getaddrinfo is thread-safe on Linux
-* Thu Aug 30 2005 - Clement Oudot <clement.oudot@linagora.com> - 2.2.28-1
+* Tue Aug 30 2005 - Clement Oudot <clement.oudot@linagora.com> - 2.2.28-1
 - package for RHEL3 ES UP5
