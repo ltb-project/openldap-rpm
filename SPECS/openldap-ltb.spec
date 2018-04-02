@@ -408,7 +408,8 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldaplogsdir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapbackupdir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/var/run
-/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/etc/openldap/slapd.conf
+/bin/chown -R root:%{ldapgroup} %{ldapserverdir}/etc/openldap/slapd.conf
+/bin/chmod 640 %{ldapserverdir}/etc/openldap/slapd.conf
 
 %post check-password
 #=================================================
@@ -417,6 +418,8 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 
 # Change owner
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/%{_lib}
+/bin/chown -R root:%{ldapgroup} %{check_password_conf}
+/bin/chmod 640 %{check_password_conf}
 
 %post ppm
 #=================================================
@@ -425,6 +428,8 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 
 # Change owner
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/%{_lib}
+/bin/chown -R root:%{ldapgroup} %{ppm_conf}
+/bin/chmod 640 %{ppm_conf}
 
 %preun -n openldap-ltb
 #=================================================
