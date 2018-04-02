@@ -397,10 +397,11 @@ fi
 getent group %{ldapgroup} >/dev/null || groupadd -r -g 55 %{ldapgroup}
 getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ldapdir} -s /sbin/nologin -c "LDAP User" %{ldapuser}
 # Change owner
-/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}
+/bin/chown -R root:root %{ldapserverdir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapdatadir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldaplogsdir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapbackupdir}
+/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/var/run
 
 %post check-password
 #=================================================
