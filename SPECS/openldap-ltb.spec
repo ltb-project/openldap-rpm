@@ -651,9 +651,9 @@ rm -rf %{buildroot}
 - New version
 * Fri Nov 25 2005 - Raphael Ouazana <raphael.ouazana@linagora.com> - 2.3.12-1.0
 - New version
-* Mon Oct 6 2005 - Raphael Ouazana <raphael.ouazana@linagora.com> - 2.2.28-4.2
+* Thu Oct 6 2005 - Raphael Ouazana <raphael.ouazana@linagora.com> - 2.2.28-4.2
 - Another fix for init level
-* Mon Oct 6 2005 - Raphael Ouazana <raphael.ouazana@linagora.com> - 2.2.28-4
+* Thu Oct 6 2005 - Raphael Ouazana <raphael.ouazana@linagora.com> - 2.2.28-4
 - Fix typo in CFLAGS
 - Fix init level in init script (v0.4)
 * Mon Oct 3 2005 - Clement Oudot <clement.oudot@linagora.com> - 2.2.28-3
