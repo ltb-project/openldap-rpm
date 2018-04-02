@@ -39,7 +39,7 @@
 %define ldapgroup        ldap
 
 %define slapd_init_name             ltb-project-openldap-initscript
-%define slapd_init_version          2.2
+%define slapd_init_version          2.3
 
 %define check_password_name         ltb-project-openldap-ppolicy-check-password
 %define check_password_version      1.1
@@ -275,14 +275,14 @@ mkdir -p %{buildroot}%{ldapbackupdir}
 
 # Init script
 mkdir -p %{buildroot}/etc/init.d
-mkdir -p %{buildroot}/etc/default
-install -m 755 %{slapd_init_name}-%{slapd_init_version}/slapd %{buildroot}/etc/init.d/slapd
-install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd.default %{buildroot}/etc/default/slapd
-sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}/etc/default/slapd
-sed -i 's:^SLAPD_USER.*:SLAPD_USER="'%{ldapuser}'":' %{buildroot}/etc/default/slapd
-sed -i 's:^SLAPD_GROUP.*:SLAPD_GROUP="'%{ldapgroup}'":' %{buildroot}/etc/default/slapd
-sed -i 's:^BDB_PATH.*:BDB_PATH="'%{bdbdir}'":' %{buildroot}/etc/default/slapd
-sed -i 's:^BACKUP_PATH.*:BACKUP_PATH="'%{ldapbackupdir}'":' %{buildroot}/etc/default/slapd
+install -m 755 %{slapd_init_name}-%{slapd_init_version}/slapd.init %{buildroot}/etc/init.d/slapd
+install -m 755 %{slapd_init_name}-%{slapd_init_version}/slapd-cli %{buildroot}%{ldapserverdir}/sbin/
+install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd-cli.conf %{buildroot}%{ldapserverdir}/etc/openldap/
+sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
+sed -i 's:^SLAPD_USER.*:SLAPD_USER="'%{ldapuser}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
+sed -i 's:^SLAPD_GROUP.*:SLAPD_GROUP="'%{ldapgroup}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
+sed -i 's:^BDB_PATH.*:BDB_PATH="'%{bdbdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
+sed -i 's:^BACKUP_PATH.*:BACKUP_PATH="'%{ldapbackupdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 
 # PATH modification
 mkdir -p %{buildroot}/etc/profile.d
@@ -479,7 +479,7 @@ rm -rf %{buildroot}
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd.conf
 %config(noreplace) %{ldapserverdir}/etc/openldap/ldap.conf
 /etc/init.d/slapd
-%config(noreplace) /etc/default/slapd
+%config(noreplace) %{ldapserverdir}/etc/openldap/slapd-cli.conf
 /etc/profile.d/openldap.sh
 %{ldaplogsdir}
 %config(noreplace) /etc/logrotate.d/openldap
@@ -521,6 +521,7 @@ rm -rf %{buildroot}
 * Mon Apr 02 2018 - Clement Oudot <clem@ltb-project.org> - 2.4.46-1
 - Upgrade to OpenLDAP 2.4.46
 - Upgrade to ppm 1.7
+- Upgrade to initscript 2.3
 * Mon Oct 02 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.45-2
 - Rebuilt on RHEL 7 to fix kerberos dependency
 * Mon Jun 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.45-1
