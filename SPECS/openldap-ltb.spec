@@ -360,6 +360,11 @@ then
 	touch %{_localstatedir}/openldap-ltb-slapd-running
 fi
 
+if [ -e /etc/default/slapd ]
+then
+	cp /etc/default/slapd %{_localstatedir}/slapd.default
+fi
+
 %pre -n openldap-ltb
 #=================================================
 # Pre Installation
@@ -461,6 +466,12 @@ then
 	/sbin/service slapd start > /dev/null 2>&1
 
 	rm -f %{_localstatedir}/openldap-ltb-slapd-running
+fi
+
+if [ -e %{_localstatedir}/slapd.default ]
+then
+	mv %{_localstatedir}/slapd.default %{ldapserverdir}/etc/openldap/slapd-cli.conf
+	rm -f %{_localstatedir}/slapd.default
 fi
 
 #=================================================
