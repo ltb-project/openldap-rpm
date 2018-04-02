@@ -52,7 +52,7 @@
 %define check_password_minPunct     0
 
 %define ppm_name         ppm
-%define ppm_version      1.6
+%define ppm_version      1.7
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.conf
 
 #=================================================
@@ -215,7 +215,8 @@ make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I..
 cd ..
 # ppm
 cd %{ppm_name}-%{ppm_version}
-make "CONFIG=%{ppm_conf}" "LDAP_INC=-I../include -I../servers/slapd"
+make clean
+make "CONFIG=%{ppm_conf}" "OLDAP_SOURCES=.."
 cd ..
 # contrib-overlays
 cd contrib/slapd-modules
@@ -311,9 +312,9 @@ echo "minDigit %{check_password_minDigit}" >> %{buildroot}%{check_password_conf}
 echo "minPunct %{check_password_minPunct}" >> %{buildroot}%{check_password_conf}
 
 # ppm
-install -m 644 %{ppm_name}-%{ppm_version}/ppm.so %{buildroot}%{ldapserverdir}/%{_lib}
-install -m 755 %{ppm_name}-%{ppm_version}/ppm_test %{buildroot}%{ldapserverdir}/%{_lib}
-install -m 644 %{ppm_name}-%{ppm_version}/ppm.conf %{buildroot}%{ppm_conf}
+cd %{ppm_name}-%{ppm_version}
+make install "CONFIG=%{buildroot}%{ppm_conf}" LIBDIR="%{buildroot}%{ldapserverdir}/%{_lib}"
+cd ..
 
 # contrib-overlays
 cd contrib/slapd-modules
@@ -519,6 +520,7 @@ rm -rf %{buildroot}
 %changelog
 * Mon Apr 02 2018 - Clement Oudot <clem@ltb-project.org> - 2.4.46-1
 - Upgrade to OpenLDAP 2.4.46
+- Upgrade to ppm 1.7
 * Mon Oct 02 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.45-2
 - Rebuilt on RHEL 7 to fix kerberos dependency
 * Mon Jun 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.45-1
