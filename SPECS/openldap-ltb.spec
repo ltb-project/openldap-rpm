@@ -408,6 +408,7 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldaplogsdir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapbackupdir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/var/run
+/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/etc/openldap/slapd.conf
 
 %post check-password
 #=================================================
