@@ -85,6 +85,12 @@ BuildRequires: gcc, make, groff
 BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtool-ltdl-devel
 BuildRequires: cracklib
 BuildRequires: tcp_wrappers-devel
+
+%if "%{?dist}" == ".el7"
+%{?systemd_requires}
+BuildRequires: systemd
+%endif
+
 Requires: gawk, libtool-ltdl, berkeleydb-ltb >= 4.6.21
 
 Requires(pre): /sbin/ldconfig, coreutils, shadow-utils
@@ -274,8 +280,13 @@ mkdir -p %{buildroot}%{ldaplogsdir}
 mkdir -p %{buildroot}%{ldapbackupdir}
 
 # Init script
+%if "%{?dist}" == ".el7"
+mkdir -p %{buildroot}%{_unitdir}/
+install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd.service %{buildroot}%{_unitdir}/
+%else
 mkdir -p %{buildroot}/etc/init.d
 install -m 755 %{slapd_init_name}-%{slapd_init_version}/slapd.init %{buildroot}/etc/init.d/slapd
+%endif
 install -m 755 %{slapd_init_name}-%{slapd_init_version}/slapd-cli %{buildroot}%{ldapserverdir}/sbin/
 install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd-cli.conf %{buildroot}%{ldapserverdir}/etc/openldap/
 sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
@@ -373,7 +384,11 @@ fi
 # If upgrade stop slapd
 if [ $1 -eq 2 ]
 then
+%if "%{?dist}" == ".el7"
+	/bin/systemctl stop slapd.service
+%else
 	/sbin/service slapd stop > /dev/null 2>&1
+%endif
 fi
 
 %post -n openldap-ltb
@@ -381,11 +396,19 @@ fi
 # Post Installation
 #=================================================
 
+%if "%{?dist}" == ".el7"
+%systemd_post slapd.service
+/bin/systemctl --system daemon-reload
+%endif
+
 # Do this at first install
 if [ $1 -eq 1 ]
 then
+	if [ -e /etc/init.d/slapd ]
+	then
 	# Set slapd as service
 	/sbin/chkconfig --add slapd
+	fi
 
 	# Add syslog facility
 %if "%{?dist}" == ".el5"
@@ -436,14 +459,19 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 # Pre Uninstallation
 #=================================================
 
+%if "%{?dist}" == ".el7"
+%systemd_preun slapd.service
+%endif
+
 # Don't do this if newer version is installed
 if [ $1 -eq 0 ]
 then
-	# Stop slapd
+	if [ -e /etc/init.d/slapd ]
+	then
+	# Stop slapd and disable service
 	/sbin/service slapd stop > /dev/null 2>&1
-
-	# Delete service
 	/sbin/chkconfig --del slapd
+	fi
 
         # Remove syslog facility
 %if "%{?dist}" == ".el5"
@@ -469,7 +497,11 @@ sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
 if [ -e %{_localstatedir}/openldap-ltb-slapd-running ]
 then
 	# Start slapd
+%if "%{?dist}" == ".el7"
+	/bin/systemctl start slapd.service
+%else
 	/sbin/service slapd start > /dev/null 2>&1
+%endif
 
 	rm -f %{_localstatedir}/openldap-ltb-slapd-running
 fi
@@ -495,7 +527,11 @@ rm -rf %{buildroot}
 %docdir %{ldapserverdir}/share/man
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd.conf
 %config(noreplace) %{ldapserverdir}/etc/openldap/ldap.conf
+%if "%{?dist}" == ".el7"
+%{_unitdir}/slapd.service
+%else
 /etc/init.d/slapd
+%endif
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd-cli.conf
 /etc/profile.d/openldap.sh
 %{ldaplogsdir}
