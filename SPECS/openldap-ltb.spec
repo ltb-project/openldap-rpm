@@ -20,8 +20,8 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.45
-%define release_version  2%{?dist}
+%define real_version     2.4.46
+%define release_version  1%{?dist}
 # Fix for CentOS7
 %if 0%{?rhel} == 7
  %define dist .el7
@@ -516,6 +516,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Mon Apr 02 2018 - Clement Oudot <clem@ltb-project.org> - 2.4.46-1
+- Upgrade to OpenLDAP 2.4.46
 * Mon Oct 02 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.45-2
 - Rebuilt on RHEL 7 to fix kerberos dependency
 * Mon Jun 05 2017 - Clement Oudot <clem@ltb-project.org> - 2.4.45-1
