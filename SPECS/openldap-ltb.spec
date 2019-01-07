@@ -425,8 +425,16 @@ fi
 # Create user and group if needed
 getent group %{ldapgroup} >/dev/null || groupadd -r -g 55 %{ldapgroup}
 getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ldapdir} -s /sbin/nologin -c "LDAP User" %{ldapuser}
-# Change owner
-/bin/chown -R root:root %{ldapserverdir}
+# Globally set owner to root:root
+/bin/chown root:root %{ldapserverdir}
+/bin/chown -R root:root %{ldapserverdir}/bin
+/bin/chown -R root:root %{ldapserverdir}/etc/openldap/{DB_CONFIG.example,ldap.conf,ldap.conf.default,schema,slapd.conf.default,slapd.ldif,slapd.ldif.default}
+/bin/chown -R root:root %{ldapserverdir}/include
+/bin/chown -R root:root %{ldapserverdir}/lib*
+/bin/chown -R root:root %{ldapserverdir}/libexec
+/bin/chown -R root:root %{ldapserverdir}/sbin
+/bin/chown -R root:root %{ldapserverdir}/var
+# Specifically adapt some files/directories owner and permissions
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapdatadir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldaplogsdir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapbackupdir}
