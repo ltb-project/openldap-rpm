@@ -55,6 +55,9 @@
 %define ppm_version      1.7
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.conf
 
+%define explockout_name		explockout
+%define explockout_version	1.0
+
 #=================================================
 # Header
 #=================================================
@@ -79,6 +82,8 @@ Source4: DB_CONFIG
 Source5: openldap.logrotate
 # Sources available on https://github.com/ltb-project/ppm
 Source6: %{ppm_name}-%{ppm_version}.tar.gz
+# Sources available on https://github.com/davidcoutadeur/explockout
+Source7: %{explockout_name}-%{explockout_version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make, groff
@@ -200,6 +205,7 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 %setup -n %{real_name}-%{real_version} -T -D -a 1
 %setup -n %{real_name}-%{real_version} -T -D -a 2
 %setup -n %{real_name}-%{real_version} -T -D -a 6
+%setup -n %{real_name}-%{real_version} -T -D -a 7
 
 #=================================================
 # Building
@@ -266,6 +272,11 @@ cd ../..
 cd libraries/liblmdb
 make %{?_smp_mflags}
 cd ../..
+# explockout
+cd %{explockout_name}-%{explockout_version}
+make clean
+make %{?_smp_mflags} "OLDAP_SOURCES=.." "LIBDIR=%{ldapserverdir}/libexec/openldap"
+cd ..
 
 #=================================================
 # Installation
@@ -359,6 +370,14 @@ install -m 755 "mdb_stat"  %{buildroot}%{ldapserverdir}/sbin
 install -m 644 "mdb_copy.1"  %{buildroot}%{ldapserverdir}/share/man/man1
 install -m 644 "mdb_stat.1"  %{buildroot}%{ldapserverdir}/share/man/man1
 cd ../..
+
+# explockout
+cd %{explockout_name}-%{explockout_version}
+mkdir -p "%{buildroot}%{ldapserverdir}/libexec/openldap"
+mkdir -p "%{buildroot}%{ldapserverdir}/share/man/man5"
+make install "OLDAP_SOURCES=.." "LIBDIR=%{buildroot}%{ldapserverdir}/libexec/openldap"
+install -m 644 "slapo-explockout.5" "%{buildroot}%{ldapserverdir}/share/man/man5"
+cd ..
 
 %pretrans -n openldap-ltb
 #=================================================
