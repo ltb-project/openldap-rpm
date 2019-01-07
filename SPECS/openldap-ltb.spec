@@ -20,7 +20,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.46
+%define real_version     2.4.47
 %define release_version  1%{?dist}
 # Fix for CentOS7
 %if 0%{?rhel} == 7
@@ -598,6 +598,10 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Mon Jan 07 2019 - Clement Oudot <clem@ltb-project.org> - 2.4.47-1
+- Upgrade to OpenLDAP 2.4.47
+- Add explockout overlay 1.0
+- Upgrade to initscript 2.4
 * Mon Apr 02 2018 - Clement Oudot <clem@ltb-project.org> - 2.4.46-1
 - Upgrade to OpenLDAP 2.4.46
 - Upgrade to ppm 1.7
