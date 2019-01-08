@@ -151,7 +151,7 @@ Summary:        OpenLDAP password policy module
 Version:        %{ppm_version}
 Release:        1%{?dist}
 Group:          Applications/System
-URL:            https://github.com/davidcoutadeur/ppm
+URL:            https://github.com/ltb-project/ppm
 
 Requires:       %{real_name}-ltb >= %{real_version}
 
@@ -196,6 +196,23 @@ MDB utilities contain both mdb_stat and mdb_copy, and the associated
 documentation.
 
 This is provided by LDAP Tool Box project: http://www.ltb-project.org
+
+#=================================================
+# Subpackage explockout
+#=================================================
+%package explockout
+Summary:        OpenLDAP overlay explockout
+Version:        %{explockout_version}
+Release:        1%{?dist}
+Group:          Applications/System
+URL:            https://github.com/davidcoutadeur/explockout
+
+Requires:       %{real_name}-ltb >= %{real_version}
+
+%description explockout
+explockout is an OpenLDAP module that denies authentication to users who
+have previously failed to authenticate, requiring them to wait for an
+exponential time
 
 #=================================================
 # Source preparation
@@ -575,6 +592,7 @@ rm -rf %{buildroot}
 %exclude %{ldapserverdir}/sbin/mdb_stat
 %exclude %{ldapserverdir}/share/man/man1/mdb_copy.1
 %exclude %{ldapserverdir}/share/man/man1/mdb_stat.1
+%exclude %{ldapserverdir}/share/man/man5/slapo-explockout.5
 
 %files check-password
 %config(noreplace) %{check_password_conf}
@@ -587,12 +605,25 @@ rm -rf %{buildroot}
 
 %files contrib-overlays
 %{ldapserverdir}/libexec/openldap
+%exclude %{ldapserverdir}/libexec/openldap/explockout.a
+%exclude %{ldapserverdir}/libexec/openldap/explockout.la
+%exclude %{ldapserverdir}/libexec/openldap/explockout.so
+%exclude %{ldapserverdir}/libexec/openldap/explockout.so.0
+%exclude %{ldapserverdir}/libexec/openldap/explockout.so.0.0.0
 
 %files mdb-utils
 %{ldapserverdir}/sbin/mdb_copy
 %{ldapserverdir}/sbin/mdb_stat
 %doc %{ldapserverdir}/share/man/man1/mdb_copy.1
 %doc %{ldapserverdir}/share/man/man1/mdb_stat.1
+
+%files explockout
+%{ldapserverdir}/libexec/openldap/explockout.a
+%{ldapserverdir}/libexec/openldap/explockout.la
+%{ldapserverdir}/libexec/openldap/explockout.so
+%{ldapserverdir}/libexec/openldap/explockout.so.0
+%{ldapserverdir}/libexec/openldap/explockout.so.0.0.0
+%doc %{ldapserverdir}/share/man/man5/slapo-explockout.5
 
 #=================================================
 # Changelog
