@@ -71,7 +71,7 @@ of a query processing layer.
 %build
 cd build_unix
 export CC=gcc
-../dist/configure --prefix=%{bdbdir} --libdir=%{bdbdir}/%{_lib}
+../dist/configure --prefix=%{bdbdir} --libdir=%{bdbdir}/%{_lib} --enable--debug
 make %{?_smp_mflags}
 
 #=================================================
