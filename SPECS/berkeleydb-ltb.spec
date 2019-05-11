@@ -4,8 +4,9 @@
 # Install BerkeleyDB
 # Modify /etc/ld.so.conf
 #
+# Copyright (C) 2008-2019 Clement OUDOT
+# Copyright (C) 2018-2019 Worteks
 # Copyright (C) 2008 Raphael Ouazana
-# Copyright (C) 2008 Clement OUDOT
 # Copyright (C) 2008 LINAGORA
 #
 # LTB project (http://www.ltb-project.org)
@@ -42,7 +43,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildRequires: gcc, make
 
-Prereq: /sbin/ldconfig, coreutils
+Requires(pre): /sbin/ldconfig, coreutils
 
 %description
 Berkeley DB, the most widely-used developer database in the world, is open
