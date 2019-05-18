@@ -7,9 +7,10 @@
 # Configure syslog and logrotate
 # Install a pwdChecker module
 #
+# Copyright (C) 2008-2019 Clement OUDOT
+# Copyright (C) 2018-2019 Worteks
 # Copyright (C) 2015 David COUTADEUR
 # Copyright (C) 2008 Raphael OUAZANA
-# Copyright (C) 2015 Clement OUDOT
 # Copyright (C) 2015 LINAGORA
 # Copyright (C) 2015 Savoir-faire Linux
 #
@@ -22,9 +23,15 @@
 %define real_name        openldap
 %define real_version     2.4.47
 %define release_version  1%{?dist}
+
 # Fix for CentOS7
 %if 0%{?rhel} == 7
  %define dist .el7
+%endif
+
+# Fix for CentOS8
+%if 0%{?rhel} == 8
+ %define dist .el8
 %endif
 
 %define bdbdir           /usr/local/berkeleydb
@@ -86,12 +93,15 @@ Source6: %{ppm_name}-%{ppm_version}.tar.gz
 Source7: %{explockout_name}-%{explockout_version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: gcc, make, groff
+BuildRequires: gcc, make
 BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtool-ltdl-devel
 BuildRequires: cracklib
-BuildRequires: tcp_wrappers-devel
 
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" != ".el8"
+BuildRequires: groff, tcp_wrappers-devel
+%endif
+
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %{?systemd_requires}
 BuildRequires: systemd
 %endif
@@ -124,10 +134,7 @@ Release:        8%{?dist}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
-%if "%{?dist}" == ".el6"
-BuildRequires:	cracklib-devel
-%endif
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el6" || "%{?dist}" == ".el7"
 BuildRequires:	cracklib-devel
 %endif
 
@@ -235,17 +242,30 @@ export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE"
 #export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE -DSLAP_CONFIG_DELETE"
 export CPPFLAGS="-I%{bdbdir}/include -I/usr/kerberos/include"
 export LDFLAGS="-L%{bdbdir}/%{_lib}"
+%if "%{?dist}" == ".el8"
+./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt --enable-sock --enable-rlookups
+%else
 ./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt --enable-sock --enable-wrappers --enable-rlookups
+%endif
 make depend
 make %{?_smp_mflags}
 # check_password
 cd %{check_password_name}-%{check_password_version}
+%if "%{?dist}" == ".el8"
+sed -i 's:^CRACKLIB_LIB:#CRACKLIB_LIB:' Makefile
+make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd" 'OPT=-g -O2 -Wall -fpic -DDEBUG -DCONFIG_FILE="\"$(CONFIG)\""'
+%else
 make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd"
+%endif
 cd ..
 # ppm
 cd %{ppm_name}-%{ppm_version}
 make clean
+%if "%{?dist}" == ".el8"
+make "CONFIG=%{ppm_conf}" "OLDAP_SOURCES=.." "CRACK_INC=" "CRACK_LIB="
+%else
 make "CONFIG=%{ppm_conf}" "OLDAP_SOURCES=.."
+%endif
 cd ..
 # contrib-overlays
 cd contrib/slapd-modules
@@ -308,7 +328,7 @@ mkdir -p %{buildroot}%{ldaplogsdir}
 mkdir -p %{buildroot}%{ldapbackupdir}
 
 # Init script
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 mkdir -p %{buildroot}%{_unitdir}/
 install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd.service %{buildroot}%{_unitdir}/
 %else
@@ -352,7 +372,11 @@ echo "minPunct %{check_password_minPunct}" >> %{buildroot}%{check_password_conf}
 
 # ppm
 cd %{ppm_name}-%{ppm_version}
+%if "%{?dist}" == ".el8"
+make install "CONFIG=%{buildroot}%{ppm_conf}" LIBDIR="%{buildroot}%{ldapserverdir}/%{_lib}" "CRACK_INC=" "CRACK_LIB="
+%else
 make install "CONFIG=%{buildroot}%{ppm_conf}" LIBDIR="%{buildroot}%{ldapserverdir}/%{_lib}"
+%endif
 cd ..
 
 # contrib-overlays
@@ -420,7 +444,7 @@ fi
 # If upgrade stop slapd
 if [ $1 -eq 2 ]
 then
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 	/bin/systemctl stop slapd.service
 %else
 	/sbin/service slapd stop > /dev/null 2>&1
@@ -432,7 +456,7 @@ fi
 # Post Installation
 #=================================================
 
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %systemd_post slapd.service
 /bin/systemctl --system daemon-reload
 %endif
@@ -503,7 +527,7 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 # Pre Uninstallation
 #=================================================
 
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %systemd_preun slapd.service
 %endif
 
@@ -541,7 +565,7 @@ sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
 if [ -e %{_localstatedir}/openldap-ltb-slapd-running ]
 then
 	# Start slapd
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 	/bin/systemctl start slapd.service
 %else
 	/sbin/service slapd start > /dev/null 2>&1
@@ -571,7 +595,7 @@ rm -rf %{buildroot}
 %docdir %{ldapserverdir}/share/man
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd.conf
 %config(noreplace) %{ldapserverdir}/etc/openldap/ldap.conf
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %{_unitdir}/slapd.service
 %else
 /etc/init.d/slapd
