@@ -23,9 +23,15 @@
 %define real_name        openldap
 %define real_version     2.4.47
 %define release_version  1%{?dist}
+
 # Fix for CentOS7
 %if 0%{?rhel} == 7
  %define dist .el7
+%endif
+
+# Fix for CentOS8
+%if 0%{?rhel} == 8
+ %define dist .el8
 %endif
 
 %define bdbdir           /usr/local/berkeleydb
@@ -92,7 +98,7 @@ BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtoo
 BuildRequires: cracklib
 BuildRequires: tcp_wrappers-devel
 
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %{?systemd_requires}
 BuildRequires: systemd
 %endif
@@ -125,10 +131,7 @@ Release:        8%{?dist}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
-%if "%{?dist}" == ".el6"
-BuildRequires:	cracklib-devel
-%endif
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el6" || "%{?dist}" == ".el7"
 BuildRequires:	cracklib-devel
 %endif
 
@@ -309,7 +312,7 @@ mkdir -p %{buildroot}%{ldaplogsdir}
 mkdir -p %{buildroot}%{ldapbackupdir}
 
 # Init script
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 mkdir -p %{buildroot}%{_unitdir}/
 install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd.service %{buildroot}%{_unitdir}/
 %else
@@ -421,7 +424,7 @@ fi
 # If upgrade stop slapd
 if [ $1 -eq 2 ]
 then
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 	/bin/systemctl stop slapd.service
 %else
 	/sbin/service slapd stop > /dev/null 2>&1
@@ -433,7 +436,7 @@ fi
 # Post Installation
 #=================================================
 
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %systemd_post slapd.service
 /bin/systemctl --system daemon-reload
 %endif
@@ -504,7 +507,7 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 # Pre Uninstallation
 #=================================================
 
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %systemd_preun slapd.service
 %endif
 
@@ -542,7 +545,7 @@ sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
 if [ -e %{_localstatedir}/openldap-ltb-slapd-running ]
 then
 	# Start slapd
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 	/bin/systemctl start slapd.service
 %else
 	/sbin/service slapd start > /dev/null 2>&1
@@ -572,7 +575,7 @@ rm -rf %{buildroot}
 %docdir %{ldapserverdir}/share/man
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd.conf
 %config(noreplace) %{ldapserverdir}/etc/openldap/ldap.conf
-%if "%{?dist}" == ".el7"
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %{_unitdir}/slapd.service
 %else
 /etc/init.d/slapd
