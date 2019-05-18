@@ -93,10 +93,13 @@ Source6: %{ppm_name}-%{ppm_version}.tar.gz
 Source7: %{explockout_name}-%{explockout_version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: gcc, make, groff
+BuildRequires: gcc, make
 BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtool-ltdl-devel
 BuildRequires: cracklib
-BuildRequires: tcp_wrappers-devel
+
+%if "%{?dist}" != ".el8"
+BuildRequires: groff, tcp_wrappers-devel
+%endif
 
 %if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %{?systemd_requires}
@@ -239,7 +242,11 @@ export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE"
 #export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE -DSLAP_CONFIG_DELETE"
 export CPPFLAGS="-I%{bdbdir}/include -I/usr/kerberos/include"
 export LDFLAGS="-L%{bdbdir}/%{_lib}"
+%if "%{?dist}" == ".el8"
+./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt --enable-sock --enable-rlookups
+%else
 ./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt --enable-sock --enable-wrappers --enable-rlookups
+%endif
 make depend
 make %{?_smp_mflags}
 # check_password
