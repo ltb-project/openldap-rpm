@@ -251,12 +251,21 @@ make depend
 make %{?_smp_mflags}
 # check_password
 cd %{check_password_name}-%{check_password_version}
+%if "%{?dist}" == ".el8"
+sed -i 's:^CRACKLIB_LIB:#CRACKLIB_LIB:' Makefile
+make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd" 'OPT=-g -O2 -Wall -fpic -DDEBUG -DCONFIG_FILE="\"$(CONFIG)\""'
+%else
 make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd"
+%endif
 cd ..
 # ppm
 cd %{ppm_name}-%{ppm_version}
 make clean
+%if "%{?dist}" == ".el8"
+make "CONFIG=%{ppm_conf}" "OLDAP_SOURCES=.." "CRACK_INC=" "CRACK_LIB="
+%else
 make "CONFIG=%{ppm_conf}" "OLDAP_SOURCES=.."
+%endif
 cd ..
 # contrib-overlays
 cd contrib/slapd-modules
@@ -363,7 +372,11 @@ echo "minPunct %{check_password_minPunct}" >> %{buildroot}%{check_password_conf}
 
 # ppm
 cd %{ppm_name}-%{ppm_version}
+%if "%{?dist}" == ".el8"
+make install "CONFIG=%{buildroot}%{ppm_conf}" LIBDIR="%{buildroot}%{ldapserverdir}/%{_lib}" "CRACK_INC=" "CRACK_LIB="
+%else
 make install "CONFIG=%{buildroot}%{ppm_conf}" LIBDIR="%{buildroot}%{ldapserverdir}/%{_lib}"
+%endif
 cd ..
 
 # contrib-overlays
