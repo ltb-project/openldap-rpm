@@ -7,9 +7,10 @@
 # Configure syslog and logrotate
 # Install a pwdChecker module
 #
+# Copyright (C) 2008-2019 Clement OUDOT
+# Copyright (C) 2018-2019 Worteks
 # Copyright (C) 2015 David COUTADEUR
 # Copyright (C) 2008 Raphael OUAZANA
-# Copyright (C) 2015 Clement OUDOT
 # Copyright (C) 2015 LINAGORA
 # Copyright (C) 2015 Savoir-faire Linux
 #
