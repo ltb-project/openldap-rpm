@@ -22,7 +22,7 @@
 #=================================================
 %define real_name        openldap
 %define real_version     2.4.48
-%define release_version  1%{?dist}
+%define release_version  2%{?dist}
 
 # Fix for CentOS7
 %if 0%{?rhel} == 7
@@ -653,6 +653,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Fri Aug 23 2019 - Clement Oudot <clem@ltb-project.org> - 2.4.48-2
+- Upgrade to ppm 1.8
 * Thu Jul 25 2019 - Clement Oudot <clem@ltb-project.org> - 2.4.48-1
 - Upgrade to OpenLDAP 2.4.48
 * Mon Jan 07 2019 - Clement Oudot <clem@ltb-project.org> - 2.4.47-1
