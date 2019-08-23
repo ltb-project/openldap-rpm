@@ -59,7 +59,7 @@
 %define check_password_minPunct     0
 
 %define ppm_name         ppm
-%define ppm_version      1.7
+%define ppm_version      1.8
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.conf
 
 %define explockout_name		explockout
