@@ -91,6 +91,8 @@ Source5: openldap.logrotate
 Source6: %{ppm_name}-%{ppm_version}.tar.gz
 # Sources available on https://github.com/davidcoutadeur/explockout
 Source7: %{explockout_name}-%{explockout_version}.tar.gz
+# This patch changes the default ldapi:/// path to /var/run/slapd/ldapi
+Patch0: change_default_ldapi_path.diff
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
@@ -230,6 +232,9 @@ exponential time
 %setup -n %{real_name}-%{real_version} -T -D -a 2
 %setup -n %{real_name}-%{real_version} -T -D -a 6
 %setup -n %{real_name}-%{real_version} -T -D -a 7
+
+# Apply patches
+%patch0 -p1
 
 #=================================================
 # Building
