@@ -7,8 +7,8 @@
 # Configure syslog and logrotate
 # Install a pwdChecker module
 #
-# Copyright (C) 2008-2019 Clement OUDOT
-# Copyright (C) 2018-2019 Worteks
+# Copyright (C) 2008-2020 Clement OUDOT
+# Copyright (C) 2018-2020 Worteks
 # Copyright (C) 2015 David COUTADEUR
 # Copyright (C) 2008 Raphael OUAZANA
 # Copyright (C) 2015 LINAGORA
@@ -22,7 +22,7 @@
 #=================================================
 %define real_name        openldap
 %define real_version     2.4.48
-%define release_version  2%{?dist}
+%define release_version  3%{?dist}
 
 # Fix for CentOS7
 %if 0%{?rhel} == 7
@@ -91,6 +91,8 @@ Source5: openldap.logrotate
 Source6: %{ppm_name}-%{ppm_version}.tar.gz
 # Sources available on https://github.com/davidcoutadeur/explockout
 Source7: %{explockout_name}-%{explockout_version}.tar.gz
+Patch1: 0001-ITS-9146-syncprov-fix-sessionlog-init.patch
+Patch2: 0001-ITS-9150-fix-nosync-FALSE-config.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
@@ -226,6 +228,8 @@ exponential time
 #=================================================
 %prep
 %setup -n %{real_name}-%{real_version}
+%patch1 -p1
+%patch2 -p1
 %setup -n %{real_name}-%{real_version} -T -D -a 1
 %setup -n %{real_name}-%{real_version} -T -D -a 2
 %setup -n %{real_name}-%{real_version} -T -D -a 6
@@ -653,6 +657,9 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Thu Jan 16 2020 - Clement Oudot <clem@ltb-project.org> - 2.4.48-3
+- Apply patch for ITS#9146
+- Apply patch for ITS#9150
 * Thu Aug 29 2019 - Clement Oudot <clem@ltb-project.org> - 2.4.48-2
 - Upgrade to initscript 2.5
 - Upgrade to ppm 1.8
