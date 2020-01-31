@@ -21,8 +21,8 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.48
-%define release_version  3%{?dist}
+%define real_version     2.4.49
+%define release_version  1%{?dist}
 
 # Fix for CentOS7
 %if 0%{?rhel} == 7
@@ -130,7 +130,7 @@ o Logrotate script
 %package check-password
 Summary:        check_password module for password policy
 Version:        %{check_password_version}
-Release:        9%{?dist}
+Release:        10%{?dist}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
@@ -156,7 +156,7 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 %package ppm
 Summary:        OpenLDAP password policy module
 Version:        %{ppm_version}
-Release:        1%{?dist}
+Release:        2%{?dist}
 Group:          Applications/System
 URL:            https://github.com/ltb-project/ppm
 
@@ -210,7 +210,7 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 %package explockout
 Summary:        OpenLDAP overlay explockout
 Version:        %{explockout_version}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Group:          Applications/System
 URL:            https://github.com/davidcoutadeur/explockout
 
@@ -653,6 +653,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Fri Jan 31 2020 - Clement Oudot <clem@ltb-project.org> - 2.4.49-1
+- Upgrade to OpenLDAP 2.4.49
 * Thu Jan 16 2020 - Clement Oudot <clem@ltb-project.org> - 2.4.48-3
 - Apply patch for ITS#9146
 - Apply patch for ITS#9150
