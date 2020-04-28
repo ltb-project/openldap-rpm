@@ -104,6 +104,7 @@ BuildRequires: groff, tcp_wrappers-devel
 %if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %{?systemd_requires}
 BuildRequires: systemd
+BuildRequires: libsodium-devel
 %endif
 
 Requires: gawk, libtool-ltdl, berkeleydb-ltb >= 4.6.21
@@ -304,6 +305,13 @@ cd passwd/sha2
 make clean
 make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ../..
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
+## argon2
+cd passwd/argon2
+make clean
+make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
+cd ../..
+%endif
 cd ../..
 # MDB utils
 cd libraries/liblmdb
@@ -402,6 +410,11 @@ cd ../..
 cd passwd/sha2
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ../..
+%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
+cd passwd/argon2
+make install "prefix=%{buildroot}%{ldapserverdir}"
+cd ../..
+%endif
 cd ../..
 
 # MDB utils
@@ -655,6 +668,7 @@ rm -rf %{buildroot}
 %changelog
 * Tue Apr 28 2020 - Clement Oudot <clem@ltb-project.org> - 2.4.50-1
 - Upgrade to OpenLDAP 2.4.50
+- Add module passwd argon2
 * Fri Jan 31 2020 - Clement Oudot <clem@ltb-project.org> - 2.4.49-1
 - Upgrade to OpenLDAP 2.4.49
 * Thu Jan 16 2020 - Clement Oudot <clem@ltb-project.org> - 2.4.48-3
