@@ -21,7 +21,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.49
+%define real_version     2.4.50
 %define release_version  1%{?dist}
 
 # Fix for CentOS7
@@ -653,6 +653,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Tue Apr 28 2020 - Clement Oudot <clem@ltb-project.org> - 2.4.50-1
+- Upgrade to OpenLDAP 2.4.50
 * Fri Jan 31 2020 - Clement Oudot <clem@ltb-project.org> - 2.4.49-1
 - Upgrade to OpenLDAP 2.4.49
 * Thu Jan 16 2020 - Clement Oudot <clem@ltb-project.org> - 2.4.48-3
