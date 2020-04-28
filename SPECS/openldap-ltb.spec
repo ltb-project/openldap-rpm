@@ -131,7 +131,7 @@ o Logrotate script
 %package check-password
 Summary:        check_password module for password policy
 Version:        %{check_password_version}
-Release:        10%{?dist}
+Release:        11%{?dist}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
@@ -157,7 +157,7 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 %package ppm
 Summary:        OpenLDAP password policy module
 Version:        %{ppm_version}
-Release:        2%{?dist}
+Release:        3%{?dist}
 Group:          Applications/System
 URL:            https://github.com/ltb-project/ppm
 
@@ -211,7 +211,7 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 %package explockout
 Summary:        OpenLDAP overlay explockout
 Version:        %{explockout_version}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Group:          Applications/System
 URL:            https://github.com/davidcoutadeur/explockout
 
