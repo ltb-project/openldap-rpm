@@ -21,7 +21,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.50
+%define real_version     2.4.51
 %define release_version  1%{?dist}
 
 # Fix for CentOS7
@@ -131,7 +131,7 @@ o Logrotate script
 %package check-password
 Summary:        check_password module for password policy
 Version:        %{check_password_version}
-Release:        11%{?dist}
+Release:        12%{?dist}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
@@ -157,7 +157,7 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 %package ppm
 Summary:        OpenLDAP password policy module
 Version:        %{ppm_version}
-Release:        3%{?dist}
+Release:        4%{?dist}
 Group:          Applications/System
 URL:            https://github.com/ltb-project/ppm
 
@@ -211,7 +211,7 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 %package explockout
 Summary:        OpenLDAP overlay explockout
 Version:        %{explockout_version}
-Release:        4%{?dist}
+Release:        5%{?dist}
 Group:          Applications/System
 URL:            https://github.com/davidcoutadeur/explockout
 
@@ -666,6 +666,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Thu Aug 13 2020 - Clement Oudot <clem@ltb-project.org> - 2.4.51-1
+- Upgrade to OpenLDAP 2.4.51
 * Tue Apr 28 2020 - Clement Oudot <clem@ltb-project.org> - 2.4.50-1
 - Upgrade to OpenLDAP 2.4.50
 - Add module passwd argon2
