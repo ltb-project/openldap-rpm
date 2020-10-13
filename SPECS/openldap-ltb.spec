@@ -107,7 +107,7 @@ BuildRequires: systemd
 BuildRequires: libsodium-devel
 %endif
 
-Requires: gawk, libtool-ltdl, berkeleydb-ltb >= 4.6.21
+Requires: gawk, perl, libtool-ltdl, berkeleydb-ltb >= 4.6.21
 
 Requires(pre): /sbin/ldconfig, coreutils, shadow-utils
 
