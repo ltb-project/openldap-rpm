@@ -438,8 +438,8 @@ cd ..
 # Pre Transaction
 #=================================================
 
-slapd_running=`/sbin/service slapd status | grep "is running" | wc -l`
-if [ $slapd_running -eq 1 ]
+%{ldapserverdir}/sbin/slapd-cli status > /dev/null
+if [ $? -eq 0 ]
 then
 	touch %{_localstatedir}/openldap-ltb-slapd-running
 fi
