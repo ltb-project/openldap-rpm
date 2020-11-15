@@ -506,7 +506,7 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 /bin/chown -R root:root %{ldapserverdir}/lib*
 /bin/chown -R root:root %{ldapserverdir}/libexec
 /bin/chown -R root:root %{ldapserverdir}/sbin
-/bin/chown -R root:root %{ldapserverdir}/var
+/bin/chown root:root %{ldapserverdir}/var
 # Specifically adapt some files/directories owner and permissions
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapdatadir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldaplogsdir}
