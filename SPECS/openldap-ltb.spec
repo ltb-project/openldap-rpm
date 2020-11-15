@@ -438,7 +438,7 @@ cd ..
 # Pre Transaction
 #=================================================
 
-%{ldapserverdir}/sbin/slapd-cli status > /dev/null
+%{ldapserverdir}/sbin/slapd-cli status > /dev/null 2>&1
 if [ $? -eq 0 ]
 then
 	touch %{_localstatedir}/openldap-ltb-slapd-running
