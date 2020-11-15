@@ -96,16 +96,15 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires: gcc, make
 BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtool-ltdl-devel
 BuildRequires: cracklib
+BuildRequires: groff
 
 %if "%{?dist}" != ".el8"
-BuildRequires: groff, tcp_wrappers-devel
+BuildRequires: tcp_wrappers-devel
 %endif
 
-%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %{?systemd_requires}
 BuildRequires: systemd
 BuildRequires: libsodium-devel
-%endif
 
 Requires: gawk, perl, libtool-ltdl, berkeleydb-ltb >= 4.6.21
 
@@ -135,10 +134,7 @@ Release:        17%{?dist}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
-%if "%{?dist}" == ".el6" || "%{?dist}" == ".el7"
 BuildRequires:	cracklib-devel
-%endif
-
 Requires:	cracklib, cracklib-dicts, %{real_name}-ltb >= %{real_version}
 
 %description check-password
@@ -253,7 +249,6 @@ make %{?_smp_mflags}
 # check_password
 cd %{check_password_name}-%{check_password_version}
 %if "%{?dist}" == ".el8"
-sed -i 's:^CRACKLIB_LIB:#CRACKLIB_LIB:' Makefile
 make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd" 'OPT=-g -O2 -Wall -fpic -DDEBUG -DCONFIG_FILE="\"$(CONFIG)\""'
 %else
 make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd"
@@ -262,11 +257,7 @@ cd ..
 # ppm
 cd %{ppm_name}-%{ppm_version}
 make clean
-%if "%{?dist}" == ".el8"
-make "CONFIG=%{ppm_conf}" "OLDAP_SOURCES=.." "CRACK_INC=" "CRACK_LIB="
-%else
 make "CONFIG=%{ppm_conf}" "OLDAP_SOURCES=.."
-%endif
 cd ..
 # contrib-overlays
 cd contrib/slapd-modules
@@ -305,13 +296,11 @@ cd passwd/sha2
 make clean
 make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ../..
-%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 ## argon2
 cd passwd/argon2
 make clean
 make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ../..
-%endif
 cd ../..
 # MDB utils
 cd libraries/liblmdb
@@ -336,13 +325,8 @@ mkdir -p %{buildroot}%{ldaplogsdir}
 mkdir -p %{buildroot}%{ldapbackupdir}
 
 # Init script
-%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 mkdir -p %{buildroot}%{_unitdir}/
 install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd.service %{buildroot}%{_unitdir}/
-%else
-mkdir -p %{buildroot}/etc/init.d
-install -m 755 %{slapd_init_name}-%{slapd_init_version}/slapd.init %{buildroot}/etc/init.d/slapd
-%endif
 install -m 755 %{slapd_init_name}-%{slapd_init_version}/slapd-cli %{buildroot}%{ldapserverdir}/sbin/
 install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd-cli.conf %{buildroot}%{ldapserverdir}/etc/openldap/
 sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
@@ -380,11 +364,7 @@ echo "minPunct %{check_password_minPunct}" >> %{buildroot}%{check_password_conf}
 
 # ppm
 cd %{ppm_name}-%{ppm_version}
-%if "%{?dist}" == ".el8"
-make install "CONFIG=%{buildroot}%{ppm_conf}" LIBDIR="%{buildroot}%{ldapserverdir}/%{_lib}" "CRACK_INC=" "CRACK_LIB="
-%else
 make install "CONFIG=%{buildroot}%{ppm_conf}" LIBDIR="%{buildroot}%{ldapserverdir}/%{_lib}"
-%endif
 cd ..
 
 # contrib-overlays
@@ -410,11 +390,9 @@ cd ../..
 cd passwd/sha2
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ../..
-%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 cd passwd/argon2
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ../..
-%endif
 cd ../..
 
 # MDB utils
@@ -457,11 +435,7 @@ fi
 # If upgrade stop slapd
 if [ $1 -eq 2 ]
 then
-%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 	/bin/systemctl stop slapd.service
-%else
-	/sbin/service slapd stop > /dev/null 2>&1
-%endif
 fi
 
 %post -n openldap-ltb
@@ -469,29 +443,18 @@ fi
 # Post Installation
 #=================================================
 
-%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %systemd_post slapd.service
 /bin/systemctl --system daemon-reload
-%endif
 
 # Do this at first install
 if [ $1 -eq 1 ]
 then
-	if [ -e /etc/init.d/slapd ]
-	then
 	# Set slapd as service
-	/sbin/chkconfig --add slapd
-	fi
+	/bin/systemctl enable slapd
 
 	# Add syslog facility
-%if "%{?dist}" == ".el5"
-	echo "local4.*	-%{ldaplogfile}" >> /etc/syslog.conf
-	/sbin/service syslog restart > /dev/null 2>&1
-%else
 	echo "local4.*	-%{ldaplogfile}" >> /etc/rsyslog.conf
-	/sbin/service rsyslog restart > /dev/null 2>&1
-%endif
-
+	/bin/systemctl restart rsyslog > /dev/null 2>&1
 fi
 
 # Always do this
@@ -540,29 +503,18 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 # Pre Uninstallation
 #=================================================
 
-%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %systemd_preun slapd.service
-%endif
 
 # Don't do this if newer version is installed
 if [ $1 -eq 0 ]
 then
-	if [ -e /etc/init.d/slapd ]
-	then
 	# Stop slapd and disable service
-	/sbin/service slapd stop > /dev/null 2>&1
-	/sbin/chkconfig --del slapd
-	fi
+	/bin/systemctl stop slapd > /dev/null 2>&1
+	/bin/systemctl disable slapd
 
         # Remove syslog facility
-%if "%{?dist}" == ".el5"
-	sed -i '/local4\..*/d' /etc/syslog.conf
-	/sbin/service syslog restart
-%else
 	sed -i '/local4\..*/d' /etc/rsyslog.conf
-	/sbin/service rsyslog restart
-%endif
-
+	/bin/systemctl restarg rsyslog
 fi
 
 # Always do this
@@ -578,11 +530,7 @@ sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
 if [ -e %{_localstatedir}/openldap-ltb-slapd-running ]
 then
 	# Start slapd
-%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 	/bin/systemctl start slapd.service
-%else
-	/sbin/service slapd start > /dev/null 2>&1
-%endif
 
 	rm -f %{_localstatedir}/openldap-ltb-slapd-running
 fi
