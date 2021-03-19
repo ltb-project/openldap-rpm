@@ -46,7 +46,7 @@
 %define ldapgroup        ldap
 
 %define slapd_init_name             ltb-project-openldap-initscript
-%define slapd_init_version          2.5
+%define slapd_init_version          2.6
 
 %define check_password_name         ltb-project-openldap-ppolicy-check-password
 %define check_password_version      1.1
@@ -614,7 +614,7 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
-* Thu Mar 18 2021 - Clement Oudot <clem@ltb-project.org> - 2.4.58-1
+* Fri Mar 19 2021 - Clement Oudot <clem@ltb-project.org> - 2.4.58-1
 - Upgrade to OpenLDAP 2.4.57
 * Tue Jan 19 2021 - Clement Oudot <clem@ltb-project.org> - 2.4.57-1
 - Upgrade to OpenLDAP 2.4.57
