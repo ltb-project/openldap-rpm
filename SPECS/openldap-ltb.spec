@@ -34,11 +34,9 @@
  %define dist .el8
 %endif
 
-%define bdbdir           /usr/local/berkeleydb
 %define ldapdir          /usr/local/openldap
 %define ldapserverdir    %{ldapdir}
 %define ldapdatadir      %{ldapdir}/var/openldap-data
-%define ldaplogsdir      %{bdbdir}/openldap-logs
 %define ldapbackupdir    /var/backups/openldap
 %define ldaplogfile      /var/log/openldap.log
 
@@ -85,16 +83,15 @@ Source1: %{slapd_init_name}-%{slapd_init_version}.tar.gz
 # Sources available on https://github.com/ltb-project/openldap-ppolicy-check-password
 Source2: %{check_password_name}-%{check_password_version}.tar.gz
 Source3: openldap.sh
-Source4: DB_CONFIG
-Source5: openldap.logrotate
+Source4: openldap.logrotate
 # Sources available on https://github.com/ltb-project/ppm
-Source6: %{ppm_name}-%{ppm_version}.tar.gz
+Source5: %{ppm_name}-%{ppm_version}.tar.gz
 # Sources available on https://github.com/davidcoutadeur/explockout
-Source7: %{explockout_name}-%{explockout_version}.tar.gz
+Source6: %{explockout_name}-%{explockout_version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
-BuildRequires: openssl-devel, cyrus-sasl-devel, berkeleydb-ltb >= 4.6.21, libtool-ltdl-devel
+BuildRequires: openssl-devel, cyrus-sasl-devel, libtool-ltdl-devel
 BuildRequires: cracklib
 BuildRequires: groff
 
@@ -106,7 +103,7 @@ BuildRequires: tcp_wrappers-devel
 BuildRequires: systemd
 BuildRequires: libsodium-devel
 
-Requires: gawk, perl, libtool-ltdl, berkeleydb-ltb >= 4.6.21
+Requires: gawk, perl, libtool-ltdl
 
 Requires(pre): /sbin/ldconfig, coreutils, shadow-utils
 
@@ -225,8 +222,8 @@ exponential time
 %setup -n %{real_name}-%{real_version}
 %setup -n %{real_name}-%{real_version} -T -D -a 1
 %setup -n %{real_name}-%{real_version} -T -D -a 2
+%setup -n %{real_name}-%{real_version} -T -D -a 5
 %setup -n %{real_name}-%{real_version} -T -D -a 6
-%setup -n %{real_name}-%{real_version} -T -D -a 7
 
 #=================================================
 # Building
@@ -237,8 +234,8 @@ export CC="gcc"
 export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE"
 # Uncomment to enable config delete option
 #export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE -DSLAP_CONFIG_DELETE"
-export CPPFLAGS="-I%{bdbdir}/include -I/usr/kerberos/include"
-export LDFLAGS="-L%{bdbdir}/%{_lib}"
+export CPPFLAGS="-I/usr/kerberos/include"
+export LDFLAGS=""
 %if "%{?dist}" == ".el8"
 ./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt --enable-sock --enable-rlookups
 %else
@@ -321,7 +318,6 @@ make install DESTDIR=%{buildroot} STRIP=""
 
 # Directories
 mkdir -p %{buildroot}%{ldapdatadir}
-mkdir -p %{buildroot}%{ldaplogsdir}
 mkdir -p %{buildroot}%{ldapbackupdir}
 
 # Init script
@@ -332,7 +328,6 @@ install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd-cli.conf %{buildro
 sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 sed -i 's:^SLAPD_USER.*:SLAPD_USER="'%{ldapuser}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 sed -i 's:^SLAPD_GROUP.*:SLAPD_GROUP="'%{ldapgroup}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
-sed -i 's:^BDB_PATH.*:BDB_PATH="'%{bdbdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 sed -i 's:^BACKUP_PATH.*:BACKUP_PATH="'%{ldapbackupdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 
 # PATH modification
@@ -344,7 +339,6 @@ sed -i 's:^OL_MAN.*:OL_MAN='%{ldapdir}/share/man':' %{buildroot}/etc/profile.d/o
 
 # BDB configuration
 install -m 644 %{SOURCE4} %{buildroot}%{ldapdatadir}
-sed -i 's:^set_lg_dir.*:set_lg_dir\t'%{ldaplogsdir}':' %{buildroot}%{ldapdatadir}/DB_CONFIG
 
 # Logrotate
 mkdir -p %{buildroot}/etc/logrotate.d
@@ -464,7 +458,7 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 # Globally set owner to root:root
 /bin/chown root:root %{ldapserverdir}
 /bin/chown -R root:root %{ldapserverdir}/bin
-/bin/chown -R root:root %{ldapserverdir}/etc/openldap/{DB_CONFIG.example,ldap.conf,ldap.conf.default,schema,slapd.conf.default,slapd.ldif,slapd.ldif.default}
+/bin/chown -R root:root %{ldapserverdir}/etc/openldap/{ldap.conf,ldap.conf.default,schema,slapd.conf.default,slapd.ldif,slapd.ldif.default}
 /bin/chown -R root:root %{ldapserverdir}/include
 /bin/chown -R root:root %{ldapserverdir}/lib*
 /bin/chown -R root:root %{ldapserverdir}/libexec
@@ -472,7 +466,6 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 /bin/chown root:root %{ldapserverdir}/var
 # Specifically adapt some files/directories owner and permissions
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapdatadir}
-/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldaplogsdir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapbackupdir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/var/run
 /bin/chown -R root:%{ldapgroup} %{ldapserverdir}/etc/openldap/slapd.conf
@@ -563,13 +556,11 @@ rm -rf %{buildroot}
 %endif
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd-cli.conf
 /etc/profile.d/openldap.sh
-%{ldaplogsdir}
 %config(noreplace) /etc/logrotate.d/openldap
 %{ldapbackupdir}
 %exclude %{check_password_conf}
 %exclude %{ldapserverdir}/%{_lib}/check_password.so
 %exclude %{ldapserverdir}/libexec/openldap
-%config(noreplace) %{ldapdatadir}/DB_CONFIG
 %exclude %{ppm_conf}
 %exclude %{ldapserverdir}/%{_lib}/ppm.so
 %exclude %{ldapserverdir}/%{_lib}/ppm_test
