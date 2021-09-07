@@ -21,7 +21,7 @@
 # Variables
 #=================================================
 %define real_name        openldap
-%define real_version     2.4.59
+%define real_version     2.5.7
 %define release_version  1%{?dist}
 
 # Fix for CentOS7
@@ -43,22 +43,10 @@
 %define ldapuser         ldap
 %define ldapgroup        ldap
 
-%define slapd_init_name             ltb-project-openldap-initscript
-%define slapd_init_version          2.7
+%define slapd_cli_name             slapd-cli
+%define slapd_cli_version          2.8
 
-%define check_password_name         ltb-project-openldap-ppolicy-check-password
-%define check_password_version      1.1
-%define check_password_conf         %{ldapserverdir}/etc/openldap/check_password.conf
-%define check_password_minPoints    3
-%define check_password_useCracklib  0
-%define check_password_minUpper     0
-%define check_password_minLower     0
-%define check_password_minDigit     0
-%define check_password_minPunct     0
-
-%define ppm_name         ppm
-%define ppm_version      1.8
-%define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.conf
+%define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.example
 
 %define explockout_name		explockout
 %define explockout_version	1.0
@@ -78,25 +66,23 @@ URL: http://www.openldap.org/
 
 # Source available on http://www.openldap.org
 Source: %{real_name}-%{real_version}.tgz
-# Sources available on https://github.com/ltb-project/openldap-initscript
-Source1: %{slapd_init_name}-%{slapd_init_version}.tar.gz
-# Sources available on https://github.com/ltb-project/openldap-ppolicy-check-password
-Source2: %{check_password_name}-%{check_password_version}.tar.gz
-Source3: openldap.sh
-Source4: openldap.logrotate
-# Sources available on https://github.com/ltb-project/ppm
-Source5: %{ppm_name}-%{ppm_version}.tar.gz
+# Sources available on https://github.com/ltb-project/slapd-cli
+Source1: %{slapd_cli_name}-%{slapd_cli_version}.tar.gz
+Source2: openldap.sh
+Source3: openldap.logrotate
 # Sources available on https://github.com/davidcoutadeur/explockout
-Source6: %{explockout_name}-%{explockout_version}.tar.gz
+Source4: %{explockout_name}-%{explockout_version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
 BuildRequires: openssl-devel, cyrus-sasl-devel, libtool-ltdl-devel
 BuildRequires: cracklib
 BuildRequires: groff
+BuildRequires: pandoc
 
 %if "%{?dist}" != ".el8"
 BuildRequires: tcp_wrappers-devel
+BuildRequires: openssl11-devel
 %endif
 
 %{?systemd_requires}
@@ -120,47 +106,6 @@ can be installed with openldap and openldap-devel. It provides tools
 from the LDAP Tool Box project:
 o Start/stop script
 o Logrotate script
-
-#=================================================
-# Subpackage check-password
-#=================================================
-%package check-password
-Summary:        check_password module for password policy
-Version:        %{check_password_version}
-Release:        20%{?dist}
-Group:          Applications/System
-URL:		http://www.ltb-project.org
-
-BuildRequires:	cracklib-devel
-Requires:	cracklib, cracklib-dicts, %{real_name}-ltb >= %{real_version}
-
-%description check-password
-check_password.c is an OpenLDAP pwdPolicyChecker module used to check the strength
-and quality of user-provided passwords. This module is used as an extension of the
-OpenLDAP password policy controls, see slapo-ppolicy(5) section pwdCheckModule.
-check_password.c will run a number of checks on the passwords to ensure minimum
-strength and quality requirements are met. Passwords that do not meet these
-requirements are rejected.
-
-This is provided by LDAP Tool Box project: http://www.ltb-project.org
-
-#=================================================
-# Subpackage ppm
-#=================================================
-%package ppm
-Summary:        OpenLDAP password policy module
-Version:        %{ppm_version}
-Release:        12%{?dist}
-Group:          Applications/System
-URL:            https://github.com/ltb-project/ppm
-
-Requires:       %{real_name}-ltb >= %{real_version}
-
-%description ppm
-ppm.c is an OpenLDAP module for checking password quality when they are modified.
-Passwords are checked against the presence or absence of certain character classes.
-This module is used as an extension of the OpenLDAP password policy controls,
-see slapo-ppolicy(5) section pwdCheckModule.
 
 #=================================================
 # Subpackage contrib-overlays
@@ -221,9 +166,12 @@ exponential time
 %prep
 %setup -n %{real_name}-%{real_version}
 %setup -n %{real_name}-%{real_version} -T -D -a 1
-%setup -n %{real_name}-%{real_version} -T -D -a 2
-%setup -n %{real_name}-%{real_version} -T -D -a 5
-%setup -n %{real_name}-%{real_version} -T -D -a 6
+%setup -n %{real_name}-%{real_version} -T -D -a 4
+
+# Patch for explockout 1.0, to remove with 1.1
+sed -i 's/config\.h/slap-config.h/' explockout-%{explockout_version}/explockout.c
+sed -i 's/libldap_r/libldap/' explockout-%{explockout_version}/Makefile
+sed -i 's/lldap_r/lldap/' explockout-%{explockout_version}/Makefile
 
 #=================================================
 # Building
@@ -237,27 +185,23 @@ export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE"
 export CPPFLAGS="-I/usr/kerberos/include"
 export LDFLAGS=""
 %if "%{?dist}" == ".el8"
-./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt --enable-sock --enable-rlookups
+./configure --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --enable-modules=yes --enable-overlays=mod --enable-backends=mod --enable-dynamic=yes --with-tls=openssl --enable-debug --with-cyrus-sasl --enable-spasswd --enable-ppolicy=mod --enable-crypt --enable-slapi --enable-mdb=mod --enable-ldap=mod --enable-meta=mod --enable-sock=mod --enable-rlookups --enable-argon2=yes --enable-otp=mod --enable-balancer=mod --enable-sql=no --enable-ndb=no --enable-wt=no --enable-perl=no
 %else
-./configure --disable-dependency-tracking --enable-ldap --enable-debug --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --with-tls --with-cyrus-sasl --enable-spasswd --enable-overlays --enable-modules --enable-dynamic=no --enable-slapi --enable-meta --enable-crypt --enable-sock --enable-wrappers --enable-rlookups
+export CPPFLAGS="${CPPFLAGS} -I/usr/include/openssl11"
+export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11"
+./configure --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --enable-modules=yes --enable-overlays=mod --enable-backends=mod --enable-dynamic=yes --with-tls=openssl --enable-debug --with-cyrus-sasl --enable-spasswd --enable-ppolicy=mod --enable-crypt --enable-slapi --enable-mdb=mod --enable-ldap=mod --enable-meta=mod --enable-sock=mod --enable-wrappers --enable-rlookups --enable-argon2=yes --enable-otp=mod --enable-sql=no --enable-ndb=no --enable-wt=no --enable-perl=no
 %endif
 make depend
 make %{?_smp_mflags}
-# check_password
-cd %{check_password_name}-%{check_password_version}
-%if "%{?dist}" == ".el8"
-make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd" 'OPT=-g -O2 -Wall -fpic -DDEBUG -DCONFIG_FILE="\"$(CONFIG)\""'
-%else
-make %{?_smp_mflags} "CONFIG=%{check_password_conf}" "LDAP_INC=-I../include -I../servers/slapd"
-%endif
-cd ..
-# ppm
-cd %{ppm_name}-%{ppm_version}
-make clean
-make "CONFIG=%{ppm_conf}" "OLDAP_SOURCES=.."
-cd ..
 # contrib-overlays
 cd contrib/slapd-modules
+## ppm
+cd ppm
+make clean
+make LDAP_SRC=../../.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64
+#make doc prefix=%{ldapserverdir}
+make test "LDAP_SRC=../../.."
+cd ..
 ## lastbind
 cd lastbind
 make clean
@@ -266,7 +210,7 @@ cd ..
 ## smbk5pwd
 cd smbk5pwd
 make clean
-make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap_r/.libs/ -lldap_r -llber" "prefix=%{ldapserverdir}"
+make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap/.libs/ -lldap -llber" "prefix=%{ldapserverdir}"
 cd ..
 ## nssov
 cd nssov
@@ -290,11 +234,6 @@ make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ../..
 ## sha512
 cd passwd/sha2
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ../..
-## argon2
-cd passwd/argon2
 make clean
 make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ../..
@@ -322,9 +261,14 @@ mkdir -p %{buildroot}%{ldapbackupdir}
 
 # Init script
 mkdir -p %{buildroot}%{_unitdir}/
-install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd.service %{buildroot}%{_unitdir}/
-install -m 755 %{slapd_init_name}-%{slapd_init_version}/slapd-cli %{buildroot}%{ldapserverdir}/sbin/
-install -m 644 %{slapd_init_name}-%{slapd_init_version}/slapd-cli.conf %{buildroot}%{ldapserverdir}/etc/openldap/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-ltb.service %{buildroot}%{_unitdir}/
+install -m 755 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli %{buildroot}%{ldapserverdir}/sbin/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli.conf %{buildroot}%{ldapserverdir}/etc/openldap/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/*template* %{buildroot}%{ldapserverdir}/etc/openldap/
+mkdir -p %{buildroot}%/etc/bash_completion.d/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli-prompt %{buildroot}%/etc/bash_completion.d/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/lload-ltb.service %{buildroot}%{_unitdir}/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/lload.conf %{buildroot}%{ldapserverdir}/etc/openldap/
 sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 sed -i 's:^SLAPD_USER.*:SLAPD_USER="'%{ldapuser}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 sed -i 's:^SLAPD_GROUP.*:SLAPD_GROUP="'%{ldapgroup}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
@@ -332,37 +276,24 @@ sed -i 's:^BACKUP_PATH.*:BACKUP_PATH="'%{ldapbackupdir}'":' %{buildroot}%{ldapse
 
 # PATH modification
 mkdir -p %{buildroot}/etc/profile.d
-install -m 755 %{SOURCE3} %{buildroot}/etc/profile.d/openldap.sh
+install -m 755 %{SOURCE2} %{buildroot}/etc/profile.d/openldap.sh
 sed -i 's:^OL_BIN.*:OL_BIN='%{ldapdir}/bin':' %{buildroot}/etc/profile.d/openldap.sh
 sed -i 's:^OL_SBIN.*:OL_SBIN='%{ldapdir}/sbin':' %{buildroot}/etc/profile.d/openldap.sh
 sed -i 's:^OL_MAN.*:OL_MAN='%{ldapdir}/share/man':' %{buildroot}/etc/profile.d/openldap.sh
 
-# BDB configuration
-install -m 644 %{SOURCE4} %{buildroot}%{ldapdatadir}
-
 # Logrotate
 mkdir -p %{buildroot}/etc/logrotate.d
-install -m 644 %{SOURCE5} %{buildroot}/etc/logrotate.d/openldap
+install -m 644 %{SOURCE3} %{buildroot}/etc/logrotate.d/openldap
 
 # Modify data directory in slapd.conf
 sed -i 's:^directory.*:directory\t'%{ldapdatadir}':' %{buildroot}%{ldapserverdir}/etc/openldap/slapd.conf
 
-# check_password
-install -m 644 %{check_password_name}-%{check_password_version}/check_password.so %{buildroot}%{ldapserverdir}/%{_lib}
-echo "minPoints %{check_password_minPoints}" > %{buildroot}%{check_password_conf}
-echo "useCracklib %{check_password_useCracklib}" >> %{buildroot}%{check_password_conf}
-echo "minUpper %{check_password_minUpper}" >> %{buildroot}%{check_password_conf}
-echo "minLower %{check_password_minLower}" >> %{buildroot}%{check_password_conf}
-echo "minDigit %{check_password_minDigit}" >> %{buildroot}%{check_password_conf}
-echo "minPunct %{check_password_minPunct}" >> %{buildroot}%{check_password_conf}
-
-# ppm
-cd %{ppm_name}-%{ppm_version}
-make install "CONFIG=%{buildroot}%{ppm_conf}" LIBDIR="%{buildroot}%{ldapserverdir}/%{_lib}"
-cd ..
-
 # contrib-overlays
 cd contrib/slapd-modules
+cd ppm
+make install "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{buildroot}%{ldapserverdir}/libexec/openldap"
+cp ppm_test "%{buildroot}%{ldapserverdir}/libexec/openldap/"
+cd ..
 cd lastbind
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
@@ -382,9 +313,6 @@ cd passwd/pbkdf2
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ../..
 cd passwd/sha2
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ../..
-cd passwd/argon2
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ../..
 cd ../..
@@ -429,7 +357,7 @@ fi
 # If upgrade stop slapd
 if [ $1 -eq 2 ]
 then
-	/bin/systemctl stop slapd.service
+	%{ldapserverdir}/sbin/slapd-cli stop
 fi
 
 %post -n openldap-ltb
@@ -444,7 +372,7 @@ fi
 if [ $1 -eq 1 ]
 then
 	# Set slapd as service
-	/bin/systemctl enable slapd
+	/bin/systemctl enable slapd-ltb.service
 
 	# Add syslog facility
 	echo "local4.*	-%{ldaplogfile}" >> /etc/rsyslog.conf
@@ -471,43 +399,23 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 /bin/chown -R root:%{ldapgroup} %{ldapserverdir}/etc/openldap/slapd.conf
 /bin/chmod 640 %{ldapserverdir}/etc/openldap/slapd.conf
 
-%post check-password
-#=================================================
-# Post Installation
-#=================================================
-
-# Change owner
-/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/%{_lib}
-/bin/chown -R root:%{ldapgroup} %{check_password_conf}
-/bin/chmod 640 %{check_password_conf}
-
-%post ppm
-#=================================================
-# Post Installation
-#=================================================
-
-# Change owner
-/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/%{_lib}
-/bin/chown -R root:%{ldapgroup} %{ppm_conf}
-/bin/chmod 640 %{ppm_conf}
-
 %preun -n openldap-ltb
 #=================================================
 # Pre Uninstallation
 #=================================================
 
-%systemd_preun slapd.service
+%systemd_preun slapd-ltb.service
 
 # Don't do this if newer version is installed
 if [ $1 -eq 0 ]
 then
 	# Stop slapd and disable service
-	/bin/systemctl stop slapd > /dev/null 2>&1
-	/bin/systemctl disable slapd
+	/bin/systemctl stop slapd-ltb.service > /dev/null 2>&1
+	/bin/systemctl disable slapd-ltb.service
 
         # Remove syslog facility
 	sed -i '/local4\..*/d' /etc/rsyslog.conf
-	/bin/systemctl restarg rsyslog
+	/bin/systemctl restart rsyslog
 fi
 
 # Always do this
@@ -523,7 +431,7 @@ sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
 if [ -e %{_localstatedir}/openldap-ltb-slapd-running ]
 then
 	# Start slapd
-	/bin/systemctl start slapd.service
+	/bin/systemctl start slapd-ltb.service
 
 	rm -f %{_localstatedir}/openldap-ltb-slapd-running
 fi
@@ -550,34 +458,23 @@ rm -rf %{buildroot}
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd.conf
 %config(noreplace) %{ldapserverdir}/etc/openldap/ldap.conf
 %if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
-%{_unitdir}/slapd.service
+%{_unitdir}/slapd-ltb.service
+%{_unitdir}/lload-ltb.service
 %else
 /etc/init.d/slapd
 %endif
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd-cli.conf
+%config(noreplace) %{ldapserverdir}/etc/openldap/*template*
+%config(noreplace) %{ldapserverdir}/etc/openldap/lload.conf
 /etc/profile.d/openldap.sh
 %config(noreplace) /etc/logrotate.d/openldap
 %{ldapbackupdir}
-%exclude %{check_password_conf}
-%exclude %{ldapserverdir}/%{_lib}/check_password.so
 %exclude %{ldapserverdir}/libexec/openldap
-%exclude %{ppm_conf}
-%exclude %{ldapserverdir}/%{_lib}/ppm.so
-%exclude %{ldapserverdir}/%{_lib}/ppm_test
 %exclude %{ldapserverdir}/sbin/mdb_copy
 %exclude %{ldapserverdir}/sbin/mdb_stat
 %exclude %{ldapserverdir}/share/man/man1/mdb_copy.1
 %exclude %{ldapserverdir}/share/man/man1/mdb_stat.1
 %exclude %{ldapserverdir}/share/man/man5/slapo-explockout.5
-
-%files check-password
-%config(noreplace) %{check_password_conf}
-%{ldapserverdir}/%{_lib}/check_password.so
-
-%files ppm
-%config(noreplace) %{ppm_conf}
-%{ldapserverdir}/%{_lib}/ppm.so
-%{ldapserverdir}/%{_lib}/ppm_test
 
 %files contrib-overlays
 %{ldapserverdir}/libexec/openldap
@@ -605,6 +502,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Tue Sep 07 2021 - Clement Oudot <clem@ltb-project.org> - 2.5.7-1
+- Major version upgrade to OpenLDAP 2.5.7
 * Fri Jun 04 2021 - Clement Oudot <clem@ltb-project.org> - 2.4.59-1
 - Upgrade to OpenLDAP 2.4.59
 * Fri Mar 19 2021 - Clement Oudot <clem@ltb-project.org> - 2.4.58-1
