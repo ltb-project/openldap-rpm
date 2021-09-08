@@ -49,7 +49,7 @@
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.example
 
 %define explockout_name		explockout
-%define explockout_version	1.0
+%define explockout_version	1.1
 
 #=================================================
 # Header
@@ -168,11 +168,6 @@ exponential time
 %setup -n %{real_name}-%{real_version} -T -D -a 1
 %setup -n %{real_name}-%{real_version} -T -D -a 4
 
-# Patch for explockout 1.0, to remove with 1.1
-sed -i 's/config\.h/slap-config.h/' explockout-%{explockout_version}/explockout.c
-sed -i 's/libldap_r/libldap/' explockout-%{explockout_version}/Makefile
-sed -i 's/lldap_r/lldap/' explockout-%{explockout_version}/Makefile
-
 #=================================================
 # Building
 #=================================================
@@ -245,7 +240,7 @@ cd ../..
 # explockout
 cd %{explockout_name}-%{explockout_version}
 make clean
-make %{?_smp_mflags} "OLDAP_SOURCES=.." "LIBDIR=%{ldapserverdir}/libexec/openldap"
+make %{?_smp_mflags} "OLDAP_SOURCES=.." "LIBDIR=%{ldapserverdir}/libexec/openldap" "DSTDIR=%{buildroot}%{ldapserverdir}/libexec/openldap"
 cd ..
 
 #=================================================
@@ -329,7 +324,7 @@ cd ../..
 cd %{explockout_name}-%{explockout_version}
 mkdir -p "%{buildroot}%{ldapserverdir}/libexec/openldap"
 mkdir -p "%{buildroot}%{ldapserverdir}/share/man/man5"
-make install "OLDAP_SOURCES=.." "LIBDIR=%{buildroot}%{ldapserverdir}/libexec/openldap"
+make install "OLDAP_SOURCES=.." "LIBDIR=%{buildroot}%{ldapserverdir}/libexec/openldap" "DSTDIR=%{buildroot}%{ldapserverdir}/libexec/openldap"
 install -m 644 "slapo-explockout.5" "%{buildroot}%{ldapserverdir}/share/man/man5"
 cd ..
 
