@@ -79,6 +79,7 @@ BuildRequires: openssl-devel, cyrus-sasl-devel, libtool-ltdl-devel
 BuildRequires: cracklib
 BuildRequires: groff
 BuildRequires: pandoc
+BuildRequires: cracklib-devel
 
 %if "%{?dist}" != ".el8"
 BuildRequires: tcp_wrappers-devel
@@ -180,8 +181,10 @@ export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE"
 export CPPFLAGS="-I/usr/kerberos/include"
 export LDFLAGS=""
 %if "%{?dist}" == ".el8"
+# disable wrappers, enable balancer
 ./configure --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --enable-modules=yes --enable-overlays=mod --enable-backends=mod --enable-dynamic=yes --with-tls=openssl --enable-debug --with-cyrus-sasl --enable-spasswd --enable-ppolicy=mod --enable-crypt --enable-slapi --enable-mdb=mod --enable-ldap=mod --enable-meta=mod --enable-sock=mod --enable-rlookups --enable-argon2=yes --enable-otp=mod --enable-balancer=mod --enable-sql=no --enable-ndb=no --enable-wt=no --enable-perl=no
 %else
+# enable wrappers, disable balancer
 export CPPFLAGS="${CPPFLAGS} -I/usr/include/openssl11"
 export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11"
 ./configure --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --enable-modules=yes --enable-overlays=mod --enable-backends=mod --enable-dynamic=yes --with-tls=openssl --enable-debug --with-cyrus-sasl --enable-spasswd --enable-ppolicy=mod --enable-crypt --enable-slapi --enable-mdb=mod --enable-ldap=mod --enable-meta=mod --enable-sock=mod --enable-wrappers --enable-rlookups --enable-argon2=yes --enable-otp=mod --enable-sql=no --enable-ndb=no --enable-wt=no --enable-perl=no
