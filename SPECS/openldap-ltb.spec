@@ -81,16 +81,24 @@ BuildRequires: groff
 BuildRequires: pandoc
 BuildRequires: cracklib-devel
 
-%if "%{?dist}" != ".el8"
+%if "%{?dist}" == ".el8"
+BuildRequires: libevent-devel >= 2.1
+%else
 BuildRequires: tcp_wrappers-devel
 BuildRequires: openssl11-devel
+BuildRequires: libevent-ltb-devel >= 2.1
 %endif
 
 %{?systemd_requires}
 BuildRequires: systemd
 BuildRequires: libsodium-devel
 
-Requires: gawk, perl, libtool-ltdl
+Requires: gawk, perl, libtool-ltdl, openssl11
+%if "%{?dist}" == ".el8"
+Requires: libevent >= 2.1
+%else
+Requires: libevent-ltb >= 2.1
+%endif
 
 Requires(pre): /sbin/ldconfig, coreutils, shadow-utils
 
@@ -184,10 +192,10 @@ export LDFLAGS=""
 # disable wrappers, enable balancer
 ./configure --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --enable-modules=yes --enable-overlays=mod --enable-backends=mod --enable-dynamic=yes --with-tls=openssl --enable-debug --with-cyrus-sasl --enable-spasswd --enable-ppolicy=mod --enable-crypt --enable-slapi --enable-mdb=mod --enable-ldap=mod --enable-meta=mod --enable-sock=mod --enable-rlookups --enable-argon2=yes --enable-otp=mod --enable-balancer=mod --enable-sql=no --enable-ndb=no --enable-wt=no --enable-perl=no
 %else
-# enable wrappers, disable balancer
-export CPPFLAGS="${CPPFLAGS} -I/usr/include/openssl11"
-export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11"
-./configure --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --enable-modules=yes --enable-overlays=mod --enable-backends=mod --enable-dynamic=yes --with-tls=openssl --enable-debug --with-cyrus-sasl --enable-spasswd --enable-ppolicy=mod --enable-crypt --enable-slapi --enable-mdb=mod --enable-ldap=mod --enable-meta=mod --enable-sock=mod --enable-wrappers --enable-rlookups --enable-argon2=yes --enable-otp=mod --enable-sql=no --enable-ndb=no --enable-wt=no --enable-perl=no
+# enable wrappers
+export CPPFLAGS="${CPPFLAGS} -I/usr/include/openssl11 -I/usr/local/libevent-ltb-2.1/include"
+export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11 -L/usr/local/libevent-ltb-2.1/lib"
+./configure --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --enable-modules=yes --enable-overlays=mod --enable-backends=mod --enable-dynamic=yes --with-tls=openssl --enable-debug --with-cyrus-sasl --enable-spasswd --enable-ppolicy=mod --enable-crypt --enable-slapi --enable-mdb=mod --enable-ldap=mod --enable-meta=mod --enable-sock=mod --enable-wrappers --enable-rlookups --enable-argon2=yes --enable-otp=mod --enable-balancer=mod --enable-sql=no --enable-ndb=no --enable-wt=no --enable-perl=no
 %endif
 make depend
 make %{?_smp_mflags}
