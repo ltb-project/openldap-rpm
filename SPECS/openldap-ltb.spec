@@ -20,6 +20,7 @@
 #=================================================
 # Variables
 #=================================================
+
 %define real_name        openldap
 %define real_version     2.5.7
 %define release_version  1%{?dist}
@@ -33,6 +34,13 @@
 %if 0%{?rhel} == 8
  %define dist .el8
 %endif
+
+# exclude private libraries
+%global _privatelibs                 libldap
+%global _privatelibs %{_privatelibs}|liblber
+%global _privatelibs %{_privatelibs}|libslapi
+%global __provides_exclude ^(%{_privatelibs})-.*so.*$
+%global __requires_exclude ^(%{_privatelibs})-.*so.*$
 
 %define ldapdir          /usr/local/openldap
 %define ldapserverdir    %{ldapdir}
