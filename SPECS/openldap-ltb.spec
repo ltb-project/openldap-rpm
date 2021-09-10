@@ -2,10 +2,10 @@
 # Specification file for OpenLDAP
 #
 # Install OpenLDAP
-# Install an init script in /etc/init.d
+# Install an a systemd service
 # Create user/group ldap
-# Configure syslog and logrotate
-# Install a pwdChecker module
+# Configure rsyslog and logrotate
+# Install ppm, an extension to password policy module
 #
 # Copyright (C) 2008-2020 Clement OUDOT
 # Copyright (C) 2018-2020 Worteks
@@ -39,12 +39,14 @@
 %define ldapdatadir      %{ldapdir}/var/openldap-data
 %define ldapbackupdir    /var/backups/openldap
 %define ldaplogfile      /var/log/openldap.log
+%define ldapconfdir      %{ldapdir}/etc/openldap/slapd.d
 
 %define ldapuser         ldap
 %define ldapgroup        ldap
 
 %define slapd_cli_name             slapd-cli
 %define slapd_cli_version          2.8
+%define slapd_cli_bin              %{ldapdir}//sbin/slapd-cli
 
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.example
 
@@ -72,6 +74,9 @@ Source2: openldap.sh
 Source3: openldap.logrotate
 # Sources available on https://github.com/davidcoutadeur/explockout
 Source4: %{explockout_name}-%{explockout_version}.tar.gz
+%if "%{real_version}" == "2.5.7"
+Source5: ppm.5
+%endif
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
@@ -130,9 +135,11 @@ Requires:	%{real_name}-ltb >= %{real_version}
 
 %description contrib-overlays
 Some overlays are not included in the OpenLDAP main package but provided
-as contributions. This package provide some of them.
+as contributions. This package provide these ones:
+autogroup lastbind noopsrch nssov pw-pbkdf2 pw-sha2 smbk5pwd ppm variant vc
 
 This is provided by LDAP Tool Box project: http://www.ltb-project.org
+
 
 #=================================================
 # Subpackage mdb-utils
@@ -158,9 +165,9 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 %package explockout
 Summary:        OpenLDAP overlay explockout
 Version:        %{explockout_version}
-Release:        13%{?dist}
+Release:        %{release_version}
 Group:          Applications/System
-URL:            https://github.com/davidcoutadeur/explockout
+URL:            https://github.com/ltb-project/explockout
 
 Requires:       %{real_name}-ltb >= %{real_version}
 
@@ -189,7 +196,7 @@ export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE"
 export CPPFLAGS="-I/usr/kerberos/include"
 export LDFLAGS=""
 %if "%{?dist}" == ".el8"
-# disable wrappers, enable balancer
+# disable wrappers
 ./configure --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --enable-modules=yes --enable-overlays=mod --enable-backends=mod --enable-dynamic=yes --with-tls=openssl --enable-debug --with-cyrus-sasl --enable-spasswd --enable-ppolicy=mod --enable-crypt --enable-slapi --enable-mdb=mod --enable-ldap=mod --enable-meta=mod --enable-sock=mod --enable-rlookups --enable-argon2=yes --enable-otp=mod --enable-balancer=mod --enable-sql=no --enable-ndb=no --enable-wt=no --enable-perl=no
 %else
 # enable wrappers
@@ -205,7 +212,11 @@ cd contrib/slapd-modules
 cd ppm
 make clean
 make LDAP_SRC=../../.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64
-#make doc prefix=%{ldapserverdir}
+%if "%{real_version}" == "2.5.7"
+:
+%else
+make doc prefix=%{ldapserverdir}
+%endif
 make test "LDAP_SRC=../../.."
 cd ..
 ## lastbind
@@ -243,6 +254,16 @@ cd passwd/sha2
 make clean
 make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ../..
+# variant
+cd variant
+make clean
+make "prefix=%{ldapserverdir}"
+cd ..
+# vc
+cd vc
+make clean
+make "prefix=%{ldapserverdir}"
+cd ..
 cd ../..
 # MDB utils
 cd libraries/liblmdb
@@ -251,7 +272,7 @@ cd ../..
 # explockout
 cd %{explockout_name}-%{explockout_version}
 make clean
-make %{?_smp_mflags} "OLDAP_SOURCES=.." "LIBDIR=%{ldapserverdir}/libexec/openldap" "DSTDIR=%{buildroot}%{ldapserverdir}/libexec/openldap"
+make "OLDAP_SOURCES=.." "LIBDIR=%{ldapserverdir}/libexec/openldap"
 cd ..
 
 #=================================================
@@ -261,35 +282,48 @@ cd ..
 rm -rf %{buildroot}
 make install DESTDIR=%{buildroot} STRIP=""
 
-# Directories
+# create some directories
 mkdir -p %{buildroot}%{ldapdatadir}
 mkdir -p %{buildroot}%{ldapbackupdir}
-
-# Init script
+mkdir -p %{buildroot}/etc/logrotate.d
+mkdir -p %{buildroot}/etc/profile.d
 mkdir -p %{buildroot}%{_unitdir}/
+
+# Copy 3rd party files
+
+# ppm hook
+%if "%{real_version}" == "2.5.7"
+install -m 644 %{SOURCE5} %{buildroot}%{ldapserverdir}/share/man/man5/ppm.5
+%endif
+
+## systemd
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-ltb.service %{buildroot}%{_unitdir}/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/lload-ltb.service %{buildroot}%{_unitdir}/
+
+## logrotate, profile
+install -m 644 %{SOURCE3} %{buildroot}/etc/logrotate.d/openldap
+install -m 755 %{SOURCE2} %{buildroot}/etc/profile.d/openldap.sh
+
+## slapd-cli
 install -m 755 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli %{buildroot}%{ldapserverdir}/sbin/
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli.conf %{buildroot}%{ldapserverdir}/etc/openldap/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/*template* %{buildroot}%{ldapserverdir}/etc/openldap/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template.conf %{buildroot}%{ldapserverdir}/etc/openldap/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/data-template.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
+install -m 640 %{slapd_cli_name}-%{slapd_cli_version}/lload.conf %{buildroot}%{ldapserverdir}/etc/openldap/
 mkdir -p %{buildroot}%/etc/bash_completion.d/
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli-prompt %{buildroot}%/etc/bash_completion.d/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/lload-ltb.service %{buildroot}%{_unitdir}/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/lload.conf %{buildroot}%{ldapserverdir}/etc/openldap/
+
+# replace variables in slapd-cli.conf
 sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 sed -i 's:^SLAPD_USER.*:SLAPD_USER="'%{ldapuser}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 sed -i 's:^SLAPD_GROUP.*:SLAPD_GROUP="'%{ldapgroup}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 sed -i 's:^BACKUP_PATH.*:BACKUP_PATH="'%{ldapbackupdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
+sed -i 's:^SLAPD_CONF_DIR.*:SLAPD_CONF_DIR="'%{ldapconfdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 
 # PATH modification
-mkdir -p %{buildroot}/etc/profile.d
-install -m 755 %{SOURCE2} %{buildroot}/etc/profile.d/openldap.sh
 sed -i 's:^OL_BIN.*:OL_BIN='%{ldapdir}/bin':' %{buildroot}/etc/profile.d/openldap.sh
 sed -i 's:^OL_SBIN.*:OL_SBIN='%{ldapdir}/sbin':' %{buildroot}/etc/profile.d/openldap.sh
-sed -i 's:^OL_MAN.*:OL_MAN='%{ldapdir}/share/man':' %{buildroot}/etc/profile.d/openldap.sh
-
-# Logrotate
-mkdir -p %{buildroot}/etc/logrotate.d
-install -m 644 %{SOURCE3} %{buildroot}/etc/logrotate.d/openldap
 
 # Modify data directory in slapd.conf
 sed -i 's:^directory.*:directory\t'%{ldapdatadir}':' %{buildroot}%{ldapserverdir}/etc/openldap/slapd.conf
@@ -321,6 +355,12 @@ cd ../..
 cd passwd/sha2
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ../..
+cd variant
+make install "prefix=%{buildroot}%{ldapserverdir}"
+cd ..
+cd vc
+make install "prefix=%{buildroot}%{ldapserverdir}"
+cd ..
 cd ../..
 
 # MDB utils
@@ -335,7 +375,7 @@ cd ../..
 cd %{explockout_name}-%{explockout_version}
 mkdir -p "%{buildroot}%{ldapserverdir}/libexec/openldap"
 mkdir -p "%{buildroot}%{ldapserverdir}/share/man/man5"
-make install "OLDAP_SOURCES=.." "LIBDIR=%{buildroot}%{ldapserverdir}/libexec/openldap" "DSTDIR=%{buildroot}%{ldapserverdir}/libexec/openldap"
+make install "OLDAP_SOURCES=.." "DSTDIR=%{buildroot}%{ldapserverdir}/libexec/openldap"
 install -m 644 "slapo-explockout.5" "%{buildroot}%{ldapserverdir}/share/man/man5"
 cd ..
 
@@ -398,12 +438,28 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 /bin/chown -R root:root %{ldapserverdir}/libexec
 /bin/chown -R root:root %{ldapserverdir}/sbin
 /bin/chown root:root %{ldapserverdir}/var
+
 # Specifically adapt some files/directories owner and permissions
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapdatadir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapbackupdir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/var/run
 /bin/chown -R root:%{ldapgroup} %{ldapserverdir}/etc/openldap/slapd.conf
 /bin/chmod 640 %{ldapserverdir}/etc/openldap/slapd.conf
+/bin/chown -R root:%{ldapgroup} %{ldapserverdir}/etc/openldap/lload.conf
+/bin/chmod 640 %{ldapserverdir}/etc/openldap/lload.conf
+
+# Add configuration directory if it does not exist
+mkdir -p %{ldapconfdir}
+chown root:%{ldapgroup} %{ldapconfdir}
+chmod 770 %{ldapconfdir}
+
+# Empty configuration directory, so import a new fresh config from template
+if [ -z "$( ls -A %{ldapconfdir} )" ]; then
+
+  # Import configuration from ldif template
+  %{slapd_cli_bin} importldifconfigtemplate
+
+fi
 
 %preun -n openldap-ltb
 #=================================================
@@ -463,32 +519,62 @@ rm -rf %{buildroot}
 %docdir %{ldapserverdir}/share/man
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd.conf
 %config(noreplace) %{ldapserverdir}/etc/openldap/ldap.conf
-%if "%{?dist}" == ".el7" || "%{?dist}" == ".el8"
 %{_unitdir}/slapd-ltb.service
 %{_unitdir}/lload-ltb.service
-%else
-/etc/init.d/slapd
-%endif
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd-cli.conf
 %config(noreplace) %{ldapserverdir}/etc/openldap/*template*
 %config(noreplace) %{ldapserverdir}/etc/openldap/lload.conf
 /etc/profile.d/openldap.sh
 %config(noreplace) /etc/logrotate.d/openldap
 %{ldapbackupdir}
-%exclude %{ldapserverdir}/libexec/openldap
-%exclude %{ldapserverdir}/sbin/mdb_copy
-%exclude %{ldapserverdir}/sbin/mdb_stat
+# exclude explockout man page and library
+%exclude %{ldapserverdir}/share/man/man5/slapo-explockout.5
+%exclude %{ldapserverdir}/libexec/openldap/explockout.*
+# exclude mdb-utils man pages and binaries
 %exclude %{ldapserverdir}/share/man/man1/mdb_copy.1
 %exclude %{ldapserverdir}/share/man/man1/mdb_stat.1
-%exclude %{ldapserverdir}/share/man/man5/slapo-explockout.5
+%exclude %{ldapserverdir}/sbin/mdb_copy
+%exclude %{ldapserverdir}/sbin/mdb_stat
+# exclude contrib overlays man pages
+%exclude %{ldapserverdir}/share/man/man5/slapo-lastbind.5
+%exclude %{ldapserverdir}/share/man/man5/slapo-nssov.5
+%exclude %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
+%exclude %{ldapserverdir}/share/man/man5/ppm.5
+%exclude %{ldapserverdir}/share/man/man5/slapo-variant.5
+%exclude %{ldapserverdir}/share/man/man1/ldapvc.1
+# exclude contrib overlays libraries
+%exclude %{ldapserverdir}/libexec/openldap/autogroup.*
+%exclude %{ldapserverdir}/libexec/openldap/lastbind.*
+%exclude %{ldapserverdir}/libexec/openldap/noopsrch.*
+%exclude %{ldapserverdir}/libexec/openldap/nssov.*
+%exclude %{ldapserverdir}/libexec/openldap/pw-pbkdf2.*
+%exclude %{ldapserverdir}/libexec/openldap/pw-sha2.*
+%exclude %{ldapserverdir}/libexec/openldap/smbk5pwd.*
+%exclude %{ldapserverdir}/libexec/openldap/ppm*
+%exclude %{ldapserverdir}/etc/openldap/ppm.example
+%exclude %{ldapserverdir}/libexec/openldap/variant.*
+%exclude %{ldapserverdir}/libexec/openldap/vc.*
 
 %files contrib-overlays
-%{ldapserverdir}/libexec/openldap
-%exclude %{ldapserverdir}/libexec/openldap/explockout.a
-%exclude %{ldapserverdir}/libexec/openldap/explockout.la
-%exclude %{ldapserverdir}/libexec/openldap/explockout.so
-%exclude %{ldapserverdir}/libexec/openldap/explockout.so.0
-%exclude %{ldapserverdir}/libexec/openldap/explockout.so.0.0.0
+# contrib overlays man pages
+%doc %{ldapserverdir}/share/man/man5/slapo-lastbind.5
+%doc %{ldapserverdir}/share/man/man5/slapo-nssov.5
+%doc %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
+%doc %{ldapserverdir}/share/man/man5/ppm.5
+%doc %{ldapserverdir}/share/man/man5/slapo-variant.5
+%doc %{ldapserverdir}/share/man/man1/ldapvc.1
+# contrib overlays libraries
+%{ldapserverdir}/libexec/openldap/autogroup.*
+%{ldapserverdir}/libexec/openldap/lastbind.*
+%{ldapserverdir}/libexec/openldap/noopsrch.*
+%{ldapserverdir}/libexec/openldap/nssov.*
+%{ldapserverdir}/libexec/openldap/pw-pbkdf2.*
+%{ldapserverdir}/libexec/openldap/pw-sha2.*
+%{ldapserverdir}/libexec/openldap/smbk5pwd.*
+%{ldapserverdir}/libexec/openldap/ppm*
+%{ldapserverdir}/etc/openldap/ppm.example
+%{ldapserverdir}/libexec/openldap/variant.*
+%{ldapserverdir}/libexec/openldap/vc.*
 
 %files mdb-utils
 %{ldapserverdir}/sbin/mdb_copy
@@ -497,12 +583,9 @@ rm -rf %{buildroot}
 %doc %{ldapserverdir}/share/man/man1/mdb_stat.1
 
 %files explockout
-%{ldapserverdir}/libexec/openldap/explockout.a
-%{ldapserverdir}/libexec/openldap/explockout.la
-%{ldapserverdir}/libexec/openldap/explockout.so
-%{ldapserverdir}/libexec/openldap/explockout.so.0
-%{ldapserverdir}/libexec/openldap/explockout.so.0.0.0
+# explockout man page and library
 %doc %{ldapserverdir}/share/man/man5/slapo-explockout.5
+%{ldapserverdir}/libexec/openldap/explockout.*
 
 #=================================================
 # Changelog

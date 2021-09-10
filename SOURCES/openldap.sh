@@ -6,7 +6,6 @@
 
 OL_BIN="/usr/bin"
 OL_SBIN="/usr/sbin"
-OL_MAN="/usr/share/man"
 
 PATH="$PATH:$OL_BIN"
 
@@ -16,5 +15,3 @@ then
 fi
 
 export PATH
-
-export MANPATH="$MANPATH:$OL_MAN"
