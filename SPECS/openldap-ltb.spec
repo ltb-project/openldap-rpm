@@ -106,7 +106,7 @@ BuildRequires: libevent-ltb-devel >= 2.1
 BuildRequires: systemd
 BuildRequires: libsodium-devel
 
-Requires: gawk, perl, libtool-ltdl, openssl11
+Requires: gawk, perl, libtool-ltdl, openssl11, bash-completion
 %if "%{?dist}" == ".el8"
 Requires: libevent >= 2.1
 %else
@@ -319,8 +319,8 @@ install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template.conf %{bui
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/data-template.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
 install -m 640 %{slapd_cli_name}-%{slapd_cli_version}/lload.conf %{buildroot}%{ldapserverdir}/etc/openldap/
-mkdir -p %{buildroot}%/etc/bash_completion.d/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli-prompt %{buildroot}%/etc/bash_completion.d/
+mkdir -p %{buildroot}/etc/bash_completion.d/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli-prompt %{buildroot}/etc/bash_completion.d/
 
 # replace variables in slapd-cli.conf
 sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
@@ -398,11 +398,6 @@ then
 	touch %{_localstatedir}/openldap-ltb-slapd-running
 fi
 
-if [ -e /etc/default/slapd ]
-then
-	cp /etc/default/slapd %{_localstatedir}/slapd.default
-fi
-
 %pre -n openldap-ltb
 #=================================================
 # Pre Installation
@@ -467,6 +462,12 @@ if [ -z "$( ls -A %{ldapconfdir} )" ]; then
   # Import configuration from ldif template
   %{slapd_cli_bin} importldifconfigtemplate
 
+fi
+
+# Start OpenLDAP at the end of first install
+if [ $1 -eq 1 ]
+then
+  /bin/systemctl start slapd-ltb.service
 fi
 
 %preun -n openldap-ltb
@@ -534,6 +535,7 @@ rm -rf %{buildroot}
 %config(noreplace) %{ldapserverdir}/etc/openldap/lload.conf
 /etc/profile.d/openldap.sh
 %config(noreplace) /etc/logrotate.d/openldap
+%config /etc/bash_completion.d/slapd-cli-prompt
 %{ldapbackupdir}
 # exclude explockout man page and library
 %exclude %{ldapserverdir}/share/man/man5/slapo-explockout.5
