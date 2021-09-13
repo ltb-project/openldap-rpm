@@ -460,7 +460,7 @@ chmod 770 %{ldapconfdir}
 if [ -z "$( ls -A %{ldapconfdir} )" ]; then
 
   # Import configuration from ldif template
-  %{slapd_cli_bin} importldifconfigtemplate
+  %{slapd_cli_bin} importldifconfigtemplate > /dev/null
 
 fi
 
