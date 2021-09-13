@@ -397,16 +397,22 @@ if [ $? -eq 0 ]
 then
 	touch %{_localstatedir}/openldap-ltb-slapd-running
 fi
+%{ldapserverdir}/sbin/slapd-cli lloadstatus > /dev/null 2>&1
+if [ $? -eq 0 ]
+then
+	touch %{_localstatedir}/openldap-ltb-lload-running
+fi
 
 %pre -n openldap-ltb
 #=================================================
 # Pre Installation
 #=================================================
 
-# If upgrade stop slapd
+# If upgrade stop slapd and lload
 if [ $1 -eq 2 ]
 then
 	%{ldapserverdir}/sbin/slapd-cli stop
+	%{ldapserverdir}/sbin/slapd-cli lloadstop
 fi
 
 %post -n openldap-ltb
@@ -414,7 +420,10 @@ fi
 # Post Installation
 #=================================================
 
-%systemd_post slapd.service
+%systemd_post slapd-ltb.service
+/bin/systemctl --system daemon-reload
+
+%systemd_post lload-ltb.service
 /bin/systemctl --system daemon-reload
 
 # Do this at first install
@@ -507,11 +516,14 @@ then
 	rm -f %{_localstatedir}/openldap-ltb-slapd-running
 fi
 
-if [ -e %{_localstatedir}/slapd.default ]
+if [ -e %{_localstatedir}/openldap-ltb-lload-running ]
 then
-	mv %{_localstatedir}/slapd.default %{ldapserverdir}/etc/openldap/slapd-cli.conf
-	rm -f %{_localstatedir}/slapd.default
+	# Start lload
+	/bin/systemctl start lload-ltb.service
+
+	rm -f %{_localstatedir}/openldap-ltb-lload-running
 fi
+
 
 #=================================================
 # Cleaning
