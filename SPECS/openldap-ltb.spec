@@ -172,7 +172,7 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 #=================================================
 %package explockout
 Summary:        OpenLDAP overlay explockout
-Version:        %{explockout_version}
+Version:        %{real_version}
 Release:        %{release_version}
 Group:          Applications/System
 URL:            https://github.com/ltb-project/explockout
