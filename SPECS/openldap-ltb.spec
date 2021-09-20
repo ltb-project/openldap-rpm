@@ -301,7 +301,7 @@ mkdir -p %{buildroot}%{_unitdir}/
 
 # ppm hook
 %if "%{real_version}" == "2.5.7"
-install -m 644 %{SOURCE5} %{buildroot}%{ldapserverdir}/share/man/man5/ppm.5
+install -m 644 %{SOURCE5} %{buildroot}%{ldapserverdir}/share/man/man5/slapm-ppm.5
 %endif
 
 ## systemd
@@ -561,7 +561,7 @@ rm -rf %{buildroot}
 %exclude %{ldapserverdir}/share/man/man5/slapo-lastbind.5
 %exclude %{ldapserverdir}/share/man/man5/slapo-nssov.5
 %exclude %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
-%exclude %{ldapserverdir}/share/man/man5/ppm.5
+%exclude %{ldapserverdir}/share/man/man5/slapm-ppm.5
 %exclude %{ldapserverdir}/share/man/man5/slapo-variant.5
 %exclude %{ldapserverdir}/share/man/man1/ldapvc.1
 # exclude contrib overlays libraries
@@ -582,7 +582,7 @@ rm -rf %{buildroot}
 %doc %{ldapserverdir}/share/man/man5/slapo-lastbind.5
 %doc %{ldapserverdir}/share/man/man5/slapo-nssov.5
 %doc %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
-%doc %{ldapserverdir}/share/man/man5/ppm.5
+%doc %{ldapserverdir}/share/man/man5/slapm-ppm.5
 %doc %{ldapserverdir}/share/man/man5/slapo-variant.5
 %doc %{ldapserverdir}/share/man/man1/ldapvc.1
 # contrib overlays libraries
