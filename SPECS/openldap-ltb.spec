@@ -83,7 +83,7 @@ Source3: openldap.logrotate
 # Sources available on https://github.com/davidcoutadeur/explockout
 Source4: %{explockout_name}-%{explockout_version}.tar.gz
 %if "%{real_version}" == "2.5.7"
-Source5: ppm.5
+Source5: slapm-ppm.5
 %endif
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
