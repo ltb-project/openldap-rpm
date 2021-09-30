@@ -88,13 +88,14 @@ Source5: slapm-ppm.5
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
-BuildRequires: openssl-devel, cyrus-sasl-devel, libtool-ltdl-devel
+BuildRequires: cyrus-sasl-devel, libtool-ltdl-devel
 BuildRequires: cracklib
 BuildRequires: groff
 BuildRequires: pandoc
 BuildRequires: cracklib-devel
 
 %if "%{?dist}" == ".el8"
+BuildRequires: openssl-devel
 BuildRequires: libevent-devel >= 2.1
 %else
 BuildRequires: tcp_wrappers-devel
@@ -106,11 +107,13 @@ BuildRequires: libevent-ltb-devel >= 2.1
 BuildRequires: systemd
 BuildRequires: libsodium-devel
 
-Requires: gawk, perl, libtool-ltdl, openssl11, bash-completion
+Requires: gawk, perl, libtool-ltdl, bash-completion
 %if "%{?dist}" == ".el8"
 Requires: libevent >= 2.1
+Requires: openssl
 %else
 Requires: libevent-ltb >= 2.1
+Requires: openssl11
 %endif
 
 Requires(pre): /sbin/ldconfig, coreutils, shadow-utils
