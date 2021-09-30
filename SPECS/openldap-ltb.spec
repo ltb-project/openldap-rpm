@@ -414,8 +414,8 @@ fi
 # If upgrade stop slapd and lload
 if [ $1 -eq 2 ]
 then
-	%{ldapserverdir}/sbin/slapd-cli stop
-	%{ldapserverdir}/sbin/slapd-cli lloadstop
+	%{ldapserverdir}/sbin/slapd-cli lloadstop > /dev/null 2>&1
+	%{ldapserverdir}/sbin/slapd-cli stop > /dev/null 2>&1
 fi
 
 %post -n openldap-ltb
