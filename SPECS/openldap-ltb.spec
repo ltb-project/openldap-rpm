@@ -22,7 +22,7 @@
 #=================================================
 
 %define real_name        openldap
-%define real_version     2.5.7
+%define real_version     2.5.9
 %define release_version  1%{?dist}
 
 # Fix for CentOS7
@@ -82,9 +82,6 @@ Source2: openldap.sh
 Source3: openldap.logrotate
 # Sources available on https://github.com/davidcoutadeur/explockout
 Source4: %{explockout_name}-%{explockout_version}.tar.gz
-%if "%{real_version}" == "2.5.7"
-Source5: slapm-ppm.5
-%endif
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
@@ -301,11 +298,6 @@ mkdir -p %{buildroot}/etc/profile.d
 mkdir -p %{buildroot}%{_unitdir}/
 
 # Copy 3rd party files
-
-# ppm hook
-%if "%{real_version}" == "2.5.7"
-install -m 644 %{SOURCE5} %{buildroot}%{ldapserverdir}/share/man/man5/slapm-ppm.5
-%endif
 
 ## systemd
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-ltb.service %{buildroot}%{_unitdir}/
@@ -616,6 +608,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Tue Oct 26 2021 - Clement Oudot <clem@ltb-project.org> - 2.5.9-1
+- Upgrade to OpenLDAP 2.5.9
 * Tue Sep 07 2021 - Clement Oudot <clem@ltb-project.org> - 2.5.7-1
 - Major version upgrade to OpenLDAP 2.5.7
 * Fri Jun 04 2021 - Clement Oudot <clem@ltb-project.org> - 2.4.59-1
