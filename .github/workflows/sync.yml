@@ -1,9 +1,9 @@
-name: Sync Back to master and openldap26
+name: Sync Back to master
 
 on:
   push:
     branches:
-      - openldap25
+      - openldap26
 
 jobs:
   sync-branches:
@@ -12,22 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: openldap25
+          ref: openldap26
       - run: |
           git fetch --unshallow
-          git pull origin openldap25
+          git pull origin openldap26
           git config user.email "automatic@github.com"
           git config user.name "GitHub Actions"
       - name: sync master
         run: |
           git checkout master
           git pull --rebase
-          git merge openldap25 --ff-only
+          git merge openldap26 --ff-only
           git push
-      - name: sync openldap26
-        run: |
-          git checkout openldap26
-          git pull --rebase
-          git merge openldap25 --ff-only
-          git push
-
