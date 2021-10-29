@@ -4,7 +4,6 @@
 # Install OpenLDAP
 # Install an a systemd service
 # Create user/group ldap
-# Configure rsyslog and logrotate
 # Install ppm, an extension to password policy module
 #
 # Copyright (C) 2008-2020 Clement OUDOT
@@ -22,7 +21,7 @@
 #=================================================
 
 %define real_name        openldap
-%define real_version     2.5.9
+%define real_version     2.6.0
 %define release_version  1%{?dist}
 
 # Fix for CentOS7
@@ -39,22 +38,23 @@
 %global _privatelibs                 libldap
 %global _privatelibs %{_privatelibs}|liblber
 %global _privatelibs %{_privatelibs}|libslapi
-%global __provides_exclude ^(%{_privatelibs})-.*so.*$
-%global __requires_exclude ^(%{_privatelibs})-.*so.*$
+%global __provides_exclude ^(%{_privatelibs}).*so.*$
+%global __requires_exclude ^(%{_privatelibs}).*so.*$
 
 %define ldapdir          /usr/local/openldap
 %define ldapserverdir    %{ldapdir}
 %define ldapdatadir      %{ldapdir}/var/openldap-data
 %define ldapbackupdir    /var/backups/openldap
-%define ldaplogfile      /var/log/openldap.log
+%define ldaplogdir       /var/log/slapd-ltb
+%define ldaplogfile      %{ldaplogdir}/slapd.log
 %define ldapconfdir      %{ldapdir}/etc/openldap/slapd.d
 
 %define ldapuser         ldap
 %define ldapgroup        ldap
 
 %define slapd_cli_name             slapd-cli
-%define slapd_cli_version          2.8
-%define slapd_cli_bin              %{ldapdir}//sbin/slapd-cli
+%define slapd_cli_version          2.9
+%define slapd_cli_bin              %{ldapdir}/sbin/slapd-cli
 
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.example
 
@@ -79,7 +79,6 @@ Source: %{real_name}-%{real_version}.tgz
 # Sources available on https://github.com/ltb-project/slapd-cli
 Source1: %{slapd_cli_name}-%{slapd_cli_version}.tar.gz
 Source2: openldap.sh
-Source3: openldap.logrotate
 # Sources available on https://github.com/davidcoutadeur/explockout
 Source4: %{explockout_name}-%{explockout_version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -293,7 +292,6 @@ make install DESTDIR=%{buildroot} STRIP=""
 # create some directories
 mkdir -p %{buildroot}%{ldapdatadir}
 mkdir -p %{buildroot}%{ldapbackupdir}
-mkdir -p %{buildroot}/etc/logrotate.d
 mkdir -p %{buildroot}/etc/profile.d
 mkdir -p %{buildroot}%{_unitdir}/
 
@@ -303,8 +301,7 @@ mkdir -p %{buildroot}%{_unitdir}/
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-ltb.service %{buildroot}%{_unitdir}/
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/lload-ltb.service %{buildroot}%{_unitdir}/
 
-## logrotate, profile
-install -m 644 %{SOURCE3} %{buildroot}/etc/logrotate.d/openldap
+## profile
 install -m 755 %{SOURCE2} %{buildroot}/etc/profile.d/openldap.sh
 
 ## slapd-cli
@@ -426,10 +423,6 @@ if [ $1 -eq 1 ]
 then
 	# Set slapd as service
 	/bin/systemctl enable slapd-ltb.service
-
-	# Add syslog facility
-	echo "local4.*	-%{ldaplogfile}" >> /etc/rsyslog.conf
-	/bin/systemctl restart rsyslog > /dev/null 2>&1
 fi
 
 # Always do this
@@ -454,6 +447,8 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 /bin/chmod 640 %{ldapserverdir}/etc/openldap/slapd.conf
 /bin/chown -R root:%{ldapgroup} %{ldapserverdir}/etc/openldap/lload.conf
 /bin/chmod 640 %{ldapserverdir}/etc/openldap/lload.conf
+mkdir -p %{ldaplogdir}
+/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldaplogdir}
 
 # Add configuration directory if it does not exist
 mkdir -p %{ldapconfdir}
@@ -487,10 +482,6 @@ then
 	# Stop slapd and disable service
 	/bin/systemctl stop slapd-ltb.service > /dev/null 2>&1
 	/bin/systemctl disable slapd-ltb.service
-
-        # Remove syslog facility
-	sed -i '/local4\..*/d' /etc/rsyslog.conf
-	/bin/systemctl restart rsyslog
 fi
 
 # Always do this
@@ -541,7 +532,6 @@ rm -rf %{buildroot}
 %config(noreplace) %{ldapserverdir}/etc/openldap/*template*
 %config(noreplace) %{ldapserverdir}/etc/openldap/lload.conf
 /etc/profile.d/openldap.sh
-%config(noreplace) /etc/logrotate.d/openldap
 %config /etc/bash_completion.d/slapd-cli-prompt
 %{ldapbackupdir}
 # exclude explockout man page and library
@@ -608,6 +598,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Tue Oct 29 2021 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.0.1
+- Upgrade to OpenLDAP 2.6.0
 * Tue Oct 26 2021 - Clement Oudot <clem@ltb-project.org> - 2.5.9-1
 - Upgrade to OpenLDAP 2.5.9
 * Tue Sep 07 2021 - Clement Oudot <clem@ltb-project.org> - 2.5.7-1
