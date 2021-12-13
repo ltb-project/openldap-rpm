@@ -104,7 +104,7 @@ BuildRequires: libevent-ltb-devel >= 2.1
 BuildRequires: systemd
 BuildRequires: libsodium-devel
 
-Requires: gawk, perl, libtool-ltdl, bash-completion
+Requires: gawk, perl, libtool-ltdl, bash-completion, libsodium
 %if "%{?dist}" == ".el8"
 Requires: libevent >= 2.1
 Requires: openssl
@@ -139,7 +139,7 @@ Release:        %{release_version}
 Group:          Applications/System
 URL:		http://www.ltb-project.org
 
-Requires:	%{real_name}-ltb >= %{real_version}
+Requires:	%{real_name}-ltb >= %{real_version}, cracklib
 
 %description contrib-overlays
 Some overlays are not included in the OpenLDAP main package but provided
