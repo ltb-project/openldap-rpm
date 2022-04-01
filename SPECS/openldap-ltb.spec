@@ -143,7 +143,7 @@ Requires:	%{real_name}-ltb >= %{real_version}, cracklib
 %description contrib-overlays
 Some overlays are not included in the OpenLDAP main package but provided
 as contributions. This package provide these ones:
-autogroup lastbind noopsrch nssov pw-pbkdf2 pw-sha2 smbk5pwd ppm variant vc
+autogroup noopsrch nssov pw-pbkdf2 pw-sha2 smbk5pwd ppm variant vc
 
 This is provided by LDAP Tool Box project: http://www.ltb-project.org
 
@@ -225,11 +225,6 @@ make LDAP_SRC=../../.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64
 make doc prefix=%{ldapserverdir}
 %endif
 make test "LDAP_SRC=../../.."
-cd ..
-## lastbind
-cd lastbind
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
 cd ..
 ## smbk5pwd
 cd smbk5pwd
@@ -333,9 +328,6 @@ cd contrib/slapd-modules
 cd ppm
 make install "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{buildroot}%{ldapserverdir}/libexec/openldap"
 cp ppm_test "%{buildroot}%{ldapserverdir}/libexec/openldap/"
-cd ..
-cd lastbind
-make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
 cd smbk5pwd
 make install "prefix=%{buildroot}%{ldapserverdir}"
@@ -543,7 +535,6 @@ rm -rf %{buildroot}
 %exclude %{ldapserverdir}/sbin/mdb_copy
 %exclude %{ldapserverdir}/sbin/mdb_stat
 # exclude contrib overlays man pages
-%exclude %{ldapserverdir}/share/man/man5/slapo-lastbind.5
 %exclude %{ldapserverdir}/share/man/man5/slapo-nssov.5
 %exclude %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
 %exclude %{ldapserverdir}/share/man/man5/slapm-ppm.5
@@ -551,7 +542,6 @@ rm -rf %{buildroot}
 %exclude %{ldapserverdir}/share/man/man1/ldapvc.1
 # exclude contrib overlays libraries
 %exclude %{ldapserverdir}/libexec/openldap/autogroup.*
-%exclude %{ldapserverdir}/libexec/openldap/lastbind.*
 %exclude %{ldapserverdir}/libexec/openldap/noopsrch.*
 %exclude %{ldapserverdir}/libexec/openldap/nssov.*
 %exclude %{ldapserverdir}/libexec/openldap/pw-pbkdf2.*
@@ -564,7 +554,6 @@ rm -rf %{buildroot}
 
 %files contrib-overlays
 # contrib overlays man pages
-%doc %{ldapserverdir}/share/man/man5/slapo-lastbind.5
 %doc %{ldapserverdir}/share/man/man5/slapo-nssov.5
 %doc %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
 %doc %{ldapserverdir}/share/man/man5/slapm-ppm.5
@@ -572,7 +561,6 @@ rm -rf %{buildroot}
 %doc %{ldapserverdir}/share/man/man1/ldapvc.1
 # contrib overlays libraries
 %{ldapserverdir}/libexec/openldap/autogroup.*
-%{ldapserverdir}/libexec/openldap/lastbind.*
 %{ldapserverdir}/libexec/openldap/noopsrch.*
 %{ldapserverdir}/libexec/openldap/nssov.*
 %{ldapserverdir}/libexec/openldap/pw-pbkdf2.*
