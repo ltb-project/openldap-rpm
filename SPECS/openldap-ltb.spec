@@ -53,7 +53,7 @@
 %define ldapgroup        ldap
 
 %define slapd_cli_name             slapd-cli
-%define slapd_cli_version          2.8
+%define slapd_cli_version          2.9
 %define slapd_cli_bin              %{ldapdir}//sbin/slapd-cli
 
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.example
@@ -310,8 +310,8 @@ install -m 755 %{SOURCE2} %{buildroot}/etc/profile.d/openldap.sh
 ## slapd-cli
 install -m 755 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli %{buildroot}%{ldapserverdir}/sbin/
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli.conf %{buildroot}%{ldapserverdir}/etc/openldap/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template.conf %{buildroot}%{ldapserverdir}/etc/openldap/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template-2.5.conf %{buildroot}%{ldapserverdir}/etc/openldap/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template-2.5.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/data-template.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
 install -m 640 %{slapd_cli_name}-%{slapd_cli_version}/lload.conf %{buildroot}%{ldapserverdir}/etc/openldap/
 mkdir -p %{buildroot}/etc/bash_completion.d/
@@ -459,6 +459,13 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 mkdir -p %{ldapconfdir}
 chown root:%{ldapgroup} %{ldapconfdir}
 chmod 770 %{ldapconfdir}
+
+# Adapt slapd version number
+if ! grep -q -E "^SLAPD_VERSION=" %{ldapserverdir}/etc/openldap/slapd-cli.conf; then
+       printf 'SLAPD_VERSION=2.5' >> %{ldapserverdir}/etc/openldap/slapd-cli.conf
+else
+       sed -i -e 's/SLAPD_VERSION=.*$/SLAPD_VERSION=2.5/' %{ldapserverdir}/etc/openldap/slapd-cli.conf
+fi
 
 # Empty configuration directory, so import a new fresh config from template
 if [ -z "$( ls -A %{ldapconfdir} )" ]; then
