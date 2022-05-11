@@ -218,13 +218,13 @@ cd contrib/slapd-modules
 ## ppm
 cd ppm
 make clean
-make LDAP_SRC=../../.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64
+make LDAP_SRC=../../.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64 OLDAP_VERSION=26
 %if "%{real_version}" == "2.5.7"
 :
 %else
 make doc prefix=%{ldapserverdir}
 %endif
-make test "LDAP_SRC=../../.."
+make test LDAP_SRC=../../.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64 OLDAP_VERSION=26
 cd ..
 ## smbk5pwd
 cd smbk5pwd
@@ -304,7 +304,7 @@ install -m 755 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli %{buildroot}%{ld
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli.conf %{buildroot}%{ldapserverdir}/etc/openldap/
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template-2.6.conf %{buildroot}%{ldapserverdir}/etc/openldap/
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template-2.6.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/data-template.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/data-template-2.6.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
 install -m 640 %{slapd_cli_name}-%{slapd_cli_version}/lload.conf %{buildroot}%{ldapserverdir}/etc/openldap/
 mkdir -p %{buildroot}/etc/bash_completion.d/
 install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli-prompt %{buildroot}/etc/bash_completion.d/
