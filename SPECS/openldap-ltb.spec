@@ -56,6 +56,8 @@
 %define slapd_cli_version          2.9
 %define slapd_cli_bin              %{ldapdir}/sbin/slapd-cli
 
+%define ppm_name         ppm
+%define ppm_version      2.2
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.example
 
 %define explockout_name		explockout
@@ -81,6 +83,7 @@ Source1: %{slapd_cli_name}-%{slapd_cli_version}.tar.gz
 Source2: openldap.sh
 # Sources available on https://github.com/davidcoutadeur/explockout
 Source4: %{explockout_name}-%{explockout_version}.tar.gz
+Source5: %{ppm_name}-%{ppm_version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
@@ -190,6 +193,7 @@ exponential time
 %setup -n %{real_name}-%{real_version}
 %setup -n %{real_name}-%{real_version} -T -D -a 1
 %setup -n %{real_name}-%{real_version} -T -D -a 4
+%setup -n %{real_name}-%{real_version} -T -D -a 5
 
 #=================================================
 # Building
@@ -215,17 +219,6 @@ make depend
 make %{?_smp_mflags}
 # contrib-overlays
 cd contrib/slapd-modules
-## ppm
-cd ppm
-make clean
-make LDAP_SRC=../../.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64 OLDAP_VERSION=26
-%if "%{real_version}" == "2.5.7"
-:
-%else
-make doc prefix=%{ldapserverdir}
-%endif
-make test LDAP_SRC=../../.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64 OLDAP_VERSION=26
-cd ..
 ## smbk5pwd
 cd smbk5pwd
 make clean
@@ -276,6 +269,17 @@ cd %{explockout_name}-%{explockout_version}
 make clean
 make "OLDAP_SOURCES=.." "LIBDIR=%{ldapserverdir}/libexec/openldap"
 cd ..
+## ppm
+cd %{ppm_name}-%{ppm_version}
+make clean
+make LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64 OLDAP_VERSION=26
+%if "%{real_version}" == "2.5.7"
+:
+%else
+make doc prefix=%{ldapserverdir}
+%endif
+make test LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64 OLDAP_VERSION=26
+cd ..
 
 #=================================================
 # Installation
@@ -325,10 +329,6 @@ sed -i 's:^directory.*:directory\t'%{ldapdatadir}':' %{buildroot}%{ldapserverdir
 
 # contrib-overlays
 cd contrib/slapd-modules
-cd ppm
-make install "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{buildroot}%{ldapserverdir}/libexec/openldap"
-cp ppm_test "%{buildroot}%{ldapserverdir}/libexec/openldap/"
-cd ..
 cd smbk5pwd
 make install "prefix=%{buildroot}%{ldapserverdir}"
 cd ..
@@ -369,6 +369,11 @@ mkdir -p "%{buildroot}%{ldapserverdir}/libexec/openldap"
 mkdir -p "%{buildroot}%{ldapserverdir}/share/man/man5"
 make install "OLDAP_SOURCES=.." "DSTDIR=%{buildroot}%{ldapserverdir}/libexec/openldap"
 install -m 644 "slapo-explockout.5" "%{buildroot}%{ldapserverdir}/share/man/man5"
+cd ..
+
+cd %{ppm_name}-%{ppm_version}
+make install "LDAP_SRC=.." "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{buildroot}%{ldapserverdir}/libexec/openldap"
+cp ppm_test "%{buildroot}%{ldapserverdir}/libexec/openldap/"
 cd ..
 
 %pretrans -n openldap-ltb
