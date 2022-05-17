@@ -272,13 +272,13 @@ cd ..
 ## ppm
 cd %{ppm_name}-%{ppm_version}
 make clean
-make LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64 OLDAP_VERSION=26
+make LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64
 %if "%{real_version}" == "2.5.7"
 :
 %else
 make doc prefix=%{ldapserverdir}
 %endif
-make test LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64 OLDAP_VERSION=26
+make test LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/lib64
 cd ..
 
 #=================================================
