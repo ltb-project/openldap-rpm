@@ -106,7 +106,7 @@ BuildRequires: libevent-ltb-devel >= 2.1
 BuildRequires: systemd
 BuildRequires: libsodium-devel
 
-Requires: gawk, perl, libtool-ltdl, bash-completion, libsodium
+Requires: gawk, /usr/bin/perl, libtool-ltdl, bash-completion, libsodium
 %if "%{?dist}" == ".el8"
 Requires: libevent >= 2.1
 Requires: openssl
