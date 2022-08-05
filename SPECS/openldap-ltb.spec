@@ -21,7 +21,7 @@
 #=================================================
 
 %define real_name        openldap
-%define real_version     2.6.2
+%define real_version     2.6.3
 %define release_version  1%{?dist}
 
 # Fix for CentOS7
@@ -593,6 +593,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Fri Aug 19 2022 - Clement Oudot <clem@ltb-project.org> - 2.6.3-1
+- Upgrade to OpenLDAP 2.6.3
 * Fri May 20 2022 - Clement Oudot <clem@ltb-project.org> - 2.6.2-1
 - Upgrade to OpenLDAP 2.6.2
 * Tue Oct 29 2021 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.0.1
