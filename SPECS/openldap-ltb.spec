@@ -70,6 +70,7 @@ Summary: OpenLDAP server with addons from the LDAP Tool Box project
 Name: %{real_name}-ltb
 Version: %{real_version}
 Release: %{release_version}
+Obsoletes: openldap-ltb-contrib-overlays <= 2.5.12
 # http://www.openldap.org/software/release/license.html
 License: OpenLDAP Public License
 
