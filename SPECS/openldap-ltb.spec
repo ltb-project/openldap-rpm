@@ -22,7 +22,7 @@
 #=================================================
 
 %define real_name        openldap
-%define real_version     2.5.12
+%define real_version     2.5.13
 %define release_version  1%{?dist}
 
 # Fix for CentOS7
