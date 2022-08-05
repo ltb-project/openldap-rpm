@@ -147,7 +147,7 @@ Requires:	%{real_name}-ltb >= %{real_version}, cracklib
 %description contrib-overlays
 Some overlays are not included in the OpenLDAP main package but provided
 as contributions. This package provide these ones:
-autogroup lastbind noopsrch nssov pw-pbkdf2 pw-sha2 smbk5pwd ppm variant vc
+autogroup lastbind noopsrch nssov pw-pbkdf2 pw-sha2 smbk5pwd variant vc
 
 This is provided by LDAP Tool Box project: http://www.ltb-project.org
 
@@ -568,7 +568,6 @@ rm -rf %{buildroot}
 %exclude %{ldapserverdir}/share/man/man5/slapo-lastbind.5
 %exclude %{ldapserverdir}/share/man/man5/slapo-nssov.5
 %exclude %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
-%exclude %{ldapserverdir}/share/man/man5/slapm-ppm.5
 %exclude %{ldapserverdir}/share/man/man5/slapo-variant.5
 %exclude %{ldapserverdir}/share/man/man1/ldapvc.1
 # exclude contrib overlays libraries
@@ -579,8 +578,6 @@ rm -rf %{buildroot}
 %exclude %{ldapserverdir}/libexec/openldap/pw-pbkdf2.*
 %exclude %{ldapserverdir}/libexec/openldap/pw-sha2.*
 %exclude %{ldapserverdir}/libexec/openldap/smbk5pwd.*
-%exclude %{ldapserverdir}/libexec/openldap/ppm*
-%exclude %{ldapserverdir}/etc/openldap/ppm.example
 %exclude %{ldapserverdir}/libexec/openldap/variant.*
 %exclude %{ldapserverdir}/libexec/openldap/vc.*
 
@@ -589,7 +586,6 @@ rm -rf %{buildroot}
 %doc %{ldapserverdir}/share/man/man5/slapo-lastbind.5
 %doc %{ldapserverdir}/share/man/man5/slapo-nssov.5
 %doc %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
-%doc %{ldapserverdir}/share/man/man5/slapm-ppm.5
 %doc %{ldapserverdir}/share/man/man5/slapo-variant.5
 %doc %{ldapserverdir}/share/man/man1/ldapvc.1
 # contrib overlays libraries
@@ -600,8 +596,6 @@ rm -rf %{buildroot}
 %{ldapserverdir}/libexec/openldap/pw-pbkdf2.*
 %{ldapserverdir}/libexec/openldap/pw-sha2.*
 %{ldapserverdir}/libexec/openldap/smbk5pwd.*
-%{ldapserverdir}/libexec/openldap/ppm*
-%{ldapserverdir}/etc/openldap/ppm.example
 %{ldapserverdir}/libexec/openldap/variant.*
 %{ldapserverdir}/libexec/openldap/vc.*
 
