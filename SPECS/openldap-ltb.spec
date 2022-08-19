@@ -94,6 +94,7 @@ BuildRequires: cracklib
 BuildRequires: groff
 BuildRequires: pandoc
 BuildRequires: cracklib-devel
+BuildRequires: krb5-devel
 
 %if "%{?dist}" == ".el8"
 BuildRequires: openssl-devel
