@@ -1,4 +1,4 @@
-name: Sync Back to master
+name: Synchronize Back to master
 
 on:
   push:
