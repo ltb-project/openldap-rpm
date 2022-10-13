@@ -473,8 +473,8 @@ else
        sed -i -e 's/SLAPD_VERSION=.*$/SLAPD_VERSION=2.5/' %{ldapserverdir}/etc/openldap/slapd-cli.conf
 fi
 
-# Empty configuration directory, so import a new fresh config from template
-if [ -z "$( ls -A %{ldapconfdir} )" ]; then
+# first install + empty configuration directory, so import a new fresh config from template
+if [ $1 -eq 1 ] && [ -z "$( ls -A %{ldapconfdir} )" ]; then
 
   # Import configuration from ldif template
   %{slapd_cli_bin} importldifconfigtemplate > /dev/null
