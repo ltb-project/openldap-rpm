@@ -23,7 +23,7 @@
 
 %define real_name        openldap
 %define real_version     2.5.14
-%define release_version  1%{?dist}
+%define release_version  2%{?dist}
 
 # Fix for CentOS7
 %if 0%{?rhel} == 7
@@ -85,6 +85,8 @@ Source3: openldap.logrotate
 # Sources available on https://github.com/davidcoutadeur/explockout
 Source4: %{explockout_name}-%{explockout_version}.tar.gz
 Source5: %{ppm_name}-%{ppm_version}.tar.gz
+# Patch for https://bugs.openldap.org/show_bug.cgi?id=10041
+Patch0: 617.patch
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
@@ -193,6 +195,7 @@ exponential time
 #=================================================
 %prep
 %setup -n %{real_name}-%{real_version}
+%patch0 -p1
 %setup -n %{real_name}-%{real_version} -T -D -a 1
 %setup -n %{real_name}-%{real_version} -T -D -a 4
 %setup -n %{real_name}-%{real_version} -T -D -a 5
@@ -615,6 +618,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Wed May 10 2023 - Clement Oudot <clem@ltb-project.org> - 2.5.14-2
+- Apply patch for unnecessary dynlist evaluation (OpenLDAP #10041)
 * Tue Feb 21 2023 - Clement Oudot <clem@ltb-project.org> - 2.5.14-1
 - Upgrade to OpenLDAP 2.5.14
 * Fri Aug 19 2022 - Clement Oudot <clem@ltb-project.org> - 2.5.13-1
