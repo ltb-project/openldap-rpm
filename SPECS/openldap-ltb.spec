@@ -6,9 +6,9 @@
 # Create user/group ldap
 # Install ppm, an extension to password policy module
 #
-# Copyright (C) 2008-2020 Clement OUDOT
-# Copyright (C) 2018-2020 Worteks
-# Copyright (C) 2015 David COUTADEUR
+# Copyright (C) 2008-2023 Clement OUDOT
+# Copyright (C) 2018-2023 Worteks
+# Copyright (C) 2015-2023 David COUTADEUR
 # Copyright (C) 2008 Raphael OUAZANA
 # Copyright (C) 2015 LINAGORA
 # Copyright (C) 2015 Savoir-faire Linux
@@ -21,7 +21,7 @@
 #=================================================
 
 %define real_name        openldap
-%define real_version     2.6.4
+%define real_version     2.6.5
 %define release_version  1%{?dist}
 
 # Fix for CentOS7
@@ -592,6 +592,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Tue Jul 11 2023 - Clement Oudot <clem@ltb-project.org> - 2.6.5-1
+- Upgrade to OpenLDAP 2.6.5
 * Tue Feb 21 2023 - Clement Oudot <clem@ltb-project.org> - 2.6.4-1
 - Upgrade to OpenLDAP 2.6.4
 * Fri Aug 19 2022 - Clement Oudot <clem@ltb-project.org> - 2.6.3-1
