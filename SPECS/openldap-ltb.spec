@@ -53,7 +53,7 @@
 %define ldapgroup        ldap
 
 %define slapd_cli_name             slapd-cli
-%define slapd_cli_version          3.0
+%define slapd_cli_version          3.1
 %define slapd_cli_bin              %{ldapdir}/sbin/slapd-cli
 
 %define ppm_name         ppm
