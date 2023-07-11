@@ -600,7 +600,7 @@ rm -rf %{buildroot}
 - Upgrade to OpenLDAP 2.6.3
 * Fri May 20 2022 - Clement Oudot <clem@ltb-project.org> - 2.6.2-1
 - Upgrade to OpenLDAP 2.6.2
-* Tue Oct 29 2021 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.0.1
+* Fri Oct 29 2021 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.0.1
 - Upgrade to OpenLDAP 2.6.0
 * Tue Oct 26 2021 - Clement Oudot <clem@ltb-project.org> - 2.5.9-1
 - Upgrade to OpenLDAP 2.5.9
