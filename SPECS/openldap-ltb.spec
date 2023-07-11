@@ -7,9 +7,9 @@
 # Configure rsyslog and logrotate
 # Install ppm, an extension to password policy module
 #
-# Copyright (C) 2008-2022 Clement OUDOT
-# Copyright (C) 2018-2022 Worteks
-# Copyright (C) 2015 David COUTADEUR
+# Copyright (C) 2008-2023 Clement OUDOT
+# Copyright (C) 2018-2023 Worteks
+# Copyright (C) 2015-2023 David COUTADEUR
 # Copyright (C) 2008 Raphael OUAZANA
 # Copyright (C) 2015 LINAGORA
 # Copyright (C) 2015 Savoir-faire Linux
@@ -22,7 +22,7 @@
 #=================================================
 
 %define real_name        openldap
-%define real_version     2.5.14
+%define real_version     2.5.15
 %define release_version  1%{?dist}
 
 # Fix for CentOS7
@@ -615,6 +615,8 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
+* Tue Jul 11 2023 - Clement Oudot <clem@ltb-project.org> - 2.5.15-1
+- Upgrade to OpenLDAP 2.5.15
 * Tue Feb 21 2023 - Clement Oudot <clem@ltb-project.org> - 2.5.14-1
 - Upgrade to OpenLDAP 2.5.14
 * Fri Aug 19 2022 - Clement Oudot <clem@ltb-project.org> - 2.5.13-1
