@@ -615,7 +615,7 @@ rm -rf %{buildroot}
 # Changelog
 #=================================================
 %changelog
-* Tue Aug 33 2023 - Clement Oudot <clem@ltb-project.org> - 2.5.16-1
+* Wed Aug 23 2023 - Clement Oudot <clem@ltb-project.org> - 2.5.16-1
 - Upgrade to OpenLDAP 2.5.16
 * Tue Jul 11 2023 - Clement Oudot <clem@ltb-project.org> - 2.5.15-1
 - Upgrade to OpenLDAP 2.5.15
