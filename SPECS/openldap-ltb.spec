@@ -533,7 +533,9 @@ fi
 %config /etc/bash_completion.d/slapd-cli-prompt
 %dir %{ldapdir}
 %{ldapdir}/bin/
-%{ldapdir}/sbin/
+%dir %{ldapdir}/sbin/
+%{ldapdir}/sbin/slap*
+%dir %{ldapdir}/libexec/
 %{ldapdir}/libexec/
 %{ldapdir}/%{_lib}/
 %{ldapdir}/include/
@@ -544,19 +546,21 @@ fi
 %attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldapbackupdir}
 %attr(770,root,%{ldapgroup}) %dir %{ldapconfdir}
 %docdir %{ldapdir}/share/man
-# exclude explockout man page and library
-%exclude %{ldapserverdir}/share/man/man5/slapo-explockout.5
+%{ldapserverdir}/share/man/man3/ldap_bind.3
+%{ldapserverdir}/share/man/man3/ldap_bind_s.3
+%{ldapserverdir}/share/man/man3/ldap_parse_sasl_bind_result.3
+%{ldapserverdir}/share/man/man3/ldap_sasl_bind.3
+%{ldapserverdir}/share/man/man3/ldap_sasl_bind_s.3
+%{ldapserverdir}/share/man/man3/ldap_set_rebind_proc.3
+%{ldapserverdir}/share/man/man3/ldap_simple_bind.3
+%{ldapserverdir}/share/man/man3/ldap_simple_bind_s.3
+%{ldapserverdir}/share/man/man3/ldap_unbind.3
+%{ldapserverdir}/share/man/man3/ldap_unbind_ext.3
+%{ldapserverdir}/share/man/man3/ldap_unbind_ext_s.3
+%{ldapserverdir}/share/man/man3/ldap_unbind_s.3
+%{ldapserverdir}/share/man/man5/slapo-pbind.5
+# exclude explockout library
 %exclude %{ldapserverdir}/libexec/openldap/explockout.*
-# exclude mdb-utils man pages and binaries
-%exclude %{ldapserverdir}/share/man/man1/mdb_copy.1
-%exclude %{ldapserverdir}/share/man/man1/mdb_stat.1
-%exclude %{ldapserverdir}/sbin/mdb_copy
-%exclude %{ldapserverdir}/sbin/mdb_stat
-# exclude contrib overlays man pages
-%exclude %{ldapserverdir}/share/man/man5/slapo-nssov.5
-%exclude %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
-%exclude %{ldapserverdir}/share/man/man5/slapo-variant.5
-%exclude %{ldapserverdir}/share/man/man1/ldapvc.1
 # exclude contrib overlays libraries
 %exclude %{ldapserverdir}/libexec/openldap/autogroup.*
 %exclude %{ldapserverdir}/libexec/openldap/noopsrch.*
