@@ -13,7 +13,7 @@
 # Copyright (C) 2015 LINAGORA
 # Copyright (C) 2015 Savoir-faire Linux
 #
-# Provided by LTB-project (http://www.ltb-project.org)
+# Provided by LTB-project (https://www.ltb-project.org)
 #=================================================
 
 #=================================================
@@ -60,10 +60,10 @@ Summary: OpenLDAP server with addons from the LDAP Tool Box project
 Name: %{real_name}-ltb
 Version: %{real_version}
 Release: %{release_version}
-# http://www.openldap.org/software/release/license.html
+# https://www.openldap.org/software/release/license.html
 License: OpenLDAP Public License
 
-URL: http://www.openldap.org/
+URL: https://www.openldap.org/
 
 Source0: https://www.openldap.org/software/download/OpenLDAP/openldap-release/%{real_name}-%{real_version}.tgz
 Source1: https://github.com/ltb-project/slapd-cli/archive/v%{slapd_cli_version}/%{slapd_cli_name}-%{slapd_cli_version}.tar.gz
@@ -127,7 +127,7 @@ o Logrotate script
 Summary:        Overlays contributed to OpenLDAP
 Version:        %{real_version}
 Release:        %{release_version}
-URL:            http://www.ltb-project.org
+URL:            https://www.ltb-project.org
 
 Requires:       %{real_name}-ltb >= %{real_version}, cracklib
 
@@ -136,7 +136,7 @@ Some overlays are not included in the OpenLDAP main package but provided
 as contributions. This package provide these ones:
 autogroup noopsrch nssov pw-pbkdf2 pw-sha2 smbk5pwd variant vc
 
-This is provided by LDAP Tool Box project: http://www.ltb-project.org
+This is provided by LDAP Tool Box project: https://www.ltb-project.org
 
 
 #=================================================
@@ -146,7 +146,7 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 Summary:        MDB utilities
 Version:        %{real_version}
 Release:        %{release_version}
-URL:            http://www.ltb-project.org
+URL:            https://www.ltb-project.org
 
 Requires:       %{real_name}-ltb >= %{real_version}
 
@@ -154,7 +154,7 @@ Requires:       %{real_name}-ltb >= %{real_version}
 MDB utilities contain both mdb_stat and mdb_copy, and the associated
 documentation.
 
-This is provided by LDAP Tool Box project: http://www.ltb-project.org
+This is provided by LDAP Tool Box project: https://www.ltb-project.org
 
 #=================================================
 # Subpackage explockout
