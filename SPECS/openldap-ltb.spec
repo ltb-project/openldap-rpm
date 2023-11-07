@@ -70,7 +70,6 @@ Source1: https://github.com/ltb-project/slapd-cli/archive/v%{slapd_cli_version}/
 Source2: openldap.sh
 Source4: https://github.com/ltb-project/explockout/archive/v%{explockout_version}/%{explockout_name}-%{explockout_version}.tar.gz
 Source5: https://github.com/ltb-project/ppm/archive/v%{ppm_version}/%{ppm_name}-%{ppm_version}.tar.gz
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
 BuildRequires: cyrus-sasl-devel, libtool-ltdl-devel
