@@ -398,7 +398,7 @@ make install "LDAP_SRC=.." "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{build
 cp ppm_test "%{buildroot}%{ldapserverdir}/libexec/openldap/"
 cd ..
 
-%pretrans -n openldap-ltb
+%pretrans
 #=================================================
 # Pre Transaction
 #=================================================
@@ -414,7 +414,7 @@ then
   touch %{_localstatedir}/openldap-ltb-lload-running
 fi
 
-%pre -n openldap-ltb
+%pre
 #=================================================
 # Pre Installation
 #=================================================
@@ -429,7 +429,7 @@ then
   %{ldapserverdir}/sbin/slapd-cli stop > /dev/null 2>&1
 fi
 
-%post -n openldap-ltb
+%post
 #=================================================
 # Post Installation
 #=================================================
@@ -469,7 +469,7 @@ then
   /bin/systemctl start slapd-ltb.service
 fi
 
-%preun -n openldap-ltb
+%preun
 #=================================================
 # Pre Uninstallation
 #=================================================
@@ -489,7 +489,7 @@ fi
 sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
 /sbin/ldconfig
 
-%posttrans -n openldap-ltb
+%posttrans
 #=================================================
 # Post transaction
 #=================================================
@@ -514,7 +514,7 @@ fi
 #=================================================
 # Files
 #=================================================
-%files -n openldap-ltb
+%files
 %license COPYRIGHT LICENSE
 %doc ANNOUNCEMENT CHANGES README
 %{_unitdir}/slapd-ltb.service
