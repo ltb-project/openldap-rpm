@@ -514,6 +514,8 @@ fi
 # Files
 #=================================================
 %files -n openldap-ltb
+%license COPYRIGHT LICENSE
+%doc ANNOUNCEMENT CHANGES README
 %{_unitdir}/slapd-ltb.service
 %{_unitdir}/lload-ltb.service
 %dir  %{ldapserverdir}/etc/
