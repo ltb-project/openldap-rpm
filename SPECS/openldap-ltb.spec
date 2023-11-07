@@ -269,7 +269,6 @@ cd ..
 # Installation
 #=================================================
 %install
-rm -rf %{buildroot}
 make install DESTDIR=%{buildroot} STRIP=""
 
 # create some directories
