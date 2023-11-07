@@ -71,12 +71,14 @@ Source2: openldap.sh
 Source4: https://github.com/ltb-project/explockout/archive/v%{explockout_version}/%{explockout_name}-%{explockout_version}.tar.gz
 Source5: https://github.com/ltb-project/ppm/archive/v%{ppm_version}/%{ppm_name}-%{ppm_version}.tar.gz
 
-BuildRequires: gcc, make
-BuildRequires: cyrus-sasl-devel, libtool-ltdl-devel
 BuildRequires: cracklib
-BuildRequires: groff
-BuildRequires: pandoc
 BuildRequires: cracklib-devel
+BuildRequires: cyrus-sasl-devel
+BuildRequires: gcc
+BuildRequires: groff
+BuildRequires: libtool-ltdl-devel
+BuildRequires: make
+BuildRequires: pandoc
 
 %if ! 0%{?el7}
 BuildRequires: openssl-devel
