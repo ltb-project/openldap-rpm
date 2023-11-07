@@ -50,8 +50,8 @@
 %define ppm_version      2.2
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.example
 
-%define explockout_name		explockout
-%define explockout_version	1.1
+%define explockout_name            explockout
+%define explockout_version         1.1
 
 #=================================================
 # Header
@@ -127,9 +127,9 @@ o Logrotate script
 Summary:        Overlays contributed to OpenLDAP
 Version:        %{real_version}
 Release:        %{release_version}
-URL:		http://www.ltb-project.org
+URL:            http://www.ltb-project.org
 
-Requires:	%{real_name}-ltb >= %{real_version}, cracklib
+Requires:       %{real_name}-ltb >= %{real_version}, cracklib
 
 %description contrib-overlays
 Some overlays are not included in the OpenLDAP main package but provided
@@ -146,9 +146,9 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 Summary:        MDB utilities
 Version:        %{real_version}
 Release:        %{release_version}
-URL:		http://www.ltb-project.org
+URL:            http://www.ltb-project.org
 
-Requires:	%{real_name}-ltb >= %{real_version}
+Requires:       %{real_name}-ltb >= %{real_version}
 
 %description mdb-utils
 MDB utilities contain both mdb_stat and mdb_copy, and the associated
