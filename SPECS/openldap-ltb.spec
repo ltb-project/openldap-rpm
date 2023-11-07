@@ -24,16 +24,6 @@
 %define real_version     2.6.6
 %define release_version  1%{?dist}
 
-# Fix for CentOS7
-%if 0%{?rhel} == 7
- %define dist .el7
-%endif
-
-# Fix for CentOS8
-%if 0%{?rhel} == 8
- %define dist .el8
-%endif
-
 # exclude private libraries
 %global _privatelibs                 libldap
 %global _privatelibs %{_privatelibs}|liblber
@@ -93,7 +83,7 @@ BuildRequires: groff
 BuildRequires: pandoc
 BuildRequires: cracklib-devel
 
-%if "%{?dist}" == ".el8" || "%{?dist}" == ".el9"
+%if ! 0%{?el7}
 BuildRequires: openssl-devel
 BuildRequires: libevent-devel >= 2.1
 %else
@@ -107,7 +97,7 @@ BuildRequires: systemd
 BuildRequires: libsodium-devel
 
 Requires: gawk, /usr/bin/perl, libtool-ltdl, bash-completion, libsodium
-%if "%{?dist}" == ".el8" || "%{?dist}" == ".el9"
+%if ! 0%{?el7}
 Requires: libevent >= 2.1
 Requires: openssl
 %else
@@ -206,7 +196,7 @@ export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE"
 #export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE -DSLAP_CONFIG_DELETE"
 export CPPFLAGS="-I/usr/kerberos/include"
 export LDFLAGS=""
-%if "%{?dist}" == ".el8" || "%{?dist}" == ".el9"
+%if ! 0%{?el7}
 # disable wrappers
 ./configure --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --enable-modules=yes --enable-overlays=mod --enable-backends=mod --enable-dynamic=yes --with-tls=openssl --enable-debug --with-cyrus-sasl --enable-spasswd --enable-ppolicy=mod --enable-crypt --enable-slapi --enable-mdb=mod --enable-ldap=mod --enable-meta=mod --enable-sock=mod --enable-rlookups --enable-argon2=yes --enable-otp=mod --enable-balancer=mod --enable-sql=no --enable-ndb=no --enable-wt=no --enable-perl=no
 %else
