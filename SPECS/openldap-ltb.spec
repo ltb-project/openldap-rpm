@@ -306,35 +306,47 @@ mkdir -p %{buildroot}%{_unitdir}/
 # Copy 3rd party files
 
 ## systemd
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-ltb.service %{buildroot}%{_unitdir}/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/lload-ltb.service %{buildroot}%{_unitdir}/
+install -m 644 \
+  %{slapd_cli_name}-%{slapd_cli_version}/slapd-ltb.service \
+  %{slapd_cli_name}-%{slapd_cli_version}/lload-ltb.service \
+  %{buildroot}%{_unitdir}/
 
 ## profile
 install -m 755 %{SOURCE2} %{buildroot}/etc/profile.d/openldap.sh
 
 ## slapd-cli
-install -m 755 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli %{buildroot}%{ldapserverdir}/sbin/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli.conf %{buildroot}%{ldapserverdir}/etc/openldap/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template-2.6.conf %{buildroot}%{ldapserverdir}/etc/openldap/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/config-template-2.6.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/data-template-2.6.ldif %{buildroot}%{ldapserverdir}/etc/openldap/
-install -m 640 %{slapd_cli_name}-%{slapd_cli_version}/lload.conf %{buildroot}%{ldapserverdir}/etc/openldap/
+install -m 755 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli \
+  %{buildroot}%{ldapserverdir}/sbin/
+install -m 644 \
+  %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli.conf \
+  %{slapd_cli_name}-%{slapd_cli_version}/config-template-2.6.conf \
+  %{slapd_cli_name}-%{slapd_cli_version}/config-template-2.6.ldif \
+  %{slapd_cli_name}-%{slapd_cli_version}/data-template-2.6.ldif \
+  %{buildroot}%{ldapserverdir}/etc/openldap/
+install -m 640 %{slapd_cli_name}-%{slapd_cli_version}/lload.conf \
+  %{buildroot}%{ldapserverdir}/etc/openldap/
 mkdir -p %{buildroot}/etc/bash_completion.d/
-install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli-prompt %{buildroot}/etc/bash_completion.d/
+install -m 644 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli-prompt \
+  %{buildroot}/etc/bash_completion.d/
 
 # replace variables in slapd-cli.conf
-sed -i 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
-sed -i 's:^SLAPD_USER.*:SLAPD_USER="'%{ldapuser}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
-sed -i 's:^SLAPD_GROUP.*:SLAPD_GROUP="'%{ldapgroup}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
-sed -i 's:^BACKUP_PATH.*:BACKUP_PATH="'%{ldapbackupdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
-sed -i 's:^SLAPD_CONF_DIR.*:SLAPD_CONF_DIR="'%{ldapconfdir}'":' %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
+sed -i \
+  -e 's:^SLAPD_PATH.*:SLAPD_PATH="'%{ldapdir}'":' \
+  -e 's:^SLAPD_USER.*:SLAPD_USER="'%{ldapuser}'":' \
+  -e 's:^SLAPD_GROUP.*:SLAPD_GROUP="'%{ldapgroup}'":' \
+  -e 's:^BACKUP_PATH.*:BACKUP_PATH="'%{ldapbackupdir}'":' \
+  -e 's:^SLAPD_CONF_DIR.*:SLAPD_CONF_DIR="'%{ldapconfdir}'":' \
+  %{buildroot}%{ldapserverdir}/etc/openldap/slapd-cli.conf
 
 # PATH modification
-sed -i 's:^OL_BIN.*:OL_BIN='%{ldapdir}/bin':' %{buildroot}/etc/profile.d/openldap.sh
-sed -i 's:^OL_SBIN.*:OL_SBIN='%{ldapdir}/sbin':' %{buildroot}/etc/profile.d/openldap.sh
+sed -i \
+  -e 's:^OL_BIN.*:OL_BIN='%{ldapdir}/bin':' \
+  -e 's:^OL_SBIN.*:OL_SBIN='%{ldapdir}/sbin':' \
+  %{buildroot}/etc/profile.d/openldap.sh
 
 # Modify data directory in slapd.conf
-sed -i 's:^directory.*:directory\t'%{ldapdatadir}':' %{buildroot}%{ldapserverdir}/etc/openldap/slapd.conf
+sed -i -e 's:^directory.*:directory\t'%{ldapdatadir}':' \
+  %{buildroot}%{ldapserverdir}/etc/openldap/slapd.conf
 
 # contrib-overlays
 cd contrib/slapd-modules
