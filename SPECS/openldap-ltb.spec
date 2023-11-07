@@ -63,7 +63,6 @@ Release: %{release_version}
 # http://www.openldap.org/software/release/license.html
 License: OpenLDAP Public License
 
-Group: Applications/System
 URL: http://www.openldap.org/
 
 # Source available on http://www.openldap.org
@@ -128,7 +127,6 @@ o Logrotate script
 Summary:        Overlays contributed to OpenLDAP
 Version:        %{real_version}
 Release:        %{release_version}
-Group:          Applications/System
 URL:		http://www.ltb-project.org
 
 Requires:	%{real_name}-ltb >= %{real_version}, cracklib
@@ -148,7 +146,6 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 Summary:        MDB utilities
 Version:        %{real_version}
 Release:        %{release_version}
-Group:          Applications/System
 URL:		http://www.ltb-project.org
 
 Requires:	%{real_name}-ltb >= %{real_version}
@@ -166,7 +163,6 @@ This is provided by LDAP Tool Box project: http://www.ltb-project.org
 Summary:        OpenLDAP overlay explockout
 Version:        %{real_version}
 Release:        %{release_version}
-Group:          Applications/System
 URL:            https://github.com/ltb-project/explockout
 
 Requires:       %{real_name}-ltb >= %{real_version}
