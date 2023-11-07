@@ -379,6 +379,9 @@ fi
 #=================================================
 # Pre Installation
 #=================================================
+# Create user and group if needed
+getent group %{ldapgroup} >/dev/null || groupadd -r -g 55 %{ldapgroup}
+getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ldapdir} -s /sbin/nologin -c "LDAP User" %{ldapuser}
 
 # If upgrade stop slapd and lload
 if [ $1 -eq 2 ]
@@ -406,9 +409,6 @@ then
 fi
 
 # Always do this
-# Create user and group if needed
-getent group %{ldapgroup} >/dev/null || groupadd -r -g 55 %{ldapgroup}
-getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ldapdir} -s /sbin/nologin -c "LDAP User" %{ldapuser}
 # Globally set owner to root:root
 /bin/chown root:root %{ldapserverdir}
 /bin/chown -R root:root %{ldapserverdir}/bin
