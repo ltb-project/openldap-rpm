@@ -129,7 +129,8 @@ Version:        %{real_version}
 Release:        %{release_version}
 URL:            https://www.ltb-project.org
 
-Requires:       %{real_name}-ltb >= %{real_version}, cracklib
+Requires:       %{real_name}-ltb%{?_isa} >= %{real_version}
+Requires:       cracklib
 
 %description contrib-overlays
 Some overlays are not included in the OpenLDAP main package but provided
@@ -148,7 +149,7 @@ Version:        %{real_version}
 Release:        %{release_version}
 URL:            https://www.ltb-project.org
 
-Requires:       %{real_name}-ltb >= %{real_version}
+Requires:       %{real_name}-ltb%{?_isa} >= %{real_version}
 
 %description mdb-utils
 MDB utilities contain both mdb_stat and mdb_copy, and the associated
@@ -165,7 +166,7 @@ Version:        %{real_version}
 Release:        %{release_version}
 URL:            https://github.com/ltb-project/explockout
 
-Requires:       %{real_name}-ltb >= %{real_version}
+Requires:       %{real_name}-ltb%{?_isa} >= %{real_version}
 
 %description explockout
 explockout is an OpenLDAP module that denies authentication to users who
