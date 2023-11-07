@@ -176,10 +176,10 @@ exponential time
 # Source preparation
 #=================================================
 %prep
-%setup -n %{real_name}-%{real_version}
-%setup -n %{real_name}-%{real_version} -T -D -a 1
-%setup -n %{real_name}-%{real_version} -T -D -a 4
-%setup -n %{real_name}-%{real_version} -T -D -a 5
+%setup -q -n %{real_name}-%{real_version}
+%setup -q -n %{real_name}-%{real_version} -T -D -a 1
+%setup -q -n %{real_name}-%{real_version} -T -D -a 4
+%setup -q -n %{real_name}-%{real_version} -T -D -a 5
 
 #=================================================
 # Building
