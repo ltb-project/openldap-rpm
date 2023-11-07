@@ -431,16 +431,6 @@ then
 fi
 
 # Always do this
-# Globally set owner to root:root
-/bin/chown root:root %{ldapserverdir}
-/bin/chown -R root:root %{ldapserverdir}/bin
-/bin/chown -R root:root %{ldapserverdir}/etc/openldap/{ldap.conf,ldap.conf.default,schema,slapd.conf.default,slapd.ldif,slapd.ldif.default}
-/bin/chown -R root:root %{ldapserverdir}/include
-/bin/chown -R root:root %{ldapserverdir}/lib*
-/bin/chown -R root:root %{ldapserverdir}/libexec
-/bin/chown -R root:root %{ldapserverdir}/sbin
-/bin/chown root:root %{ldapserverdir}/var
-
 # Specifically adapt some files/directories owner and permissions
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapdatadir}
 /bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapbackupdir}
