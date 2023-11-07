@@ -76,6 +76,8 @@ BuildRequires: cracklib-devel
 BuildRequires: cyrus-sasl-devel
 BuildRequires: gcc
 BuildRequires: groff
+BuildRequires: krb5-devel
+BuildRequires: libkadm5
 BuildRequires: libtool-ltdl-devel
 BuildRequires: make
 BuildRequires: pandoc
