@@ -192,12 +192,63 @@ export CPPFLAGS="-I/usr/kerberos/include"
 export LDFLAGS=""
 %if ! 0%{?el7}
 # disable wrappers
-./configure --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --enable-modules=yes --enable-overlays=mod --enable-backends=mod --enable-dynamic=yes --with-tls=openssl --enable-debug --with-cyrus-sasl --enable-spasswd --enable-ppolicy=mod --enable-crypt --enable-slapi --enable-mdb=mod --enable-ldap=mod --enable-meta=mod --enable-sock=mod --enable-rlookups --enable-argon2=yes --enable-otp=mod --enable-balancer=mod --enable-sql=no --enable-ndb=no --enable-wt=no --enable-perl=no
+./configure \
+  --prefix=%{ldapserverdir} \
+  --libdir=%{ldapserverdir}/%{_lib} \
+  --enable-modules=yes \
+  --enable-overlays=mod \
+  --enable-backends=mod \
+  --enable-dynamic=yes \
+  --with-tls=openssl \
+  --enable-debug \
+  --with-cyrus-sasl \
+  --enable-spasswd \
+  --enable-ppolicy=mod \
+  --enable-crypt \
+  --enable-slapi \
+  --enable-mdb=mod \
+  --enable-ldap=mod \
+  --enable-meta=mod \
+  --enable-sock=mod \
+  --enable-rlookups \
+  --enable-argon2=yes \
+  --enable-otp=mod \
+  --enable-balancer=mod \
+  --enable-sql=no \
+  --enable-ndb=no \
+  --enable-wt=no \
+  --enable-perl=no
 %else
 # enable wrappers
 export CPPFLAGS="${CPPFLAGS} -I/usr/include/openssl11 -I/usr/local/libevent-ltb-2.1/include"
 export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11 -L/usr/local/libevent-ltb-2.1/lib"
-./configure --prefix=%{ldapserverdir} --libdir=%{ldapserverdir}/%{_lib} --enable-modules=yes --enable-overlays=mod --enable-backends=mod --enable-dynamic=yes --with-tls=openssl --enable-debug --with-cyrus-sasl --enable-spasswd --enable-ppolicy=mod --enable-crypt --enable-slapi --enable-mdb=mod --enable-ldap=mod --enable-meta=mod --enable-sock=mod --enable-wrappers --enable-rlookups --enable-argon2=yes --enable-otp=mod --enable-balancer=mod --enable-sql=no --enable-ndb=no --enable-wt=no --enable-perl=no
+./configure \
+  --prefix=%{ldapserverdir} \
+  --libdir=%{ldapserverdir}/%{_lib} \
+  --enable-modules=yes \
+  --enable-overlays=mod \
+  --enable-backends=mod \
+  --enable-dynamic=yes \
+  --with-tls=openssl \
+  --enable-debug \
+  --with-cyrus-sasl \
+  --enable-spasswd \
+  --enable-ppolicy=mod \
+  --enable-crypt \
+  --enable-slapi \
+  --enable-mdb=mod \
+  --enable-ldap=mod \
+  --enable-meta=mod \
+  --enable-sock=mod \
+  --enable-wrappers \
+  --enable-rlookups \
+  --enable-argon2=yes \
+  --enable-otp=mod \
+  --enable-balancer=mod \
+  --enable-sql=no \
+  --enable-ndb=no \
+  --enable-wt=no \
+  --enable-perl=no
 %endif
 make depend
 make %{?_smp_mflags}
