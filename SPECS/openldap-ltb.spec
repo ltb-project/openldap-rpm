@@ -405,12 +405,12 @@ cd ..
 %{ldapserverdir}/sbin/slapd-cli status > /dev/null 2>&1
 if [ $? -eq 0 ]
 then
-	touch %{_localstatedir}/openldap-ltb-slapd-running
+  touch %{_localstatedir}/openldap-ltb-slapd-running
 fi
 %{ldapserverdir}/sbin/slapd-cli lloadstatus > /dev/null 2>&1
 if [ $? -eq 0 ]
 then
-	touch %{_localstatedir}/openldap-ltb-lload-running
+  touch %{_localstatedir}/openldap-ltb-lload-running
 fi
 
 %pre -n openldap-ltb
@@ -424,8 +424,8 @@ getent passwd %{ldapuser} >/dev/null || useradd -r -g %{ldapgroup} -u 55 -d %{ld
 # If upgrade stop slapd and lload
 if [ $1 -eq 2 ]
 then
-	%{ldapserverdir}/sbin/slapd-cli lloadstop > /dev/null 2>&1
-	%{ldapserverdir}/sbin/slapd-cli stop > /dev/null 2>&1
+  %{ldapserverdir}/sbin/slapd-cli lloadstop > /dev/null 2>&1
+  %{ldapserverdir}/sbin/slapd-cli stop > /dev/null 2>&1
 fi
 
 %post -n openldap-ltb
@@ -442,16 +442,16 @@ fi
 # Do this at first install
 if [ $1 -eq 1 ]
 then
-	# Set slapd as service
-	/bin/systemctl enable slapd-ltb.service
+  # Set slapd as service
+  /bin/systemctl enable slapd-ltb.service
 fi
 
 # Always do this
 # Adapt slapd version number
 if ! grep -q -E "^SLAPD_VERSION=" %{ldapserverdir}/etc/openldap/slapd-cli.conf; then
-	printf 'SLAPD_VERSION=2.6' >> %{ldapserverdir}/etc/openldap/slapd-cli.conf
+  printf 'SLAPD_VERSION=2.6' >> %{ldapserverdir}/etc/openldap/slapd-cli.conf
 else
-	sed -i -e 's/SLAPD_VERSION=.*$/SLAPD_VERSION=2.6/' %{ldapserverdir}/etc/openldap/slapd-cli.conf
+  sed -i -e 's/SLAPD_VERSION=.*$/SLAPD_VERSION=2.6/' %{ldapserverdir}/etc/openldap/slapd-cli.conf
 fi
 
 # first install + empty configuration directory, so import a new fresh config from template
@@ -478,9 +478,9 @@ fi
 # Don't do this if newer version is installed
 if [ $1 -eq 0 ]
 then
-	# Stop slapd and disable service
-	/bin/systemctl stop slapd-ltb.service > /dev/null 2>&1
-	/bin/systemctl disable slapd-ltb.service
+  # Stop slapd and disable service
+  /bin/systemctl stop slapd-ltb.service > /dev/null 2>&1
+  /bin/systemctl disable slapd-ltb.service
 fi
 
 # Always do this
@@ -495,18 +495,18 @@ sed -i '\:'%{ldapserverdir}/%{_lib}':d' /etc/ld.so.conf
 # Do this after an upgrade
 if [ -e %{_localstatedir}/openldap-ltb-slapd-running ]
 then
-	# Start slapd
-	/bin/systemctl start slapd-ltb.service
+  # Start slapd
+  /bin/systemctl start slapd-ltb.service
 
-	rm -f %{_localstatedir}/openldap-ltb-slapd-running
+  rm -f %{_localstatedir}/openldap-ltb-slapd-running
 fi
 
 if [ -e %{_localstatedir}/openldap-ltb-lload-running ]
 then
-	# Start lload
-	/bin/systemctl start lload-ltb.service
+  # Start lload
+  /bin/systemctl start lload-ltb.service
 
-	rm -f %{_localstatedir}/openldap-ltb-lload-running
+  rm -f %{_localstatedir}/openldap-ltb-lload-running
 fi
 
 
