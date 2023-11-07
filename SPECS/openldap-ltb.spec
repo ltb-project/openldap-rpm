@@ -61,7 +61,7 @@ Name: %{real_name}-ltb
 Version: %{real_version}
 Release: %{release_version}
 # https://www.openldap.org/software/release/license.html
-License: OpenLDAP Public License
+License: OLDAP-2.8
 
 URL: https://www.openldap.org/
 
