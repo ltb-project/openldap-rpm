@@ -738,7 +738,7 @@ fi
 - Upgrade to init script 0.9
 - Upgrade to check_password 1.1
 - Disable strip to provide debuginfo package (#117)
-- Use %config(noreplace)
+- Use %%config(noreplace)
 - Start slapd before upgrade, and start after upgrade
 * Fri Jul 3 2009 - Clement Oudot <clem@ltb-project.org> - 2.4.16-2 / 1.0.3-4
 - Upgrade to init script 0.8
