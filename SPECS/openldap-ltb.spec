@@ -65,14 +65,11 @@ License: OpenLDAP Public License
 
 URL: http://www.openldap.org/
 
-# Source available on http://www.openldap.org
-Source: %{real_name}-%{real_version}.tgz
-# Sources available on https://github.com/ltb-project/slapd-cli
-Source1: %{slapd_cli_name}-%{slapd_cli_version}.tar.gz
+Source0: https://www.openldap.org/software/download/OpenLDAP/openldap-release/%{real_name}-%{real_version}.tgz
+Source1: https://github.com/ltb-project/slapd-cli/archive/v%{slapd_cli_version}/%{slapd_cli_name}-%{slapd_cli_version}.tar.gz
 Source2: openldap.sh
-# Sources available on https://github.com/davidcoutadeur/explockout
-Source4: %{explockout_name}-%{explockout_version}.tar.gz
-Source5: %{ppm_name}-%{ppm_version}.tar.gz
+Source4: https://github.com/ltb-project/explockout/archive/v%{explockout_version}/%{explockout_name}-%{explockout_version}.tar.gz
+Source5: https://github.com/ltb-project/ppm/archive/v%{ppm_version}/%{ppm_name}-%{ppm_version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: gcc, make
