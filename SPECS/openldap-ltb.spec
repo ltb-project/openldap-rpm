@@ -298,6 +298,8 @@ make install DESTDIR=%{buildroot} STRIP=""
 # create some directories
 mkdir -p %{buildroot}%{ldapdatadir}
 mkdir -p %{buildroot}%{ldapbackupdir}
+mkdir -p %{buildroot}%{ldaplogdir}
+mkdir -p %{buildroot}%{ldapconfdir}
 mkdir -p %{buildroot}/etc/profile.d
 mkdir -p %{buildroot}%{_unitdir}/
 
@@ -433,22 +435,6 @@ then
 fi
 
 # Always do this
-# Specifically adapt some files/directories owner and permissions
-/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapdatadir}
-/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapbackupdir}
-/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldapserverdir}/var/run
-/bin/chown -R root:%{ldapgroup} %{ldapserverdir}/etc/openldap/slapd.conf
-/bin/chmod 640 %{ldapserverdir}/etc/openldap/slapd.conf
-/bin/chown -R root:%{ldapgroup} %{ldapserverdir}/etc/openldap/lload.conf
-/bin/chmod 640 %{ldapserverdir}/etc/openldap/lload.conf
-mkdir -p %{ldaplogdir}
-/bin/chown -R %{ldapuser}:%{ldapgroup} %{ldaplogdir}
-
-# Add configuration directory if it does not exist
-mkdir -p %{ldapconfdir}
-chown root:%{ldapgroup} %{ldapconfdir}
-chmod 770 %{ldapconfdir}
-
 # Adapt slapd version number
 if ! grep -q -E "^SLAPD_VERSION=" %{ldapserverdir}/etc/openldap/slapd-cli.conf; then
 	printf 'SLAPD_VERSION=2.6' >> %{ldapserverdir}/etc/openldap/slapd-cli.conf
@@ -516,19 +502,36 @@ fi
 # Files
 #=================================================
 %files -n openldap-ltb
-%defattr(-, root, root, 0755)
-%{ldapdir}
-%docdir %{ldapserverdir}/share/man
-%config(noreplace) %{ldapserverdir}/etc/openldap/slapd.conf
-%config(noreplace) %{ldapserverdir}/etc/openldap/ldap.conf
 %{_unitdir}/slapd-ltb.service
 %{_unitdir}/lload-ltb.service
+%dir  %{ldapserverdir}/etc/
+%dir  %{ldapserverdir}/etc/openldap/
+%config(noreplace) %{ldapserverdir}/etc/openldap/ldap.conf
 %config(noreplace) %{ldapserverdir}/etc/openldap/slapd-cli.conf
 %config(noreplace) %{ldapserverdir}/etc/openldap/*template*
-%config(noreplace) %{ldapserverdir}/etc/openldap/lload.conf
+%attr(640,root,%{ldapgroup}) %config(noreplace) %{ldapserverdir}/etc/openldap/slapd.conf
+%attr(640,root,%{ldapgroup}) %config(noreplace) %{ldapserverdir}/etc/openldap/lload.conf
+%{ldapserverdir}/etc/openldap/ldap.conf.default
+%{ldapserverdir}/etc/openldap/ppm.example
+%{ldapserverdir}/etc/openldap/slapd.conf.default
+%{ldapserverdir}/etc/openldap/slapd.ldif
+%{ldapserverdir}/etc/openldap/slapd.ldif.default
+%{ldapserverdir}/etc/openldap/schema/
 /etc/profile.d/openldap.sh
 %config /etc/bash_completion.d/slapd-cli-prompt
-%{ldapbackupdir}
+%dir %{ldapdir}
+%{ldapdir}/bin/
+%{ldapdir}/sbin/
+%{ldapdir}/libexec/
+%{ldapdir}/%{_lib}/
+%{ldapdir}/include/
+%{ldapdir}/share/man/
+%attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldapdatadir}
+%attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldapserverdir}/var/run
+%attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldaplogdir}
+%attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldapbackupdir}
+%attr(770,root,%{ldapgroup}) %dir %{ldapconfdir}
+%docdir %{ldapdir}/share/man
 # exclude explockout man page and library
 %exclude %{ldapserverdir}/share/man/man5/slapo-explockout.5
 %exclude %{ldapserverdir}/libexec/openldap/explockout.*
@@ -554,6 +557,7 @@ fi
 
 %files contrib-overlays
 # contrib overlays man pages
+%docdir %{ldapserverdir}/share/man
 %doc %{ldapserverdir}/share/man/man5/slapo-nssov.5
 %doc %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
 %doc %{ldapserverdir}/share/man/man5/slapo-variant.5
@@ -571,11 +575,13 @@ fi
 %files mdb-utils
 %{ldapserverdir}/sbin/mdb_copy
 %{ldapserverdir}/sbin/mdb_stat
+%docdir %{ldapserverdir}/share/man
 %doc %{ldapserverdir}/share/man/man1/mdb_copy.1
 %doc %{ldapserverdir}/share/man/man1/mdb_stat.1
 
 %files explockout
 # explockout man page and library
+%docdir %{ldapserverdir}/share/man
 %doc %{ldapserverdir}/share/man/man5/slapo-explockout.5
 %{ldapserverdir}/libexec/openldap/explockout.*
 
