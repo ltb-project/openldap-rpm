@@ -1,3 +1,4 @@
+#!/bin/bash
 #=================================================
 # Update PATH variable for OpenLDAP
 #
