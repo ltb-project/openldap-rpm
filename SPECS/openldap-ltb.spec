@@ -221,7 +221,6 @@ export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11 -L/usr/local/libevent-ltb-2.
   --enable-otp=mod \
   --enable-balancer=mod \
   --enable-sql=no \
-  --enable-ndb=no \
   --enable-wt=no \
   --enable-perl=no
 make depend
