@@ -120,6 +120,20 @@ from the LDAP Tool Box project:
 o Start/stop script
 o Logrotate script
 
+
+%package devel
+Summary: openLDAP-ltb development libraries and header files
+Requires: openldap-ltb%{?_isa} = %{version}-%{release}
+Requires: cyrus-sasl-devel%{?_isa}
+
+%description devel
+The openldap-ltb-devel package includes the development libraries and
+header files needed for compiling applications that use LDAP
+(Lightweight Directory Access Protocol) internals. LDAP is a set of
+protocols for enabling directory services over the Internet. Install
+this package only if you plan to develop or will need to compile
+customized LDAP clients against openldap-ltb..
+
 #=================================================
 # Subpackage contrib-overlays
 #=================================================
@@ -545,48 +559,141 @@ fi
 %dir %{ldapdir}/sbin/
 %{ldapdir}/sbin/slap*
 %dir %{ldapdir}/libexec/
-%{ldapdir}/libexec/
-%{ldapdir}/%{_lib}/
-%{ldapdir}/include/
-%{ldapdir}/share/man/
+%{ldapserverdir}/libexec/slapd
+%{ldapserverdir}/libexec/openldap/accesslog.*
+%{ldapserverdir}/libexec/openldap/argon2.*
+%{ldapserverdir}/libexec/openldap/auditlog.*
+%{ldapserverdir}/libexec/openldap/autoca.*
+%{ldapserverdir}/libexec/openldap/back_asyncmeta.*
+%{ldapserverdir}/libexec/openldap/back_dnssrv.*
+%{ldapserverdir}/libexec/openldap/back_ldap.*
+%{ldapserverdir}/libexec/openldap/back_mdb.*
+%{ldapserverdir}/libexec/openldap/back_meta.*
+%{ldapserverdir}/libexec/openldap/back_null.*
+%{ldapserverdir}/libexec/openldap/back_passwd.*
+%{ldapserverdir}/libexec/openldap/back_relay.*
+%{ldapserverdir}/libexec/openldap/back_sock.*
+%{ldapserverdir}/libexec/openldap/collect.*
+%{ldapserverdir}/libexec/openldap/constraint.*
+%{ldapserverdir}/libexec/openldap/dds.*
+%{ldapserverdir}/libexec/openldap/deref.*
+%{ldapserverdir}/libexec/openldap/dyngroup.*
+%{ldapserverdir}/libexec/openldap/dynlist.*
+%{ldapserverdir}/libexec/openldap/homedir.*
+%{ldapserverdir}/libexec/openldap/lloadd.*
+%{ldapserverdir}/libexec/openldap/memberof.*
+%{ldapserverdir}/libexec/openldap/otp.*
+%{ldapserverdir}/libexec/openldap/pcache.*
+%{ldapserverdir}/libexec/openldap/ppolicy.*
+%{ldapserverdir}/libexec/openldap/refint.*
+%{ldapserverdir}/libexec/openldap/remoteauth.*
+%{ldapserverdir}/libexec/openldap/retcode.*
+%{ldapserverdir}/libexec/openldap/rwm.*
+%{ldapserverdir}/libexec/openldap/seqmod.*
+%{ldapserverdir}/libexec/openldap/sssvlv.*
+%{ldapserverdir}/libexec/openldap/syncprov.*
+%{ldapserverdir}/libexec/openldap/translucent.*
+%{ldapserverdir}/libexec/openldap/unique.*
+%{ldapserverdir}/libexec/openldap/valsort.*
+%{ldapserverdir}/libexec/openldap/ppm.*
+%{ldapserverdir}/libexec/openldap/ppm_test
+%dir %{ldapdir}/%{_lib}/
+%{ldapdir}/%{_lib}/liblber.la
+%{ldapdir}/%{_lib}/liblber.so.*
+%{ldapdir}/%{_lib}/libldap.la
+%{ldapdir}/%{_lib}/libldap.so.2*
+%{ldapdir}/%{_lib}/libslapi.la
+%{ldapdir}/%{_lib}/libslapi.so.*
 %attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldapdatadir}
 %attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldapserverdir}/var/run
 %attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldaplogdir}
 %attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldapbackupdir}
 %attr(770,root,%{ldapgroup}) %dir %{ldapconfdir}
 %docdir %{ldapdir}/share/man
-%{ldapserverdir}/share/man/man3/ldap_bind.3
-%{ldapserverdir}/share/man/man3/ldap_bind_s.3
-%{ldapserverdir}/share/man/man3/ldap_parse_sasl_bind_result.3
-%{ldapserverdir}/share/man/man3/ldap_sasl_bind.3
-%{ldapserverdir}/share/man/man3/ldap_sasl_bind_s.3
-%{ldapserverdir}/share/man/man3/ldap_set_rebind_proc.3
-%{ldapserverdir}/share/man/man3/ldap_simple_bind.3
-%{ldapserverdir}/share/man/man3/ldap_simple_bind_s.3
-%{ldapserverdir}/share/man/man3/ldap_unbind.3
-%{ldapserverdir}/share/man/man3/ldap_unbind_ext.3
-%{ldapserverdir}/share/man/man3/ldap_unbind_ext_s.3
-%{ldapserverdir}/share/man/man3/ldap_unbind_s.3
+%dir %{ldapdir}/share/man/
+%dir %{ldapserverdir}/share/man/man1/
+%{ldapserverdir}/share/man/man1/ldapadd.1
+%{ldapserverdir}/share/man/man1/ldapcompare.1
+%{ldapserverdir}/share/man/man1/ldapdelete.1
+%{ldapserverdir}/share/man/man1/ldapexop.1
+%{ldapserverdir}/share/man/man1/ldapmodify.1
+%{ldapserverdir}/share/man/man1/ldapmodrdn.1
+%{ldapserverdir}/share/man/man1/ldappasswd.1
+%{ldapserverdir}/share/man/man1/ldapsearch.1
+%{ldapserverdir}/share/man/man1/ldapurl.1
+%{ldapserverdir}/share/man/man1/ldapwhoami.1
+%dir %{ldapserverdir}/share/man/man5/
+%{ldapserverdir}/share/man/man5/ldap.conf.5
+%{ldapserverdir}/share/man/man5/ldif.5
+%{ldapserverdir}/share/man/man5/lloadd.conf.5
+%{ldapserverdir}/share/man/man5/slapd-asyncmeta.5
+%{ldapserverdir}/share/man/man5/slapd-config.5
+%{ldapserverdir}/share/man/man5/slapd-dnssrv.5
+%{ldapserverdir}/share/man/man5/slapd-ldap.5
+%{ldapserverdir}/share/man/man5/slapd-ldif.5
+%{ldapserverdir}/share/man/man5/slapd-mdb.5
+%{ldapserverdir}/share/man/man5/slapd-meta.5
+%{ldapserverdir}/share/man/man5/slapd-monitor.5
+%{ldapserverdir}/share/man/man5/slapd-null.5
+%{ldapserverdir}/share/man/man5/slapd-passwd.5
+%{ldapserverdir}/share/man/man5/slapd-perl.5
+%{ldapserverdir}/share/man/man5/slapd-pw-pbkdf2.5
+%{ldapserverdir}/share/man/man5/slapd-pw-sha2.5
+%{ldapserverdir}/share/man/man5/slapd-relay.5
+%{ldapserverdir}/share/man/man5/slapd-sock.5
+%{ldapserverdir}/share/man/man5/slapd-sql.5
+%{ldapserverdir}/share/man/man5/slapd-wt.5
+%{ldapserverdir}/share/man/man5/slapd.access.5
+%{ldapserverdir}/share/man/man5/slapd.backends.5
+%{ldapserverdir}/share/man/man5/slapd.conf.5
+%{ldapserverdir}/share/man/man5/slapd.overlays.5
+%{ldapserverdir}/share/man/man5/slapd.plugin.5
+%{ldapserverdir}/share/man/man5/slapm-ppm.5
+%{ldapserverdir}/share/man/man5/slapo-accesslog.5
+%{ldapserverdir}/share/man/man5/slapo-auditlog.5
+%{ldapserverdir}/share/man/man5/slapo-autoca.5
+%{ldapserverdir}/share/man/man5/slapo-chain.5
+%{ldapserverdir}/share/man/man5/slapo-collect.5
+%{ldapserverdir}/share/man/man5/slapo-constraint.5
+%{ldapserverdir}/share/man/man5/slapo-dds.5
+%{ldapserverdir}/share/man/man5/slapo-deref.5
+%{ldapserverdir}/share/man/man5/slapo-dyngroup.5
+%{ldapserverdir}/share/man/man5/slapo-dynlist.5
+%{ldapserverdir}/share/man/man5/slapo-homedir.5
+%{ldapserverdir}/share/man/man5/slapo-memberof.5
+%{ldapserverdir}/share/man/man5/slapo-otp.5
 %{ldapserverdir}/share/man/man5/slapo-pbind.5
-# exclude explockout library
-%exclude %{ldapserverdir}/libexec/openldap/explockout.*
-# exclude contrib overlays libraries
-%exclude %{ldapserverdir}/libexec/openldap/autogroup.*
-%exclude %{ldapserverdir}/libexec/openldap/noopsrch.*
-%exclude %{ldapserverdir}/libexec/openldap/nssov.*
-%exclude %{ldapserverdir}/libexec/openldap/pw-pbkdf2.*
-%exclude %{ldapserverdir}/libexec/openldap/pw-sha2.*
-%exclude %{ldapserverdir}/libexec/openldap/smbk5pwd.*
-%exclude %{ldapserverdir}/libexec/openldap/variant.*
-%exclude %{ldapserverdir}/libexec/openldap/vc.*
+%{ldapserverdir}/share/man/man5/slapo-pcache.5
+%{ldapserverdir}/share/man/man5/slapo-ppolicy.5
+%{ldapserverdir}/share/man/man5/slapo-refint.5
+%{ldapserverdir}/share/man/man5/slapo-remoteauth.5
+%{ldapserverdir}/share/man/man5/slapo-retcode.5
+%{ldapserverdir}/share/man/man5/slapo-rwm.5
+%{ldapserverdir}/share/man/man5/slapo-sock.5
+%{ldapserverdir}/share/man/man5/slapo-sssvlv.5
+%{ldapserverdir}/share/man/man5/slapo-syncprov.5
+%{ldapserverdir}/share/man/man5/slapo-translucent.5
+%{ldapserverdir}/share/man/man5/slapo-unique.5
+%{ldapserverdir}/share/man/man5/slapo-valsort.5
+%{ldapserverdir}/share/man/man5/slappw-argon2.5
+%{ldapserverdir}/share/man/man8/
+
+%files devel
+%{ldapserverdir}/%{_lib}/liblber.so
+%{ldapserverdir}/%{_lib}/libldap.so
+%{ldapserverdir}/%{_lib}/libslapi.so
+%{ldapserverdir}/include/
+%{ldapserverdir}/%{_lib}/pkgconfig/lber.pc
+%{ldapserverdir}/%{_lib}/pkgconfig/ldap.pc
+%{ldapserverdir}/share/man/man3/*
 
 %files contrib-overlays
 # contrib overlays man pages
 %docdir %{ldapserverdir}/share/man
+%doc %{ldapserverdir}/share/man/man1/ldapvc.1
 %doc %{ldapserverdir}/share/man/man5/slapo-nssov.5
 %doc %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
 %doc %{ldapserverdir}/share/man/man5/slapo-variant.5
-%doc %{ldapserverdir}/share/man/man1/ldapvc.1
 # contrib overlays libraries
 %{ldapserverdir}/libexec/openldap/autogroup.*
 %{ldapserverdir}/libexec/openldap/noopsrch.*
