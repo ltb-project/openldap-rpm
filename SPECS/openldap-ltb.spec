@@ -123,7 +123,7 @@ o Logrotate script
 
 %package devel
 Summary: openLDAP-ltb development libraries and header files
-Requires: openldap-ltb%{?_isa} = %{version}-%{release}
+Requires: %{name}%{?_isa} = %{version}-%{release}
 Requires: cyrus-sasl-devel%{?_isa}
 
 %description devel
@@ -143,7 +143,7 @@ Version:        %{real_version}
 Release:        %{release_version}
 URL:            https://www.ltb-project.org
 
-Requires:       %{real_name}-ltb%{?_isa} >= %{real_version}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       cracklib
 
 %description contrib-overlays
@@ -163,7 +163,7 @@ Version:        %{real_version}
 Release:        %{release_version}
 URL:            https://www.ltb-project.org
 
-Requires:       %{real_name}-ltb%{?_isa} >= %{real_version}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description mdb-utils
 MDB utilities contain both mdb_stat and mdb_copy, and the associated
@@ -180,7 +180,7 @@ Version:        %{real_version}
 Release:        %{release_version}
 URL:            https://github.com/ltb-project/explockout
 
-Requires:       %{real_name}-ltb%{?_isa} >= %{real_version}
+Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description explockout
 explockout is an OpenLDAP module that denies authentication to users who
