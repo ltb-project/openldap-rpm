@@ -206,6 +206,7 @@ export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11 -L/usr/local/libevent-ltb-2.
   --enable-dynamic=yes \
   --with-tls=openssl \
   --enable-debug \
+  --disable-static \
   --with-cyrus-sasl \
   --enable-spasswd \
   --enable-ppolicy=mod \
