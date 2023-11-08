@@ -398,6 +398,12 @@ make install "LDAP_SRC=.." "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{build
 cp ppm_test "%{buildroot}%{ldapserverdir}/libexec/openldap/"
 cd ..
 
+# tweak permissions on the libraries to make sure they're correct
+chmod 0755 %{buildroot}%{ldapserverdir}/%{_lib}/lib*.so*
+chmod 0644 %{buildroot}%{ldapserverdir}/%{_lib}/lib*.*a
+chmod 0644 %{buildroot}%{ldapserverdir}/libexec/openldap/*.la
+
+
 %pretrans
 #=================================================
 # Pre Transaction
