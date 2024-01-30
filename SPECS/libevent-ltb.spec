@@ -8,7 +8,7 @@
 
 Name:           libevent-ltb
 Version:        2.1.12
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Abstract asynchronous event notification library
 
 # arc4random.c, which is used in build, is ISC. The rest is BSD.
@@ -16,7 +16,11 @@ License:        BSD and ISC
 URL:            http://libevent.org/
 Source0:        https://github.com/libevent/libevent/releases/download/release-%{version}-stable/libevent-%{version}-stable.tar.gz
 
+%if ! 0%{?el7}
 BuildRequires: openssl-devel
+%else
+BuildRequires: openssl11-devel
+%endif
 BuildRequires: python3-devel
 
 %description
@@ -73,7 +77,10 @@ rm /etc/ld.so.conf.d/%{name}-%{majorversion}.conf
 
 
 %changelog
-* Thu Sep 09 2021 David Coutadeur <david.coutadeur@gmail.com> - 2.1.12
+* Tue Nov 07 2023 Xavier Bachelot <xavier.bachelot@worteks.comm> - 2.1.12-2
+- Build against openssl11 for EL7, as openldap-ltb is
+
+* Thu Sep 09 2021 David Coutadeur <david.coutadeur@gmail.com> - 2.1.12-1
 - package first libevent-ltb 2.1.12 version
 - remove documentation (not provided any more by libevent team, only html files)
 
