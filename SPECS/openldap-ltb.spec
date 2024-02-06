@@ -36,8 +36,7 @@
 %define ldapserverdir    %{ldapdir}
 %define ldapdatadir      %{ldapdir}/var/openldap-data
 %define ldapbackupdir    /var/backups/openldap
-%define ldaplogdir       /var/log/slapd-ltb
-%define ldaplogfile      %{ldaplogdir}/slapd.log
+%define ldaplogfile      /var/log/openldap.log
 %define ldapconfdir      %{ldapdir}/etc/openldap/slapd.d
 
 %define ldapuser         ldap
@@ -321,7 +320,6 @@ make install DESTDIR=%{buildroot} STRIP=""
 # create some directories
 mkdir -p %{buildroot}%{ldapdatadir}
 mkdir -p %{buildroot}%{ldapbackupdir}
-mkdir -p %{buildroot}%{ldaplogdir}
 mkdir -p %{buildroot}%{ldapconfdir}
 mkdir -p %{buildroot}/etc/logrotate.d
 mkdir -p %{buildroot}/etc/profile.d
@@ -626,7 +624,6 @@ fi
 %{ldapdir}/%{_lib}/libslapi-2.5.so.0*
 %attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldapdatadir}
 %attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldapserverdir}/var/run
-%attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldaplogdir}
 %attr(-,%{ldapuser},%{ldapgroup}) %dir %{ldapbackupdir}
 %attr(770,root,%{ldapgroup}) %dir %{ldapconfdir}
 %docdir %{ldapdir}/share/man
