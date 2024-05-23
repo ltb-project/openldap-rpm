@@ -21,7 +21,7 @@
 #=================================================
 
 %define real_name        openldap
-%define real_version     2.6.7
+%define real_version     2.6.8
 %define release_version  1%{?dist}
 
 # exclude private libraries
@@ -43,7 +43,7 @@
 %define ldapgroup        ldap
 
 %define slapd_cli_name             slapd-cli
-%define slapd_cli_version          3.3
+%define slapd_cli_version          3.4
 %define slapd_cli_bin              %{ldapdir}/sbin/slapd-cli
 
 %define ppm_name         ppm
@@ -323,7 +323,9 @@ mkdir -p %{buildroot}%{_unitdir}/
 ## systemd
 install -m 644 \
   %{slapd_cli_name}-%{slapd_cli_version}/slapd-ltb.service \
+  %{slapd_cli_name}-%{slapd_cli_version}/slapd-ltb@.service \
   %{slapd_cli_name}-%{slapd_cli_version}/lload-ltb.service \
+  %{slapd_cli_name}-%{slapd_cli_version}/lload-ltb@.service \
   %{buildroot}%{_unitdir}/
 
 ## profile
@@ -538,7 +540,9 @@ fi
 %license COPYRIGHT LICENSE
 %doc ANNOUNCEMENT CHANGES README
 %{_unitdir}/slapd-ltb.service
+%{_unitdir}/slapd-ltb@.service
 %{_unitdir}/lload-ltb.service
+%{_unitdir}/lload-ltb@.service
 %dir  %{ldapserverdir}/etc/
 %dir  %{ldapserverdir}/etc/openldap/
 %config(noreplace) %{ldapserverdir}/etc/openldap/ldap.conf
@@ -721,6 +725,9 @@ fi
 # Changelog
 #=================================================
 %changelog
+* Tue May 21 2024 - Clement Oudot <clem@ltb-project.org> - 2.6.8-1
+- Upgrade to OpenLDAP 2.6.8
+
 * Tue Jan 30 2024 - Clement Oudot <clem@ltb-project.org> - 2.6.7-1
 - Upgrade to OpenLDAP 2.6.7
 * Tue Aug 22 2023 - Clement Oudot <clem@ltb-project.org> - 2.6.6-1
