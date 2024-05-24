@@ -72,6 +72,8 @@ Source3: openldap.logrotate
 Source4: https://github.com/ltb-project/explockout/archive/v%{explockout_version}/%{explockout_name}-%{explockout_version}.tar.gz
 Source5: https://github.com/ltb-project/ppm/archive/v%{ppm_version}/%{ppm_name}-%{ppm_version}.tar.gz
 
+Patch0: pw-sha2.patch
+
 BuildRequires: cracklib
 BuildRequires: cracklib-devel
 BuildRequires: cyrus-sasl-devel
@@ -196,6 +198,7 @@ exponential time
 %setup -q -n %{real_name}-%{real_version} -T -D -a 1
 %setup -q -n %{real_name}-%{real_version} -T -D -a 4
 %setup -q -n %{real_name}-%{real_version} -T -D -a 5
+%patch0 -p0
 
 #=================================================
 # Building
