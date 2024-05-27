@@ -589,6 +589,7 @@ fi
 %{ldapserverdir}/libexec/openldap/homedir.*
 %{ldapserverdir}/libexec/openldap/lloadd.*
 %{ldapserverdir}/libexec/openldap/memberof.*
+%{ldapserverdir}/libexec/openldap/nestgroup.*
 %{ldapserverdir}/libexec/openldap/otp.*
 %{ldapserverdir}/libexec/openldap/pcache.*
 %{ldapserverdir}/libexec/openldap/ppolicy.*
@@ -659,6 +660,7 @@ fi
 %{ldapserverdir}/share/man/man5/slapo-accesslog.5
 %{ldapserverdir}/share/man/man5/slapo-auditlog.5
 %{ldapserverdir}/share/man/man5/slapo-autoca.5
+%{ldapserverdir}/share/man/man5/slapo-autogroup.5
 %{ldapserverdir}/share/man/man5/slapo-chain.5
 %{ldapserverdir}/share/man/man5/slapo-collect.5
 %{ldapserverdir}/share/man/man5/slapo-constraint.5
@@ -668,6 +670,7 @@ fi
 %{ldapserverdir}/share/man/man5/slapo-dynlist.5
 %{ldapserverdir}/share/man/man5/slapo-homedir.5
 %{ldapserverdir}/share/man/man5/slapo-memberof.5
+%{ldapserverdir}/share/man/man5/slapo-nestgroup.5
 %{ldapserverdir}/share/man/man5/slapo-otp.5
 %{ldapserverdir}/share/man/man5/slapo-pbind.5
 %{ldapserverdir}/share/man/man5/slapo-pcache.5
