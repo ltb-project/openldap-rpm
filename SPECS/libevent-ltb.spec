@@ -66,6 +66,13 @@ cp LICENSE ChangeLog %{buildroot}/%{libeventdocprefix}/
 %{libeventlibprefix}/pkgconfig
 %{libeventbinprefix}
 
+%files debuginfo
+%exclude %dir /usr/lib/debug
+%exclude /usr/lib/debug/.build-id
+%exclude /usr/lib/debug/.dwz
+%exclude %dir /usr/lib/debug/usr
+%exclude %dir /usr/lib/debug/usr/local
+
 
 %post
 echo "%{libeventlibprefix}" > /etc/ld.so.conf.d/%{name}-%{majorversion}.conf

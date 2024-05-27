@@ -744,6 +744,13 @@ fi
 %doc %{ldapserverdir}/share/man/man5/slapo-explockout.5
 %{ldapserverdir}/libexec/openldap/explockout.*
 
+%files debuginfo
+%exclude %dir /usr/lib/debug
+%exclude /usr/lib/debug/.build-id
+%exclude /usr/lib/debug/.dwz
+%exclude %dir /usr/lib/debug/usr
+%exclude %dir /usr/lib/debug/usr/local
+
 #=================================================
 # Changelog
 #=================================================
