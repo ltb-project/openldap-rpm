@@ -1,0 +1,11 @@
+--- contrib/slapd-modules/passwd/sha2/Makefile  2024-05-24 17:36:52.698368571 +0200
++++ contrib/slapd-modules/passwd/sha2/Makefile.patch    2024-05-24 17:56:42.685677280 +0200
+@@ -9,7 +9,7 @@
+ LIBTOOL = $(LDAP_BUILD)/libtool
+ INSTALL = /usr/bin/install
+ CC = gcc
+-OPT = -g -O2
++OPT = -g -O2 -fno-strict-aliasing
+ DEFS = 
+ #DEFS = -DSLAPD_SHA2_DEBUG
+ INCS = $(LDAP_INC)
