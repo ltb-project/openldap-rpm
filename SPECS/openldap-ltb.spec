@@ -376,6 +376,9 @@ sed -i \
 sed -i -e 's:^directory.*:directory\t'%{ldapdatadir}':' \
   %{buildroot}%{ldapserverdir}/etc/openldap/slapd.conf
 
+# Create link to ldapi socket
+ln -s "/var/run/slapd/ldapi" "%{buildroot}%{ldapserverdir}/var/run/ldapi"
+
 # contrib-overlays
 cd contrib/slapd-modules
 cd lastbind
@@ -702,6 +705,7 @@ fi
 %{ldapserverdir}/share/man/man5/slapo-valsort.5
 %{ldapserverdir}/share/man/man5/slappw-argon2.5
 %{ldapserverdir}/share/man/man8/
+%{ldapserverdir}/var/run/ldapi
 
 %files devel
 %{ldapserverdir}/%{_lib}/liblber.so
