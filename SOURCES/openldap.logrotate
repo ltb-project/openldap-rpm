@@ -7,6 +7,8 @@
 /var/log/openldap.log {
     daily
     rotate 10
+    compress
+    delaycompress
     missingok
     notifempty
     sharedscripts
