@@ -22,7 +22,7 @@
 #=================================================
 
 %define real_name        openldap
-%define real_version     2.5.18
+%define real_version     2.5.19
 %define release_version  1%{?dist}
 
 # exclude private libraries
@@ -43,7 +43,7 @@
 %define ldapgroup        ldap
 
 %define slapd_cli_name             slapd-cli
-%define slapd_cli_version          3.4
+%define slapd_cli_version          3.5
 %define slapd_cli_bin              %{ldapdir}/sbin/slapd-cli
 
 %define ppm_name         ppm
@@ -759,6 +759,9 @@ fi
 # Changelog
 #=================================================
 %changelog
+* Tue Nov 26 2024 - David Coutadeur <david.coutadeur@gmail.com> - 2.5.19-1
+- Upgrade to OpenLDAP 2.5.19
+
 * Tue May 21 2024 - Clement Oudot <clem@ltb-project.org> - 2.5.18-1
 - Upgrade to OpenLDAP 2.5.18
 
