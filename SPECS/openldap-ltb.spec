@@ -51,7 +51,7 @@
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.example
 
 %define explockout_name            explockout
-%define explockout_version         1.1
+%define explockout_version         1.2
 
 #=================================================
 # Header
