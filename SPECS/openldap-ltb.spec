@@ -311,7 +311,7 @@ cd ..
 # Installation
 #=================================================
 %install
-make install DESTDIR=%{buildroot} STRIP=""
+make install DESTDIR=%{buildroot} STRIP_OPTS=""
 
 # create some directories
 mkdir -p %{buildroot}%{ldapdatadir}
