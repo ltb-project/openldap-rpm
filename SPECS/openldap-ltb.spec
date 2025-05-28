@@ -71,6 +71,7 @@ Source2: openldap.sh
 Source3: openldap.logrotate
 Source4: https://github.com/ltb-project/explockout/archive/v%{explockout_version}/%{explockout_name}-%{explockout_version}.tar.gz
 Source5: https://github.com/ltb-project/ppm/archive/v%{ppm_version}/%{ppm_name}-%{ppm_version}.tar.gz
+Source6: openldap-ltb.conf
 
 Patch0: pw-sha2.patch
 
@@ -338,9 +339,11 @@ install -m 644 \
   %{slapd_cli_name}-%{slapd_cli_version}/lload-ltb@.service \
   %{buildroot}%{_unitdir}/
 
-## logrotate, profile
+## logrotate, profile, rsyslog
 install -m 644 %{SOURCE3} %{buildroot}/etc/logrotate.d/openldap
 install -m 755 %{SOURCE2} %{buildroot}/etc/profile.d/openldap.sh
+mkdir -p %{buildroot}/etc/rsyslog.d
+install -m 755 %{SOURCE6} %{buildroot}/etc/rsyslog.d/openldap-ltb.conf
 
 ## slapd-cli
 install -m 755 %{slapd_cli_name}-%{slapd_cli_version}/slapd-cli \
@@ -484,8 +487,11 @@ if [ $1 -eq 1 ]
 then
   # Set slapd as service
   /bin/systemctl enable slapd-ltb.service
-  # Add syslog facility
-  echo "local4.*  -%{ldaplogfile}" >> /etc/rsyslog.conf
+fi
+
+if [ -e "/etc/rsyslog.conf" ]; then
+  # Remove rsyslog configurations done in previous old OpenLDAP versions
+  sed -i "\#local4\..*%{ldaplogfile}#d" /etc/rsyslog.conf
   /bin/systemctl restart rsyslog > /dev/null 2>&1
 fi
 
@@ -524,9 +530,6 @@ then
   # Stop slapd and disable service
   /bin/systemctl stop slapd-ltb.service > /dev/null 2>&1
   /bin/systemctl disable slapd-ltb.service
-  # Remove syslog facility
-  sed -i '/local4\..*/d' /etc/rsyslog.conf
-  /bin/systemctl restart rsyslog
 fi
 
 # Always do this
@@ -581,6 +584,7 @@ fi
 %{ldapserverdir}/etc/openldap/schema/
 /etc/profile.d/openldap.sh
 %config(noreplace) /etc/logrotate.d/openldap
+%config(noreplace) /etc/rsyslog.d/openldap-ltb.conf
 %config /etc/bash_completion.d/slapd-cli-prompt
 %dir %{ldapdir}
 %{ldapdir}/bin/
