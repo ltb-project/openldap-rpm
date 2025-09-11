@@ -6,9 +6,9 @@
 # Create user/group ldap
 # Install ppm, an extension to password policy module
 #
-# Copyright (C) 2008-2023 Clement OUDOT
-# Copyright (C) 2018-2023 Worteks
-# Copyright (C) 2015-2023 David COUTADEUR
+# Copyright (C) 2008-2025 Clement OUDOT
+# Copyright (C) 2018-2025 Worteks
+# Copyright (C) 2015-2025 David COUTADEUR
 # Copyright (C) 2008 Raphael OUAZANA
 # Copyright (C) 2015 LINAGORA
 # Copyright (C) 2015 Savoir-faire Linux
@@ -30,6 +30,13 @@
 %global _privatelibs %{_privatelibs}|libslapi
 %global __provides_exclude ^(%{_privatelibs}).*so.*$
 %global __requires_exclude ^(%{_privatelibs}).*so.*$
+
+# Disable automatic .la file removal
+%global __brp_remove_la_files %nil
+
+# Disable check of rpath on libraries
+%global __brp_check_rpaths %{nil}
+
 
 %define ldapdir          /usr/local/openldap
 %define ldapserverdir    %{ldapdir}
