@@ -21,7 +21,7 @@
 #=================================================
 
 %define real_name        openldap
-%define real_version     2.6.10
+%define real_version     2.6.12
 %define release_version  1%{?dist}
 
 # exclude private libraries
@@ -749,6 +749,10 @@ fi
 # Changelog
 #=================================================
 %changelog
+* Fri Jan 30 2026 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.12-1
+- Upgrade to OpenLDAP 2.6.12
+- upgrade slapd-cli to 3.6
+
 * Thu May 22 2025 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.10-1
 - Upgrade to OpenLDAP 2.6.10
 
@@ -760,6 +764,7 @@ fi
 
 * Tue Jan 30 2024 - Clement Oudot <clem@ltb-project.org> - 2.6.7-1
 - Upgrade to OpenLDAP 2.6.7
+
 * Tue Aug 22 2023 - Clement Oudot <clem@ltb-project.org> - 2.6.6-1
 - Upgrade to OpenLDAP 2.6.6
 
