@@ -148,10 +148,6 @@ customized LDAP clients against openldap-ltb..
 #=================================================
 %package contrib-overlays
 Summary:        Overlays contributed to OpenLDAP
-Version:        %{real_version}
-Release:        %{release_version}
-URL:            https://www.ltb-project.org
-
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       cracklib
 
@@ -168,10 +164,6 @@ This is provided by LDAP Tool Box project: https://www.ltb-project.org
 #=================================================
 %package mdb-utils
 Summary:        MDB utilities
-Version:        %{real_version}
-Release:        %{release_version}
-URL:            https://www.ltb-project.org
-
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description mdb-utils
@@ -185,10 +177,6 @@ This is provided by LDAP Tool Box project: https://www.ltb-project.org
 #=================================================
 %package explockout
 Summary:        OpenLDAP overlay explockout
-Version:        %{real_version}
-Release:        %{release_version}
-URL:            https://github.com/ltb-project/explockout
-
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description explockout
@@ -249,76 +237,43 @@ export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11 -L/usr/local/libevent-ltb-2.
   --enable-wt=no \
   --enable-perl=no
 make depend
-make %{?_smp_mflags}
+%make_build
+
 # contrib-overlays
-cd contrib/slapd-modules
-## smbk5pwd
-cd smbk5pwd
-make clean
-make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap/.libs/ -lldap -llber" "prefix=%{ldapserverdir}"
-cd ..
-## nssov
-cd nssov
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ..
-## noopsrch
-cd noopsrch
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ..
-## autogroup
-cd autogroup
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ..
-## pbkdf2
-cd passwd/pbkdf2
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ../..
-## sha512
-cd passwd/sha2
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ../..
-# variant
-cd variant
-make clean
-make "prefix=%{ldapserverdir}"
-cd ..
-# vc
-cd vc
-make clean
-make "prefix=%{ldapserverdir}"
-cd ..
-cd ../..
+pushd contrib/slapd-modules
+%make_build -C smbk5pwd      "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap/.libs/ -lldap -llber" "prefix=%{ldapserverdir}"
+%make_build -C nssov         "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C noopsrch      "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C autogroup     "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C passwd/pbkdf2 "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C passwd/sha2   "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C variant       "prefix=%{ldapserverdir}"
+%make_build -C vc            "prefix=%{ldapserverdir}"
+popd
+
 # MDB utils
-cd libraries/liblmdb
-make %{?_smp_mflags}
-cd ../..
+pushd libraries/liblmdb
+%make_build
+popd
+
 # explockout
-cd %{explockout_name}-%{explockout_version}
+pushd %{explockout_name}-%{explockout_version}
 make clean
 make "OLDAP_SOURCES=.." "LIBDIR=%{ldapserverdir}/libexec/openldap"
-cd ..
+popd
+
 ## ppm
-cd %{ppm_name}-%{ppm_version}
-make clean
+pushd %{ppm_name}-%{ppm_version}
 make LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/%{_lib}
-%if "%{real_version}" == "2.5.7"
-:
-%else
 make doc prefix=%{ldapserverdir}
-%endif
 make test LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/%{_lib}
-cd ..
+popd
 
 #=================================================
 # Installation
 #=================================================
 %install
-make install DESTDIR=%{buildroot} STRIP_OPTS=""
+%make_install DESTDIR=%{buildroot} STRIP_OPTS=""
 
 # create some directories
 mkdir -p %{buildroot}%{ldapdatadir}
@@ -379,53 +334,37 @@ sed -i -e 's:^directory.*:directory\t'%{ldapdatadir}':' \
 ln -s "/var/run/slapd/ldapi" "%{buildroot}%{ldapserverdir}/var/run/ldapi"
 
 # contrib-overlays
-cd contrib/slapd-modules
-cd smbk5pwd
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd nssov
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd noopsrch
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd autogroup
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd passwd/pbkdf2
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ../..
-cd passwd/sha2
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ../..
-cd variant
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd vc
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd ../..
+pushd contrib/slapd-modules
+%make_install -C smbk5pwd      "prefix=%{ldapserverdir}"
+%make_install -C nssov         "prefix=%{ldapserverdir}"
+%make_install -C noopsrch      "prefix=%{ldapserverdir}"
+%make_install -C autogroup     "prefix=%{ldapserverdir}"
+%make_install -C passwd/pbkdf2 "prefix=%{ldapserverdir}"
+%make_install -C passwd/sha2   "prefix=%{ldapserverdir}"
+%make_install -C variant       "prefix=%{ldapserverdir}"
+%make_install -C vc            "prefix=%{ldapserverdir}"
+popd
 
 # MDB utils
-cd libraries/liblmdb
+pushd libraries/liblmdb
 install -m 755 "mdb_copy"  %{buildroot}%{ldapserverdir}/sbin
 install -m 755 "mdb_stat"  %{buildroot}%{ldapserverdir}/sbin
 install -m 644 "mdb_copy.1"  %{buildroot}%{ldapserverdir}/share/man/man1
 install -m 644 "mdb_stat.1"  %{buildroot}%{ldapserverdir}/share/man/man1
-cd ../..
+popd
 
 # explockout
-cd %{explockout_name}-%{explockout_version}
+pushd %{explockout_name}-%{explockout_version}
 mkdir -p "%{buildroot}%{ldapserverdir}/libexec/openldap"
 mkdir -p "%{buildroot}%{ldapserverdir}/share/man/man5"
 make install "OLDAP_SOURCES=.." "DSTDIR=%{buildroot}%{ldapserverdir}/libexec/openldap"
 install -m 644 "slapo-explockout.5" "%{buildroot}%{ldapserverdir}/share/man/man5"
-cd ..
+popd
 
-cd %{ppm_name}-%{ppm_version}
-make install "LDAP_SRC=.." "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{buildroot}%{ldapserverdir}/libexec/openldap"
+pushd %{ppm_name}-%{ppm_version}
+%make_install "LDAP_SRC=.." "prefix=%{ldapserverdir}" "libdir=%{ldapserverdir}/libexec/openldap"
 cp ppm_test "%{buildroot}%{ldapserverdir}/libexec/openldap/"
-cd ..
+popd
 
 # tweak permissions on the libraries to make sure they're correct
 chmod 0755 %{buildroot}%{ldapserverdir}/%{_lib}/lib*.so*
@@ -737,13 +676,6 @@ fi
 %docdir %{ldapserverdir}/share/man
 %doc %{ldapserverdir}/share/man/man5/slapo-explockout.5
 %{ldapserverdir}/libexec/openldap/explockout.*
-
-%files debuginfo
-%exclude %dir /usr/lib/debug
-%exclude /usr/lib/debug/.build-id
-%exclude /usr/lib/debug/.dwz
-%exclude %dir /usr/lib/debug/usr
-%exclude %dir /usr/lib/debug/usr/local
 
 #=================================================
 # Changelog
