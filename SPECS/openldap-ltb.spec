@@ -216,64 +216,30 @@ export LDFLAGS=""
   --enable-perl=no
 make depend
 make %{?_smp_mflags}
+
 # contrib-overlays
-cd contrib/slapd-modules
-## smbk5pwd
-cd smbk5pwd
-make clean
-make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap/.libs/ -lldap -llber" "prefix=%{ldapserverdir}"
-cd ..
-## nssov
-cd nssov
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ..
-## noopsrch
-cd noopsrch
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ..
-## autogroup
-cd autogroup
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ..
-## pbkdf2
-cd passwd/pbkdf2
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ../..
-## sha512
-cd passwd/sha2
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ../..
-# variant
-cd variant
-make clean
-make "prefix=%{ldapserverdir}"
-cd ..
-# vc
-cd vc
-make clean
-make "prefix=%{ldapserverdir}"
-cd ..
-cd ../..
+pushd contrib/slapd-modules
+make %{?_smp_mflags} -C smbk5pwd      "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap/.libs/ -lldap -llber" "prefix=%{ldapserverdir}"
+make %{?_smp_mflags} -C nssov         "prefix=%{ldapserverdir}" "LDAP_LIB="
+make %{?_smp_mflags} -C noopsrch      "prefix=%{ldapserverdir}" "LDAP_LIB="
+make %{?_smp_mflags} -C autogroup     "prefix=%{ldapserverdir}" "LDAP_LIB="
+make %{?_smp_mflags} -C passwd/pbkdf2 "prefix=%{ldapserverdir}" "LDAP_LIB="
+make %{?_smp_mflags} -C passwd/sha2   "prefix=%{ldapserverdir}" "LDAP_LIB="
+make %{?_smp_mflags} -C variant       "prefix=%{ldapserverdir}"
+make %{?_smp_mflags} -C vc            "prefix=%{ldapserverdir}"
+popd
+
 # MDB utils
-cd libraries/liblmdb
+pushd libraries/liblmdb
 make %{?_smp_mflags}
-cd ../..
+popd
+
 ## ppm
-cd %{ppm_name}-%{ppm_version}
-make clean
+pushd %{ppm_name}-%{ppm_version}
 make LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/%{_lib}
-%if "%{real_version}" == "2.5.7"
-:
-%else
 make doc prefix=%{ldapserverdir}
-%endif
 make test LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/%{_lib}
-cd ..
+popd
 
 #=================================================
 # Installation
@@ -340,45 +306,29 @@ sed -i -e 's:^directory.*:directory\t'%{ldapdatadir}':' \
 ln -s "/var/run/slapd/ldapi" "%{buildroot}%{ldapserverdir}/var/run/ldapi"
 
 # contrib-overlays
-cd contrib/slapd-modules
-cd smbk5pwd
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd nssov
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd noopsrch
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd autogroup
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd passwd/pbkdf2
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ../..
-cd passwd/sha2
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ../..
-cd variant
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd vc
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd ../..
+pushd contrib/slapd-modules
+make install -C smbk5pwd      "prefix=%{buildroot}%{ldapserverdir}"
+make install -C nssov         "prefix=%{buildroot}%{ldapserverdir}"
+make install -C noopsrch      "prefix=%{buildroot}%{ldapserverdir}"
+make install -C autogroup     "prefix=%{buildroot}%{ldapserverdir}"
+make install -C passwd/pbkdf2 "prefix=%{buildroot}%{ldapserverdir}"
+make install -C passwd/sha2   "prefix=%{buildroot}%{ldapserverdir}"
+make install -C variant       "prefix=%{buildroot}%{ldapserverdir}"
+make install -C vc            "prefix=%{buildroot}%{ldapserverdir}"
+popd
 
 # MDB utils
-cd libraries/liblmdb
+pushd libraries/liblmdb
 install -m 755 "mdb_copy"  %{buildroot}%{ldapserverdir}/sbin
 install -m 755 "mdb_stat"  %{buildroot}%{ldapserverdir}/sbin
 install -m 644 "mdb_copy.1"  %{buildroot}%{ldapserverdir}/share/man/man1
 install -m 644 "mdb_stat.1"  %{buildroot}%{ldapserverdir}/share/man/man1
-cd ../..
+popd
 
-cd %{ppm_name}-%{ppm_version}
+pushd %{ppm_name}-%{ppm_version}
 make install "LDAP_SRC=.." "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{buildroot}%{ldapserverdir}/libexec/openldap"
 cp ppm_test "%{buildroot}%{ldapserverdir}/libexec/openldap/"
-cd ..
+popd
 
 # tweak permissions on the libraries to make sure they're correct
 chmod 0755 %{buildroot}%{ldapserverdir}/%{_lib}/lib*.so*
