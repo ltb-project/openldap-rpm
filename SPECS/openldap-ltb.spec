@@ -136,10 +136,6 @@ customized LDAP clients against openldap-ltb..
 #=================================================
 %package contrib-overlays
 Summary:        Overlays contributed to OpenLDAP
-Version:        %{real_version}
-Release:        %{release_version}
-URL:            https://www.ltb-project.org
-
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       cracklib
 
@@ -156,10 +152,6 @@ This is provided by LDAP Tool Box project: https://www.ltb-project.org
 #=================================================
 %package mdb-utils
 Summary:        MDB utilities
-Version:        %{real_version}
-Release:        %{release_version}
-URL:            https://www.ltb-project.org
-
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description mdb-utils
