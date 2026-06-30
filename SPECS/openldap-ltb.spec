@@ -635,13 +635,6 @@ fi
 %doc %{ldapserverdir}/share/man/man1/mdb_copy.1
 %doc %{ldapserverdir}/share/man/man1/mdb_stat.1
 
-%files debuginfo
-%exclude %dir /usr/lib/debug
-%exclude /usr/lib/debug/.build-id
-%exclude /usr/lib/debug/.dwz
-%exclude %dir /usr/lib/debug/usr
-%exclude %dir /usr/lib/debug/usr/local
-
 #=================================================
 # Changelog
 #=================================================
