@@ -91,27 +91,16 @@ BuildRequires: libtool-ltdl-devel
 BuildRequires: make
 BuildRequires: pandoc
 
-%if ! 0%{?el7}
 BuildRequires: openssl-devel
 BuildRequires: libevent-devel >= 2.1
-%else
-BuildRequires: tcp_wrappers-devel
-BuildRequires: openssl11-devel
-BuildRequires: libevent-ltb-devel >= 2.1
-%endif
 
 %{?systemd_requires}
 BuildRequires: systemd
 BuildRequires: libsodium-devel
 
 Requires: gawk, /usr/bin/perl, libtool-ltdl, bash-completion, libsodium
-%if ! 0%{?el7}
 Requires: libevent >= 2.1
 Requires: openssl
-%else
-Requires: libevent-ltb >= 2.1
-Requires: openssl11
-%endif
 
 Requires(pre): /sbin/ldconfig, coreutils, shadow-utils
 
@@ -217,10 +206,6 @@ export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE"
 #export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE -DSLAP_CONFIG_DELETE"
 export CPPFLAGS="-I/usr/kerberos/include"
 export LDFLAGS=""
-%if 0%{?el7}
-export CPPFLAGS="${CPPFLAGS} -I/usr/include/openssl11 -I/usr/local/libevent-ltb-2.1/include"
-export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11 -L/usr/local/libevent-ltb-2.1/lib"
-%endif
 ./configure \
   --prefix=%{ldapserverdir} \
   --libdir=%{ldapserverdir}/%{_lib} \
@@ -240,7 +225,6 @@ export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11 -L/usr/local/libevent-ltb-2.
   --enable-ldap=mod \
   --enable-meta=mod \
   --enable-sock=mod \
-%{?el7:--enable-wrappers} \
   --enable-rlookups \
   --enable-argon2=yes \
   --enable-otp=mod \
