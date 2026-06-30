@@ -207,23 +207,23 @@ export LDFLAGS=""
   --enable-wt=no \
   --enable-perl=no
 make depend
-make %{?_smp_mflags}
+%make_build
 
 # contrib-overlays
 pushd contrib/slapd-modules
-make %{?_smp_mflags} -C smbk5pwd      "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap/.libs/ -lldap -llber" "prefix=%{ldapserverdir}"
-make %{?_smp_mflags} -C nssov         "prefix=%{ldapserverdir}" "LDAP_LIB="
-make %{?_smp_mflags} -C noopsrch      "prefix=%{ldapserverdir}" "LDAP_LIB="
-make %{?_smp_mflags} -C autogroup     "prefix=%{ldapserverdir}" "LDAP_LIB="
-make %{?_smp_mflags} -C passwd/pbkdf2 "prefix=%{ldapserverdir}" "LDAP_LIB="
-make %{?_smp_mflags} -C passwd/sha2   "prefix=%{ldapserverdir}" "LDAP_LIB="
-make %{?_smp_mflags} -C variant       "prefix=%{ldapserverdir}"
-make %{?_smp_mflags} -C vc            "prefix=%{ldapserverdir}"
+%make_build -C smbk5pwd      "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap/.libs/ -lldap -llber" "prefix=%{ldapserverdir}"
+%make_build -C nssov         "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C noopsrch      "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C autogroup     "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C passwd/pbkdf2 "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C passwd/sha2   "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C variant       "prefix=%{ldapserverdir}"
+%make_build -C vc            "prefix=%{ldapserverdir}"
 popd
 
 # MDB utils
 pushd libraries/liblmdb
-make %{?_smp_mflags}
+%make_build
 popd
 
 ## ppm
@@ -237,7 +237,7 @@ popd
 # Installation
 #=================================================
 %install
-make install DESTDIR=%{buildroot} STRIP_OPTS=""
+%make_install DESTDIR=%{buildroot} STRIP_OPTS=""
 
 # create some directories
 mkdir -p %{buildroot}%{ldapdatadir}
@@ -299,14 +299,14 @@ ln -s "/var/run/slapd/ldapi" "%{buildroot}%{ldapserverdir}/var/run/ldapi"
 
 # contrib-overlays
 pushd contrib/slapd-modules
-make install -C smbk5pwd      "prefix=%{buildroot}%{ldapserverdir}"
-make install -C nssov         "prefix=%{buildroot}%{ldapserverdir}"
-make install -C noopsrch      "prefix=%{buildroot}%{ldapserverdir}"
-make install -C autogroup     "prefix=%{buildroot}%{ldapserverdir}"
-make install -C passwd/pbkdf2 "prefix=%{buildroot}%{ldapserverdir}"
-make install -C passwd/sha2   "prefix=%{buildroot}%{ldapserverdir}"
-make install -C variant       "prefix=%{buildroot}%{ldapserverdir}"
-make install -C vc            "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C smbk5pwd      "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C nssov         "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C noopsrch      "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C autogroup     "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C passwd/pbkdf2 "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C passwd/sha2   "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C variant       "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C vc            "prefix=%{buildroot}%{ldapserverdir}"
 popd
 
 # MDB utils
@@ -318,7 +318,7 @@ install -m 644 "mdb_stat.1"  %{buildroot}%{ldapserverdir}/share/man/man1
 popd
 
 pushd %{ppm_name}-%{ppm_version}
-make install "LDAP_SRC=.." "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{buildroot}%{ldapserverdir}/libexec/openldap"
+%make_install "LDAP_SRC=.." "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{buildroot}%{ldapserverdir}/libexec/openldap"
 cp ppm_test "%{buildroot}%{ldapserverdir}/libexec/openldap/"
 popd
 
