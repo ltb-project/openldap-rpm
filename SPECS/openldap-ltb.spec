@@ -57,9 +57,6 @@
 %define ppm_version      2.2
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.example
 
-%define explockout_name            explockout
-%define explockout_version         1.2
-
 #=================================================
 # Header
 #=================================================
@@ -75,7 +72,6 @@ URL: https://www.openldap.org/
 Source0: https://www.openldap.org/software/download/OpenLDAP/openldap-release/%{real_name}-%{real_version}.tgz
 Source1: https://github.com/ltb-project/slapd-cli/archive/v%{slapd_cli_version}/%{slapd_cli_name}-%{slapd_cli_version}.tar.gz
 Source2: openldap.sh
-Source4: https://github.com/ltb-project/explockout/archive/v%{explockout_version}/%{explockout_name}-%{explockout_version}.tar.gz
 Source5: https://github.com/ltb-project/ppm/archive/v%{ppm_version}/%{ppm_name}-%{ppm_version}.tar.gz
 
 Patch0: pw-sha2.patch
@@ -103,6 +99,9 @@ Requires: libevent >= 2.1
 Requires: openssl
 
 Requires(pre): /sbin/ldconfig, coreutils, shadow-utils
+
+Obsoletes: openldap-ltb-explockout < %{version}-%{release}
+Provides: openldap-ltb-explockout = %{version}-%{release}
 
 %description
 OpenLDAP is an open source suite of LDAP (Lightweight Directory Access
@@ -170,28 +169,11 @@ documentation.
 This is provided by LDAP Tool Box project: https://www.ltb-project.org
 
 #=================================================
-# Subpackage explockout
-#=================================================
-%package explockout
-Summary:        OpenLDAP overlay explockout
-Version:        %{real_version}
-Release:        %{release_version}
-URL:            https://github.com/ltb-project/explockout
-
-Requires:       %{name}%{?_isa} = %{version}-%{release}
-
-%description explockout
-explockout is an OpenLDAP module that denies authentication to users who
-have previously failed to authenticate, requiring them to wait for an
-exponential time
-
-#=================================================
 # Source preparation
 #=================================================
 %prep
 %setup -q -n %{real_name}-%{real_version}
 %setup -q -n %{real_name}-%{real_version} -T -D -a 1
-%setup -q -n %{real_name}-%{real_version} -T -D -a 4
 %setup -q -n %{real_name}-%{real_version} -T -D -a 5
 %patch -P0
 
@@ -281,11 +263,6 @@ cd ../..
 cd libraries/liblmdb
 make %{?_smp_mflags}
 cd ../..
-# explockout
-cd %{explockout_name}-%{explockout_version}
-make clean
-make "OLDAP_SOURCES=.." "LIBDIR=%{ldapserverdir}/libexec/openldap"
-cd ..
 ## ppm
 cd %{ppm_name}-%{ppm_version}
 make clean
@@ -397,14 +374,6 @@ install -m 755 "mdb_stat"  %{buildroot}%{ldapserverdir}/sbin
 install -m 644 "mdb_copy.1"  %{buildroot}%{ldapserverdir}/share/man/man1
 install -m 644 "mdb_stat.1"  %{buildroot}%{ldapserverdir}/share/man/man1
 cd ../..
-
-# explockout
-cd %{explockout_name}-%{explockout_version}
-mkdir -p "%{buildroot}%{ldapserverdir}/libexec/openldap"
-mkdir -p "%{buildroot}%{ldapserverdir}/share/man/man5"
-make install "OLDAP_SOURCES=.." "DSTDIR=%{buildroot}%{ldapserverdir}/libexec/openldap"
-install -m 644 "slapo-explockout.5" "%{buildroot}%{ldapserverdir}/share/man/man5"
-cd ..
 
 cd %{ppm_name}-%{ppm_version}
 make install "LDAP_SRC=.." "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{buildroot}%{ldapserverdir}/libexec/openldap"
@@ -715,12 +684,6 @@ fi
 %docdir %{ldapserverdir}/share/man
 %doc %{ldapserverdir}/share/man/man1/mdb_copy.1
 %doc %{ldapserverdir}/share/man/man1/mdb_stat.1
-
-%files explockout
-# explockout man page and library
-%docdir %{ldapserverdir}/share/man
-%doc %{ldapserverdir}/share/man/man5/slapo-explockout.5
-%{ldapserverdir}/libexec/openldap/explockout.*
 
 %files debuginfo
 %exclude %dir /usr/lib/debug
