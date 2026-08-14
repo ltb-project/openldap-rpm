@@ -21,7 +21,7 @@
 #=================================================
 
 %define real_name        openldap
-%define real_version     2.6.13
+%define real_version     2.7.0
 %define release_version  1%{?dist}
 
 # exclude private libraries
@@ -710,6 +710,9 @@ fi
 # Changelog
 #=================================================
 %changelog
+* Fri Aug 14 2026 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.14-1
+- Upgrade to OpenLDAP 2.7.0
+
 * Mon Mar 09 2026 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.13-1
 - Upgrade to OpenLDAP 2.6.13
 - upgrade slapd-cli to 3.7
