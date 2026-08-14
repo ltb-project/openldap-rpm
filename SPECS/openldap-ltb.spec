@@ -182,7 +182,6 @@ This is provided by LDAP Tool Box project: https://www.ltb-project.org
 %prep
 %setup -q -n %{real_name}-%{real_version}
 %setup -q -n %{real_name}-%{real_version} -T -D -a 1
-%setup -q -n %{real_name}-%{real_version} -T -D -a 4
 %setup -q -n %{real_name}-%{real_version} -T -D -a 5
 %patch -P0
 
