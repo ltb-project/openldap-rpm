@@ -57,9 +57,6 @@
 %define ppm_version      2.2
 %define ppm_conf         %{ldapserverdir}/etc/openldap/ppm.example
 
-%define explockout_name            explockout
-%define explockout_version         1.2
-
 #=================================================
 # Header
 #=================================================
@@ -75,7 +72,6 @@ URL: https://www.openldap.org/
 Source0: https://www.openldap.org/software/download/OpenLDAP/openldap-release/%{real_name}-%{real_version}.tgz
 Source1: https://github.com/ltb-project/slapd-cli/archive/v%{slapd_cli_version}/%{slapd_cli_name}-%{slapd_cli_version}.tar.gz
 Source2: openldap.sh
-Source4: https://github.com/ltb-project/explockout/archive/v%{explockout_version}/%{explockout_name}-%{explockout_version}.tar.gz
 Source5: https://github.com/ltb-project/ppm/archive/v%{ppm_version}/%{ppm_name}-%{ppm_version}.tar.gz
 
 Patch0: pw-sha2.patch
@@ -91,29 +87,21 @@ BuildRequires: libtool-ltdl-devel
 BuildRequires: make
 BuildRequires: pandoc
 
-%if ! 0%{?el7}
 BuildRequires: openssl-devel
 BuildRequires: libevent-devel >= 2.1
-%else
-BuildRequires: tcp_wrappers-devel
-BuildRequires: openssl11-devel
-BuildRequires: libevent-ltb-devel >= 2.1
-%endif
 
 %{?systemd_requires}
 BuildRequires: systemd
 BuildRequires: libsodium-devel
 
 Requires: gawk, /usr/bin/perl, libtool-ltdl, bash-completion, libsodium
-%if ! 0%{?el7}
 Requires: libevent >= 2.1
 Requires: openssl
-%else
-Requires: libevent-ltb >= 2.1
-Requires: openssl11
-%endif
 
 Requires(pre): /sbin/ldconfig, coreutils, shadow-utils
+
+Obsoletes: openldap-ltb-explockout < %{version}-%{release}
+Provides: openldap-ltb-explockout = %{version}-%{release}
 
 %description
 OpenLDAP is an open source suite of LDAP (Lightweight Directory Access
@@ -148,10 +136,6 @@ customized LDAP clients against openldap-ltb..
 #=================================================
 %package contrib-overlays
 Summary:        Overlays contributed to OpenLDAP
-Version:        %{real_version}
-Release:        %{release_version}
-URL:            https://www.ltb-project.org
-
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 Requires:       cracklib
 
@@ -168,10 +152,6 @@ This is provided by LDAP Tool Box project: https://www.ltb-project.org
 #=================================================
 %package mdb-utils
 Summary:        MDB utilities
-Version:        %{real_version}
-Release:        %{release_version}
-URL:            https://www.ltb-project.org
-
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
 %description mdb-utils
@@ -181,28 +161,11 @@ documentation.
 This is provided by LDAP Tool Box project: https://www.ltb-project.org
 
 #=================================================
-# Subpackage explockout
-#=================================================
-%package explockout
-Summary:        OpenLDAP overlay explockout
-Version:        %{real_version}
-Release:        %{release_version}
-URL:            https://github.com/ltb-project/explockout
-
-Requires:       %{name}%{?_isa} = %{version}-%{release}
-
-%description explockout
-explockout is an OpenLDAP module that denies authentication to users who
-have previously failed to authenticate, requiring them to wait for an
-exponential time
-
-#=================================================
 # Source preparation
 #=================================================
 %prep
 %setup -q -n %{real_name}-%{real_version}
 %setup -q -n %{real_name}-%{real_version} -T -D -a 1
-%setup -q -n %{real_name}-%{real_version} -T -D -a 4
 %setup -q -n %{real_name}-%{real_version} -T -D -a 5
 %patch -P0
 
@@ -217,10 +180,6 @@ export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE"
 #export CFLAGS="-DOPENLDAP_FD_SETSIZE=4096 -O2 -g -DSLAP_SCHEMA_EXPOSE -DSLAP_CONFIG_DELETE"
 export CPPFLAGS="-I/usr/kerberos/include"
 export LDFLAGS=""
-%if 0%{?el7}
-export CPPFLAGS="${CPPFLAGS} -I/usr/include/openssl11 -I/usr/local/libevent-ltb-2.1/include"
-export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11 -L/usr/local/libevent-ltb-2.1/lib"
-%endif
 ./configure \
   --prefix=%{ldapserverdir} \
   --libdir=%{ldapserverdir}/%{_lib} \
@@ -240,7 +199,6 @@ export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11 -L/usr/local/libevent-ltb-2.
   --enable-ldap=mod \
   --enable-meta=mod \
   --enable-sock=mod \
-%{?el7:--enable-wrappers} \
   --enable-rlookups \
   --enable-argon2=yes \
   --enable-otp=mod \
@@ -249,76 +207,37 @@ export LDFLAGS="${LDFLAGS} -L/usr/%{_lib}/openssl11 -L/usr/local/libevent-ltb-2.
   --enable-wt=no \
   --enable-perl=no
 make depend
-make %{?_smp_mflags}
+%make_build
+
 # contrib-overlays
-cd contrib/slapd-modules
-## smbk5pwd
-cd smbk5pwd
-make clean
-make %{?_smp_mflags} "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap/.libs/ -lldap -llber" "prefix=%{ldapserverdir}"
-cd ..
-## nssov
-cd nssov
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ..
-## noopsrch
-cd noopsrch
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ..
-## autogroup
-cd autogroup
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ..
-## pbkdf2
-cd passwd/pbkdf2
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ../..
-## sha512
-cd passwd/sha2
-make clean
-make %{?_smp_mflags} "prefix=%{ldapserverdir}" "LDAP_LIB="
-cd ../..
-# variant
-cd variant
-make clean
-make "prefix=%{ldapserverdir}"
-cd ..
-# vc
-cd vc
-make clean
-make "prefix=%{ldapserverdir}"
-cd ..
-cd ../..
+pushd contrib/slapd-modules
+%make_build -C smbk5pwd      "DEFS=-DDO_SAMBA -DDO_SHADOW" "LDAP_LIB=-L../../../libraries/liblber/.libs/ -L../../../libraries/libldap/.libs/ -lldap -llber" "prefix=%{ldapserverdir}"
+%make_build -C nssov         "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C noopsrch      "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C autogroup     "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C passwd/pbkdf2 "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C passwd/sha2   "prefix=%{ldapserverdir}" "LDAP_LIB="
+%make_build -C variant       "prefix=%{ldapserverdir}"
+%make_build -C vc            "prefix=%{ldapserverdir}"
+popd
+
 # MDB utils
-cd libraries/liblmdb
-make %{?_smp_mflags}
-cd ../..
-# explockout
-cd %{explockout_name}-%{explockout_version}
-make clean
-make "OLDAP_SOURCES=.." "LIBDIR=%{ldapserverdir}/libexec/openldap"
-cd ..
+pushd libraries/liblmdb
+%make_build
+popd
+
 ## ppm
-cd %{ppm_name}-%{ppm_version}
-make clean
+pushd %{ppm_name}-%{ppm_version}
 make LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/%{_lib}
-%if "%{real_version}" == "2.5.7"
-:
-%else
 make doc prefix=%{ldapserverdir}
-%endif
 make test LDAP_SRC=.. prefix=%{ldapserverdir} libdir=%{ldapserverdir}/%{_lib}
-cd ..
+popd
 
 #=================================================
 # Installation
 #=================================================
 %install
-make install DESTDIR=%{buildroot} STRIP_OPTS=""
+%make_install DESTDIR=%{buildroot} STRIP_OPTS=""
 
 # create some directories
 mkdir -p %{buildroot}%{ldapdatadir}
@@ -379,53 +298,29 @@ sed -i -e 's:^directory.*:directory\t'%{ldapdatadir}':' \
 ln -s "/var/run/slapd/ldapi" "%{buildroot}%{ldapserverdir}/var/run/ldapi"
 
 # contrib-overlays
-cd contrib/slapd-modules
-cd smbk5pwd
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd nssov
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd noopsrch
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd autogroup
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd passwd/pbkdf2
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ../..
-cd passwd/sha2
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ../..
-cd variant
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd vc
-make install "prefix=%{buildroot}%{ldapserverdir}"
-cd ..
-cd ../..
+pushd contrib/slapd-modules
+%make_install -C smbk5pwd      "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C nssov         "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C noopsrch      "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C autogroup     "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C passwd/pbkdf2 "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C passwd/sha2   "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C variant       "prefix=%{buildroot}%{ldapserverdir}"
+%make_install -C vc            "prefix=%{buildroot}%{ldapserverdir}"
+popd
 
 # MDB utils
-cd libraries/liblmdb
+pushd libraries/liblmdb
 install -m 755 "mdb_copy"  %{buildroot}%{ldapserverdir}/sbin
 install -m 755 "mdb_stat"  %{buildroot}%{ldapserverdir}/sbin
 install -m 644 "mdb_copy.1"  %{buildroot}%{ldapserverdir}/share/man/man1
 install -m 644 "mdb_stat.1"  %{buildroot}%{ldapserverdir}/share/man/man1
-cd ../..
+popd
 
-# explockout
-cd %{explockout_name}-%{explockout_version}
-mkdir -p "%{buildroot}%{ldapserverdir}/libexec/openldap"
-mkdir -p "%{buildroot}%{ldapserverdir}/share/man/man5"
-make install "OLDAP_SOURCES=.." "DSTDIR=%{buildroot}%{ldapserverdir}/libexec/openldap"
-install -m 644 "slapo-explockout.5" "%{buildroot}%{ldapserverdir}/share/man/man5"
-cd ..
-
-cd %{ppm_name}-%{ppm_version}
-make install "LDAP_SRC=.." "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{buildroot}%{ldapserverdir}/libexec/openldap"
+pushd %{ppm_name}-%{ppm_version}
+%make_install "LDAP_SRC=.." "prefix=%{buildroot}%{ldapserverdir}" "libdir=%{buildroot}%{ldapserverdir}/libexec/openldap"
 cp ppm_test "%{buildroot}%{ldapserverdir}/libexec/openldap/"
-cd ..
+popd
 
 # tweak permissions on the libraries to make sure they're correct
 chmod 0755 %{buildroot}%{ldapserverdir}/%{_lib}/lib*.so*
@@ -731,19 +626,6 @@ fi
 %docdir %{ldapserverdir}/share/man
 %doc %{ldapserverdir}/share/man/man1/mdb_copy.1
 %doc %{ldapserverdir}/share/man/man1/mdb_stat.1
-
-%files explockout
-# explockout man page and library
-%docdir %{ldapserverdir}/share/man
-%doc %{ldapserverdir}/share/man/man5/slapo-explockout.5
-%{ldapserverdir}/libexec/openldap/explockout.*
-
-%files debuginfo
-%exclude %dir /usr/lib/debug
-%exclude /usr/lib/debug/.build-id
-%exclude /usr/lib/debug/.dwz
-%exclude %dir /usr/lib/debug/usr
-%exclude %dir /usr/lib/debug/usr/local
 
 #=================================================
 # Changelog
