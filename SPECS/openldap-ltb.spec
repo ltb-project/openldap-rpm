@@ -565,12 +565,10 @@ fi
 %{ldapserverdir}/share/man/man5/slapd-monitor.5
 %{ldapserverdir}/share/man/man5/slapd-null.5
 %{ldapserverdir}/share/man/man5/slapd-passwd.5
-%{ldapserverdir}/share/man/man5/slapd-perl.5
 %{ldapserverdir}/share/man/man5/slapd-pw-pbkdf2.5
 %{ldapserverdir}/share/man/man5/slapd-pw-sha2.5
 %{ldapserverdir}/share/man/man5/slapd-relay.5
 %{ldapserverdir}/share/man/man5/slapd-sock.5
-%{ldapserverdir}/share/man/man5/slapd-sql.5
 %{ldapserverdir}/share/man/man5/slapd-wt.5
 %{ldapserverdir}/share/man/man5/slapd.access.5
 %{ldapserverdir}/share/man/man5/slapd.backends.5
@@ -581,7 +579,6 @@ fi
 %{ldapserverdir}/share/man/man5/slapo-accesslog.5
 %{ldapserverdir}/share/man/man5/slapo-auditlog.5
 %{ldapserverdir}/share/man/man5/slapo-autoca.5
-%{ldapserverdir}/share/man/man5/slapo-autogroup.5
 %{ldapserverdir}/share/man/man5/slapo-chain.5
 %{ldapserverdir}/share/man/man5/slapo-collect.5
 %{ldapserverdir}/share/man/man5/slapo-constraint.5
@@ -623,6 +620,7 @@ fi
 # contrib overlays man pages
 %docdir %{ldapserverdir}/share/man
 %doc %{ldapserverdir}/share/man/man1/ldapvc.1
+%doc %{ldapserverdir}/share/man/man5/slapo-autogroup.5
 %doc %{ldapserverdir}/share/man/man5/slapo-nssov.5
 %doc %{ldapserverdir}/share/man/man5/slapo-smbk5pwd.5
 %doc %{ldapserverdir}/share/man/man5/slapo-variant.5
@@ -647,7 +645,7 @@ fi
 # Changelog
 #=================================================
 %changelog
-* Fri Aug 14 2026 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.14-1
+* Fri Aug 14 2026 - David Coutadeur <david.coutadeur@gmail.com> - 2.7.0-1
 - Upgrade to OpenLDAP 2.7.0
 
 * Mon Mar 09 2026 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.13-1
