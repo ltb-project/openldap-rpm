@@ -74,8 +74,6 @@ Source1: https://github.com/ltb-project/slapd-cli/archive/v%{slapd_cli_version}/
 Source2: openldap.sh
 Source5: https://github.com/ltb-project/ppm/archive/v%{ppm_version}/%{ppm_name}-%{ppm_version}.tar.gz
 
-Patch0: pw-sha2.patch
-
 BuildRequires: cracklib
 BuildRequires: cracklib-devel
 BuildRequires: cyrus-sasl-devel
@@ -178,7 +176,6 @@ This is provided by LDAP Tool Box project: https://www.ltb-project.org
 %setup -q -n %{real_name}-%{real_version}
 %setup -q -n %{real_name}-%{real_version} -T -D -a 1
 %setup -q -n %{real_name}-%{real_version} -T -D -a 5
-%patch -P0
 
 #=================================================
 # Building
