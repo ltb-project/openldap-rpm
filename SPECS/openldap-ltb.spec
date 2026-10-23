@@ -21,7 +21,7 @@
 #=================================================
 
 %define real_name        openldap
-%define real_version     2.6.15
+%define real_version     2.6.16
 %define release_version  1%{?dist}
 
 # exclude private libraries
@@ -678,6 +678,9 @@ fi
 # Changelog
 #=================================================
 %changelog
+* Fri Oct 23 2026 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.16-1
+- Upgrade to OpenLDAP 2.6.16
+
 * Thu Sep 10 2026 - David Coutadeur <david.coutadeur@gmail.com> - 2.6.15-1
 - Upgrade to OpenLDAP 2.6.15
 
